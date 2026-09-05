@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Plano de divisão de atividades da Sprint 1 do Centralizador Financeiro Inteligente">
+  <title>Sprint 1 · Centralizador Financeiro Inteligente</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&amp;family=Outfit:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body style="--accent: #10b981">
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M16 13h4"/><path d="M2 10h20"/></svg></span><span>Centralizador Financeiro</span></a>
+    <nav class="doc-nav" aria-label="Documentos"><a href="index.html">Início</a><a href="visao.html">Visão</a><a href="prd.html">PRD</a><a href="arquitetura.html">Arquitetura</a><a href="Plano_Divisao_Atividades_Sprint_1.html" aria-current="page">Sprint 1</a></nav>
+  </header>
+
+  <main id="conteudo">
+    <section class="hero">
+      <p class="eyebrow">Planejamento da entrega</p>
+      <h1>Plano de Divisão de Atividades — Sprint 1</h1>
+      <p class="lead">Responsabilidades, dependências e critérios para a primeira fatia vertical do Centralizador Financeiro Inteligente.</p>
+      <div class="meta-row"><span class="meta-chip">Sprint 1</span><span class="meta-chip">3 desenvolvedores</span><span class="meta-chip">9 atividades</span></div>
+    </section>
+
+    <div class="reader">
+      <aside class="sidebar" aria-label="Navegação por páginas">
+        <p class="sidebar-title">Neste documento</p>
+        <label class="search"><span class="skip-link">Buscar</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="doc-search" type="search" placeholder="Buscar no texto…" autocomplete="off"></label>
+        <nav class="page-nav"><a href="#pagina-1" aria-label="Ir para a página 1">1</a><a href="#pagina-2" aria-label="Ir para a página 2">2</a><a href="#pagina-3" aria-label="Ir para a página 3">3</a><a href="#pagina-4" aria-label="Ir para a página 4">4</a><a href="#pagina-5" aria-label="Ir para a página 5">5</a><a href="#pagina-6" aria-label="Ir para a página 6">6</a><a href="#pagina-7" aria-label="Ir para a página 7">7</a><a href="#pagina-8" aria-label="Ir para a página 8">8</a></nav>
+        <p class="result-note">8 páginas</p>
+      </aside>
+
+      <article class="pages" aria-label="Conteúdo integral">
+        <section class="paper" id="pagina-1" data-page="1"><div class="page-kicker"><span>Sprint 1</span><span>Página 1 de 8</span></div><pre class="page-text" data-source="Contexto e objetivo da Sprint
+
+A Sprint 1 foi planejada para construir a primeira fatia vertical do sistema. O objetivo é permitir que uma pessoa usuária se autentique e gerencie contas financeiras manuais, incluindo criação, consulta, edição e desativação/exclusão, com persistência e isolamento seguro entre usuários.
+
+O escopo permanece restrito a autenticação individual, contas financeiras manuais e isolamento entre tenants. A Sprint integra os clientes web e mobile independentes ao backend do MVP acadêmico, usando somente dados fictícios. Não inclui movimentação real de fundos, operação SaaS, funcionalidades futuras nem tecnologias excluídas da arquitetura ativa.
+
+Princípio central: cada atividade possui um responsável principal, mas atividades que atravessam backend, web, mobile, segurança, testes ou documentação devem ser concluídas com participação coordenada da equipe.
+
+Equipe                         3 desenvolvedores trabalhando de forma colaborativa
+Escopo da Sprint               Autenticação + contas manuais + isolamento por usuário
+Estratégia                     Responsabilidades principais, colaboração cruzada e validação contínua
+Resultado esperado             Fluxo completo implementado, testado, integrado e documentado">Contexto e objetivo da Sprint
+
+A Sprint 1 foi planejada para construir a primeira fatia vertical do sistema. O objetivo é permitir que uma pessoa usuária se autentique e gerencie contas financeiras manuais, incluindo criação, consulta, edição e desativação/exclusão, com persistência e isolamento seguro entre usuários.
+
+O escopo permanece restrito a autenticação individual, contas financeiras manuais e isolamento entre tenants. A Sprint integra os clientes web e mobile independentes ao backend do MVP acadêmico, usando somente dados fictícios. Não inclui movimentação real de fundos, operação SaaS, funcionalidades futuras nem tecnologias excluídas da arquitetura ativa.
+
+Princípio central: cada atividade possui um responsável principal, mas atividades que atravessam backend, web, mobile, segurança, testes ou documentação devem ser concluídas com participação coordenada da equipe.
+
+Equipe                         3 desenvolvedores trabalhando de forma colaborativa
+Escopo da Sprint               Autenticação + contas manuais + isolamento por usuário
+Estratégia                     Responsabilidades principais, colaboração cruzada e validação contínua
+Resultado esperado             Fluxo completo implementado, testado, integrado e documentado</pre></section>
+
+        <section class="paper" id="pagina-2" data-page="2"><div class="page-kicker"><span>Sprint 1</span><span>Página 2 de 8</span></div><pre class="page-text" data-source="Dependências que orientam a divisão
+
+ID          Dependência        Impacto na organização
+S1-01       Nenhuma            Marco inicial; todos precisam participar.
+S1-02       S1-01              Base técnica; permite evolução das demais partes.
+S1-03       S1-02              Modelo central para autenticação e contas.
+S1-04       S1-02 e S1-03      Integra backend, web e mobile.
+S1-05       S1-03 e S1-04      Primeira entrega funcional de contas.
+S1-06       S1-05              Expande o CRUD da conta.
+S1-07       S1-03 e S1-04      Pode evoluir em paralelo ao CRUD.
+S1-08       S1-04 a S1-07      Consolida os fluxos críticos.
+S1-09       Todas              Integração, demonstração e revisão final.
+
+Sequência lógica de implementação
+
+S1-01 → S1-02 → S1-03 → S1-04 → S1-05 → S1-06 → S1-08 → S1-09
+
+Em paralelo, após a modelagem e a autenticação: S1-03 + S1-04 → S1-07 → S1-08.">Dependências que orientam a divisão
+
+ID          Dependência        Impacto na organização
+S1-01       Nenhuma            Marco inicial; todos precisam participar.
+S1-02       S1-01              Base técnica; permite evolução das demais partes.
+S1-03       S1-02              Modelo central para autenticação e contas.
+S1-04       S1-02 e S1-03      Integra backend, web e mobile.
+S1-05       S1-03 e S1-04      Primeira entrega funcional de contas.
+S1-06       S1-05              Expande o CRUD da conta.
+S1-07       S1-03 e S1-04      Pode evoluir em paralelo ao CRUD.
+S1-08       S1-04 a S1-07      Consolida os fluxos críticos.
+S1-09       Todas              Integração, demonstração e revisão final.
+
+Sequência lógica de implementação
+
+S1-01 → S1-02 → S1-03 → S1-04 → S1-05 → S1-06 → S1-08 → S1-09
+
+Em paralelo, após a modelagem e a autenticação: S1-03 + S1-04 → S1-07 → S1-08.</pre></section>
+
+        <section class="paper" id="pagina-3" data-page="3"><div class="page-kicker"><span>Sprint 1</span><span>Página 3 de 8</span></div><pre class="page-text" data-source="Estrutura de responsabilidades dos 3 desenvolvedores
+
+Dev 1 — Responsável pela base técnica e regras de negócio
+
+Foco principal: repositório backend, NestJS, domínio, aplicação, adapters, API REST, Prisma, PostgreSQL, migrations, autorização e RLS.
+
+Conduz a base do serviço, a modelagem dos módulos Identity e Accounts, a persistência e as regras de propriedade. Garante que o domínio permaneça independente de frameworks e que autorização NestJS e RLS protejam os dados do tenant.
+
+Dev 2 — Responsável pela experiência e integração do usuário
+
+Foco principal: repositórios web e mobile, fluxos Auth0, consumo dos clientes tipados gerados do OpenAPI e estados da interface.
+
+Conduz as experiências independentes em Next.js e React Native/Expo. Implementa login, sessão, rotas ou áreas protegidas e os fluxos de criação, consulta, edição e desativação/exclusão sem compartilhar componentes ou código-fonte entre os clientes.
+
+Dev 3 — Responsável pela qualidade, integração e documentação
+
+Foco principal: critérios de aceite, testes automatizados, contrato OpenAPI, validação de isolamento e RLS, revisão, documentação e evidências da entrega.
+
+Participa desde o início, preparando testes enquanto as funcionalidades evoluem e verificando que segredos e dados financeiros não apareçam em código, bundles, configurações ou logs.
+
+Importante: a divisão define responsabilidade principal, e não propriedade exclusiva. Nenhum desenvolvedor deve ficar isolado.">Estrutura de responsabilidades dos 3 desenvolvedores
+
+Dev 1 — Responsável pela base técnica e regras de negócio
+
+Foco principal: repositório backend, NestJS, domínio, aplicação, adapters, API REST, Prisma, PostgreSQL, migrations, autorização e RLS.
+
+Conduz a base do serviço, a modelagem dos módulos Identity e Accounts, a persistência e as regras de propriedade. Garante que o domínio permaneça independente de frameworks e que autorização NestJS e RLS protejam os dados do tenant.
+
+Dev 2 — Responsável pela experiência e integração do usuário
+
+Foco principal: repositórios web e mobile, fluxos Auth0, consumo dos clientes tipados gerados do OpenAPI e estados da interface.
+
+Conduz as experiências independentes em Next.js e React Native/Expo. Implementa login, sessão, rotas ou áreas protegidas e os fluxos de criação, consulta, edição e desativação/exclusão sem compartilhar componentes ou código-fonte entre os clientes.
+
+Dev 3 — Responsável pela qualidade, integração e documentação
+
+Foco principal: critérios de aceite, testes automatizados, contrato OpenAPI, validação de isolamento e RLS, revisão, documentação e evidências da entrega.
+
+Participa desde o início, preparando testes enquanto as funcionalidades evoluem e verificando que segredos e dados financeiros não apareçam em código, bundles, configurações ou logs.
+
+Importante: a divisão define responsabilidade principal, e não propriedade exclusiva. Nenhum desenvolvedor deve ficar isolado.</pre></section>
+
+        <section class="paper" id="pagina-4" data-page="4"><div class="page-kicker"><span>Sprint 1</span><span>Página 4 de 8</span></div><pre class="page-text" data-source="Divisão detalhada por atividade
+
+S1-01 — Aprovar baseline e fechar decisões mínimas
+
+Responsáveis: todos os 3 desenvolvedores.
+• Dev 1: registrar os limites Clean/Hexagonal do backend NestJS, módulos Identity e Accounts, Prisma, Neon/PostgreSQL e RLS.
+• Dev 2: confirmar Next.js e React Native/Expo independentes e o consumo de clientes tipados derivados do OpenAPI.
+• Dev 3: consolidar critérios de aceite, estratégia de testes e convenções dos três repositórios.
+Critério de conclusão: baseline registra os três repositórios, REST /api/v1, OpenAPI, Auth0, persistência, tenancy, validação e testes, sem tecnologias excluídas ou decisões futuras tratadas como aprovadas.
+
+S1-02 — Configurar backend e ambiente
+
+Responsável principal: Dev 1. Apoio: Dev 3. Trabalho paralelo possível: Dev 2.
+• Dev 1: configurar o serviço NestJS, Prisma, conexão Neon/PostgreSQL, migrations, container, variáveis de ambiente e estrutura inicial da API REST /api/v1.
+• Dev 3: validar execução reproduzível, exemplos seguros de configuração e ausência de segredos em código, logs e artefatos.
+• Dev 2: preparar separadamente as bases web Next.js e mobile React Native/Expo para autenticação e consumo do contrato.
+Critério de conclusão: qualquer integrante consegue executar os componentes da Sprint em ambiente local seguindo instruções versionadas, sem segredo exposto.
+
+S1-03 — Modelar usuário e conta financeira
+
+Responsável principal: Dev 1. Apoio: Dev 3. Integração antecipada: Dev 2.
+• Dev 1: modelar users, tenants, identity_links e accounts nos módulos Identity e Accounts; criar migrations Prisma e SQL RLS revisado quando necessário.
+• Dev 1: garantir tenant_id direto ou propriedade obrigatória e verificável, com validações de nome, tipo, instituição e saldo inicial.
+• Dev 2: alinhar os campos dos clientes ao OpenAPI, sem compartilhar schemas-fonte entre repositórios.
+• Dev 3: revisar isolamento, migrations, validação Zod nas bordas e testes de persistência.
+Critério de conclusão: modelo, migrations, políticas de isolamento, contrato OpenAPI e validações essenciais estão consistentes e documentados.
+
+S1-04 — Implementar autenticação e sessão
+
+Responsabilidade compartilhada entre Dev 1 e Dev 2. Validação principal: Dev 3.
+• Dev 1: associar a identidade Auth0 ao usuário e tenant, validar JWT no NestJS e proteger os endpoints.
+• Dev 2: implementar OAuth 2.0/OIDC, sessão, áreas protegidas, redirecionamentos e logout nos clientes web e mobile conforme cada plataforma.
+• Dev 3: testar token ausente, inválido ou expirado, logout, acesso indevido e integração dos clientes com o backend.
+Critério de conclusão: somente a pessoa autenticada acessa o próprio espaço financeiro, e encerramento ou expiração da sessão bloqueia áreas protegidas.">Divisão detalhada por atividade
+
+S1-01 — Aprovar baseline e fechar decisões mínimas
+
+Responsáveis: todos os 3 desenvolvedores.
+• Dev 1: registrar os limites Clean/Hexagonal do backend NestJS, módulos Identity e Accounts, Prisma, Neon/PostgreSQL e RLS.
+• Dev 2: confirmar Next.js e React Native/Expo independentes e o consumo de clientes tipados derivados do OpenAPI.
+• Dev 3: consolidar critérios de aceite, estratégia de testes e convenções dos três repositórios.
+Critério de conclusão: baseline registra os três repositórios, REST /api/v1, OpenAPI, Auth0, persistência, tenancy, validação e testes, sem tecnologias excluídas ou decisões futuras tratadas como aprovadas.
+
+S1-02 — Configurar backend e ambiente
+
+Responsável principal: Dev 1. Apoio: Dev 3. Trabalho paralelo possível: Dev 2.
+• Dev 1: configurar o serviço NestJS, Prisma, conexão Neon/PostgreSQL, migrations, container, variáveis de ambiente e estrutura inicial da API REST /api/v1.
+• Dev 3: validar execução reproduzível, exemplos seguros de configuração e ausência de segredos em código, logs e artefatos.
+• Dev 2: preparar separadamente as bases web Next.js e mobile React Native/Expo para autenticação e consumo do contrato.
+Critério de conclusão: qualquer integrante consegue executar os componentes da Sprint em ambiente local seguindo instruções versionadas, sem segredo exposto.
+
+S1-03 — Modelar usuário e conta financeira
+
+Responsável principal: Dev 1. Apoio: Dev 3. Integração antecipada: Dev 2.
+• Dev 1: modelar users, tenants, identity_links e accounts nos módulos Identity e Accounts; criar migrations Prisma e SQL RLS revisado quando necessário.
+• Dev 1: garantir tenant_id direto ou propriedade obrigatória e verificável, com validações de nome, tipo, instituição e saldo inicial.
+• Dev 2: alinhar os campos dos clientes ao OpenAPI, sem compartilhar schemas-fonte entre repositórios.
+• Dev 3: revisar isolamento, migrations, validação Zod nas bordas e testes de persistência.
+Critério de conclusão: modelo, migrations, políticas de isolamento, contrato OpenAPI e validações essenciais estão consistentes e documentados.
+
+S1-04 — Implementar autenticação e sessão
+
+Responsabilidade compartilhada entre Dev 1 e Dev 2. Validação principal: Dev 3.
+• Dev 1: associar a identidade Auth0 ao usuário e tenant, validar JWT no NestJS e proteger os endpoints.
+• Dev 2: implementar OAuth 2.0/OIDC, sessão, áreas protegidas, redirecionamentos e logout nos clientes web e mobile conforme cada plataforma.
+• Dev 3: testar token ausente, inválido ou expirado, logout, acesso indevido e integração dos clientes com o backend.
+Critério de conclusão: somente a pessoa autenticada acessa o próprio espaço financeiro, e encerramento ou expiração da sessão bloqueia áreas protegidas.</pre></section>
+
+        <section class="paper" id="pagina-5" data-page="5"><div class="page-kicker"><span>Sprint 1</span><span>Página 5 de 8</span></div><pre class="page-text" data-source="S1-05 — Criar e listar contas manuais
+
+Responsável principal: Dev 2 no fluxo de usuário; Dev 1 na API e persistência; Dev 3 na validação.
+• Dev 1: implementar endpoints REST /api/v1, regras de criação, persistência e consulta limitada ao tenant autenticado.
+• Dev 1: validar nome, tipo, instituição e saldo inicial e tratar possível duplicidade entre conta manual e conectada.
+• Dev 2: implementar criação e listagem nos clientes web e mobile, com validações, carregamento, vazio, sucesso e erro.
+• Dev 3: verificar propriedade, contrato OpenAPI, clientes tipados e evidências de teste.
+Critério de conclusão: usuário autenticado cria e visualiza somente as próprias contas nos clientes previstos, com respostas e estados consistentes.
+
+S1-06 — Editar e desativar/excluir conta
+
+Responsável principal: Dev 2 nos clientes; Dev 1 no backend; Dev 3 nos testes.
+• Dev 1: implementar atualização e desativação/exclusão com autorização, validação de propriedade e trilha de auditoria aplicável.
+• Dev 2: construir edição e confirmação de ação destrutiva nos clientes web e mobile, atualizando o estado após a resposta da API.
+• Dev 3: testar persistência, auditoria, confirmação e tentativas sobre contas de outro tenant.
+Critério de conclusão: fluxo de manutenção funciona de ponta a ponta, preserva auditoria e rejeita recursos fora do tenant.
+
+S1-07 — Aplicar isolamento por usuário
+
+Implementação principal: Dev 1. Testes críticos: Dev 3. Validação de integração: Dev 2.
+• Dev 1: aplicar autorização NestJS, filtros de propriedade e PostgreSQL RLS em todas as consultas e mutações de Identity e Accounts.
+• Dev 2: impedir mistura de dados e estado entre sessões nos dois clientes e tratar respostas de acesso negado sem expor informação sensível.
+• Dev 3: executar casos explícitos de acesso permitido e cross-tenant para leitura, criação, edição e exclusão; revisar logs e auditoria.
+Critério de conclusão: consultas e mutações cruzadas são negadas pela aplicação e pela defesa em profundidade do banco, com testes reproduzíveis.
+
+S1-08 — Automatizar testes críticos
+
+Responsável principal: Dev 3, com participação obrigatória dos outros dois.
+• Dev 1: cobrir domínio e casos de uso com Vitest, integração Prisma/PostgreSQL, REST crítico com Supertest e políticas de tenant/RLS.
+• Dev 2: cobrir os fluxos críticos de autenticação e contas nos clientes com as abordagens já aprovadas em cada repositório, sem introduzir biblioteca não decidida.
+• Dev 3: consolidar testes de contrato OpenAPI, clientes tipados, isolamento e ponta a ponta; documentar execução e falhas.
+Critério de conclusão: suíte reproduzível cobre autenticação, CRUD principal, contrato e isolamento cross-tenant.
+
+S1-09 — Integrar, demonstrar e revisar
+
+Responsáveis: todos os 3 desenvolvedores.
+• Dev 1: validar serviço NestJS, migrations, PostgreSQL, API, autorização e RLS.
+• Dev 2: validar as experiências web Next.js e mobile Expo e sua integração independente com o contrato OpenAPI.
+• Dev 3: validar pipelines GitHub Actions, testes, documentação, checklist e roteiro da demonstração acadêmica.
+Critério de conclusão: lint, testes e builds relevantes passam; o fluxo completo é demonstrável nos ambientes aprovados; configuração, contrato e evidências estão atualizados.">S1-05 — Criar e listar contas manuais
+
+Responsável principal: Dev 2 no fluxo de usuário; Dev 1 na API e persistência; Dev 3 na validação.
+• Dev 1: implementar endpoints REST /api/v1, regras de criação, persistência e consulta limitada ao tenant autenticado.
+• Dev 1: validar nome, tipo, instituição e saldo inicial e tratar possível duplicidade entre conta manual e conectada.
+• Dev 2: implementar criação e listagem nos clientes web e mobile, com validações, carregamento, vazio, sucesso e erro.
+• Dev 3: verificar propriedade, contrato OpenAPI, clientes tipados e evidências de teste.
+Critério de conclusão: usuário autenticado cria e visualiza somente as próprias contas nos clientes previstos, com respostas e estados consistentes.
+
+S1-06 — Editar e desativar/excluir conta
+
+Responsável principal: Dev 2 nos clientes; Dev 1 no backend; Dev 3 nos testes.
+• Dev 1: implementar atualização e desativação/exclusão com autorização, validação de propriedade e trilha de auditoria aplicável.
+• Dev 2: construir edição e confirmação de ação destrutiva nos clientes web e mobile, atualizando o estado após a resposta da API.
+• Dev 3: testar persistência, auditoria, confirmação e tentativas sobre contas de outro tenant.
+Critério de conclusão: fluxo de manutenção funciona de ponta a ponta, preserva auditoria e rejeita recursos fora do tenant.
+
+S1-07 — Aplicar isolamento por usuário
+
+Implementação principal: Dev 1. Testes críticos: Dev 3. Validação de integração: Dev 2.
+• Dev 1: aplicar autorização NestJS, filtros de propriedade e PostgreSQL RLS em todas as consultas e mutações de Identity e Accounts.
+• Dev 2: impedir mistura de dados e estado entre sessões nos dois clientes e tratar respostas de acesso negado sem expor informação sensível.
+• Dev 3: executar casos explícitos de acesso permitido e cross-tenant para leitura, criação, edição e exclusão; revisar logs e auditoria.
+Critério de conclusão: consultas e mutações cruzadas são negadas pela aplicação e pela defesa em profundidade do banco, com testes reproduzíveis.
+
+S1-08 — Automatizar testes críticos
+
+Responsável principal: Dev 3, com participação obrigatória dos outros dois.
+• Dev 1: cobrir domínio e casos de uso com Vitest, integração Prisma/PostgreSQL, REST crítico com Supertest e políticas de tenant/RLS.
+• Dev 2: cobrir os fluxos críticos de autenticação e contas nos clientes com as abordagens já aprovadas em cada repositório, sem introduzir biblioteca não decidida.
+• Dev 3: consolidar testes de contrato OpenAPI, clientes tipados, isolamento e ponta a ponta; documentar execução e falhas.
+Critério de conclusão: suíte reproduzível cobre autenticação, CRUD principal, contrato e isolamento cross-tenant.
+
+S1-09 — Integrar, demonstrar e revisar
+
+Responsáveis: todos os 3 desenvolvedores.
+• Dev 1: validar serviço NestJS, migrations, PostgreSQL, API, autorização e RLS.
+• Dev 2: validar as experiências web Next.js e mobile Expo e sua integração independente com o contrato OpenAPI.
+• Dev 3: validar pipelines GitHub Actions, testes, documentação, checklist e roteiro da demonstração acadêmica.
+Critério de conclusão: lint, testes e builds relevantes passam; o fluxo completo é demonstrável nos ambientes aprovados; configuração, contrato e evidências estão atualizados.</pre></section>
+
+        <section class="paper" id="pagina-6" data-page="6"><div class="page-kicker"><span>Sprint 1</span><span>Página 6 de 8</span></div><pre class="page-text" data-source="Matriz consolidada de responsabilidades
+
+ID          Dev 1                                   Dev 2                                   Dev 3
+S1-01       Arquitetura e baseline backend          Baseline web/mobile                     Critérios e convenções
+S1-02       Principal no backend e ambiente         Preparação paralela dos clientes        Setup seguro e documentação
+S1-03       Principal em modelo e persistência      Contratos e campos de interface         Revisão, RLS e testes
+S1-04       Auth0/JWT no backend                    Auth0 e sessão nos clientes             Validação de segurança
+S1-05       API, regras e persistência              Principal no fluxo de usuário           Contrato e QA
+S1-06       API, propriedade e auditoria            Principal no fluxo de usuário           Testes críticos
+S1-07       Autorização e RLS                       Validação de estado dos clientes        Testes cross-tenant
+S1-08       Testes backend                          Testes web/mobile aprovados             Principal e consolidação
+S1-09       Integração técnica                      Demonstração e experiência              Pipelines, QA e documentação">Matriz consolidada de responsabilidades
+
+ID          Dev 1                                   Dev 2                                   Dev 3
+S1-01       Arquitetura e baseline backend          Baseline web/mobile                     Critérios e convenções
+S1-02       Principal no backend e ambiente         Preparação paralela dos clientes        Setup seguro e documentação
+S1-03       Principal em modelo e persistência      Contratos e campos de interface         Revisão, RLS e testes
+S1-04       Auth0/JWT no backend                    Auth0 e sessão nos clientes             Validação de segurança
+S1-05       API, regras e persistência              Principal no fluxo de usuário           Contrato e QA
+S1-06       API, propriedade e auditoria            Principal no fluxo de usuário           Testes críticos
+S1-07       Autorização e RLS                       Validação de estado dos clientes        Testes cross-tenant
+S1-08       Testes backend                          Testes web/mobile aprovados             Principal e consolidação
+S1-09       Integração técnica                      Demonstração e experiência              Pipelines, QA e documentação</pre></section>
+
+        <section class="paper" id="pagina-7" data-page="7"><div class="page-kicker"><span>Sprint 1</span><span>Página 7 de 8</span></div><pre class="page-text" data-source="Organização prática e evidências
+
+Cada atividade tem responsável principal, definição de pronto e evidência associada. Antes de concluir uma atividade, a equipe verifica implementação, testes, revisão, documentação e integração.
+
+Checklist para concluir uma atividade
+
+• Código implementado conforme o critério de aceite e os limites dos módulos.
+• Testes relevantes executados e aprovados no repositório afetado.
+• Revisão realizada por pelo menos outro integrante.
+• OpenAPI, migrations, configuração ou instruções atualizados quando afetados.
+• Integração validada com backend, web ou mobile relacionados.
+• Evidência ou demonstração disponível para a Sprint Review.
+• Segredos e dados financeiros ausentes de código, clientes e logs.
+
+Artefatos documentais exigidos
+
+• Contrato OpenAPI versionado no repositório backend.
+• Instruções reproduzíveis de execução, configuração e implantação dos componentes afetados.
+• Exemplos seguros de variáveis de ambiente, sem credenciais reais.
+• Migrations, seeds e scripts necessários à demonstração acadêmica.
+• Registro dos testes críticos, resultados e roteiro da demonstração.
+
+Os caminhos concretos seguem as convenções de cada repositório. Esta Sprint não cria monorepo, pacote compartilhado de schemas ou árvore documental não aprovada.">Organização prática e evidências
+
+Cada atividade tem responsável principal, definição de pronto e evidência associada. Antes de concluir uma atividade, a equipe verifica implementação, testes, revisão, documentação e integração.
+
+Checklist para concluir uma atividade
+
+• Código implementado conforme o critério de aceite e os limites dos módulos.
+• Testes relevantes executados e aprovados no repositório afetado.
+• Revisão realizada por pelo menos outro integrante.
+• OpenAPI, migrations, configuração ou instruções atualizados quando afetados.
+• Integração validada com backend, web ou mobile relacionados.
+• Evidência ou demonstração disponível para a Sprint Review.
+• Segredos e dados financeiros ausentes de código, clientes e logs.
+
+Artefatos documentais exigidos
+
+• Contrato OpenAPI versionado no repositório backend.
+• Instruções reproduzíveis de execução, configuração e implantação dos componentes afetados.
+• Exemplos seguros de variáveis de ambiente, sem credenciais reais.
+• Migrations, seeds e scripts necessários à demonstração acadêmica.
+• Registro dos testes críticos, resultados e roteiro da demonstração.
+
+Os caminhos concretos seguem as convenções de cada repositório. Esta Sprint não cria monorepo, pacote compartilhado de schemas ou árvore documental não aprovada.</pre></section>
+
+        <section class="paper" id="pagina-8" data-page="8"><div class="page-kicker"><span>Sprint 1</span><span>Página 8 de 8</span></div><pre class="page-text" data-source="Fluxo recomendado de trabalho conjunto
+
+Etapa 1 — Alinhamento: os três desenvolvedores confirmam baseline, critérios e limites do MVP.
+
+Etapa 2 — Fundação: Dev 1 conduz NestJS, Prisma e modelo; Dev 2 prepara web e mobile; Dev 3 organiza testes e documentação.
+
+Etapa 3 — Autenticação: Dev 1 e Dev 2 integram Auth0 e JWT; Dev 3 valida os cenários críticos.
+
+Etapa 4 — Contas: Dev 1 e Dev 2 trabalham em REST/OpenAPI, persistência e interfaces; Dev 3 acompanha contrato e qualidade.
+
+Etapa 5 — Paralelismo: autorização e RLS avançam enquanto o CRUD é consolidado.
+
+Etapa 6 — Consolidação: todos corrigem falhas, executam testes, atualizam evidências e preparam a demonstração.
+
+Fluxo funcional que deve existir ao final
+
+• Autenticar com Auth0 e acessar o próprio tenant.
+• Criar conta manual.
+• Listar somente contas próprias.
+• Editar conta.
+• Desativar ou excluir conta com confirmação e auditoria aplicável.
+• Negar leitura e mutação cross-tenant.
+• Executar testes críticos e validar o contrato.
+• Demonstrar o fluxo completo nos clientes previstos.
+
+Recomendação final
+
+O Dev 1 mantém a responsabilidade principal pela base técnica e pelas regras; o Dev 2 pela experiência web e mobile e sua integração; e o Dev 3 pela qualidade, integração e documentação.
+
+Resultado esperado: uma Sprint organizada em torno de uma entrega vertical real, com responsabilidades claras, colaboração contínua, dependências respeitadas e evidências suficientes para demonstrar o que foi implementado.">Fluxo recomendado de trabalho conjunto
+
+Etapa 1 — Alinhamento: os três desenvolvedores confirmam baseline, critérios e limites do MVP.
+
+Etapa 2 — Fundação: Dev 1 conduz NestJS, Prisma e modelo; Dev 2 prepara web e mobile; Dev 3 organiza testes e documentação.
+
+Etapa 3 — Autenticação: Dev 1 e Dev 2 integram Auth0 e JWT; Dev 3 valida os cenários críticos.
+
+Etapa 4 — Contas: Dev 1 e Dev 2 trabalham em REST/OpenAPI, persistência e interfaces; Dev 3 acompanha contrato e qualidade.
+
+Etapa 5 — Paralelismo: autorização e RLS avançam enquanto o CRUD é consolidado.
+
+Etapa 6 — Consolidação: todos corrigem falhas, executam testes, atualizam evidências e preparam a demonstração.
+
+Fluxo funcional que deve existir ao final
+
+• Autenticar com Auth0 e acessar o próprio tenant.
+• Criar conta manual.
+• Listar somente contas próprias.
+• Editar conta.
+• Desativar ou excluir conta com confirmação e auditoria aplicável.
+• Negar leitura e mutação cross-tenant.
+• Executar testes críticos e validar o contrato.
+• Demonstrar o fluxo completo nos clientes previstos.
+
+Recomendação final
+
+O Dev 1 mantém a responsabilidade principal pela base técnica e pelas regras; o Dev 2 pela experiência web e mobile e sua integração; e o Dev 3 pela qualidade, integração e documentação.
+
+Resultado esperado: uma Sprint organizada em torno de uma entrega vertical real, com responsabilidades claras, colaboração contínua, dependências respeitadas e evidências suficientes para demonstrar o que foi implementado.</pre></section>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">Documentação acadêmica · UCB · 2026 · Samuel Mota, Thiago Marques e Miguel Candido</footer>
+  <script src="assets/app.js"></script>
+</body>
+</html>

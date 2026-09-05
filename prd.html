@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Documentação do Centralizador Financeiro Inteligente">
+  <title>Documento de Requisitos · Centralizador Financeiro Inteligente</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body style="--accent: #10b981">
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar"><a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M16 13h4"/><path d="M2 10h20"/></svg></span><span>Centralizador Financeiro</span></a><nav class="doc-nav" aria-label="Documentos"><a href="index.html">Início</a><a href="visao.html">Visão</a><a href="prd.html" aria-current="page">PRD</a><a href="arquitetura.html">Arquitetura</a></nav></header>
+  <main id="conteudo">
+    <section class="hero"><p class="eyebrow">Requisitos do produto</p><h1>Documento de Requisitos</h1><p class="lead">Escopo, histórias, regras e critérios do MVP acadêmico e de sua evolução SaaS.</p><div class="meta-row"><span class="meta-chip">Versão 1.4</span><span class="meta-chip">04 set 2026</span><span class="meta-chip">Leitura integral</span></div></section>
+    <div class="reader"><aside class="sidebar" aria-label="Navegação por páginas"><p class="sidebar-title">Neste documento</p><label class="search"><span class="skip-link">Buscar</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="doc-search" type="search" placeholder="Buscar no texto…" autocomplete="off"></label><nav class="page-nav"><a href="#pagina-1" aria-label="Ir para a página 1">1</a><a href="#pagina-2" aria-label="Ir para a página 2">2</a><a href="#pagina-3" aria-label="Ir para a página 3">3</a><a href="#pagina-4" aria-label="Ir para a página 4">4</a><a href="#pagina-5" aria-label="Ir para a página 5">5</a><a href="#pagina-6" aria-label="Ir para a página 6">6</a><a href="#pagina-7" aria-label="Ir para a página 7">7</a><a href="#pagina-8" aria-label="Ir para a página 8">8</a><a href="#pagina-9" aria-label="Ir para a página 9">9</a><a href="#pagina-10" aria-label="Ir para a página 10">10</a></nav><p class="result-note">10 páginas</p></aside><article class="pages" aria-label="Conteúdo integral"><section class="paper" id="pagina-1" data-page="1"><div class="page-kicker"><span>PRD</span><span>Página 1 de 10</span></div><pre class="page-text" data-source="Centralizador Financeiro Inteligente
+Documento de Requisitos de Software
+
+Histórico de Revisão
+
+• 22/05/2026 — versão 1.1 — Revisão de funcionalidades e critérios de aceite — Samuel Mota.
+• 04/06/2026 — versão 1.2 — Revisão antes das decisões arquiteturais — Samuel Mota.
+• 06/06/2026 — versão 1.3 — Revisão geral e alinhamento de RNF — Thiago Marques e Miguel Candido.
+• 04/09/2026 — versão 1.4 — Alinhamento ao MVP acadêmico e à evolução SaaS aprovada — Equipe do projeto.
+
+Introdução
+
+Este documento define o escopo, as histórias de usuário, as regras de negócio, os requisitos não funcionais, os riscos e a direção evolutiva do Centralizador Financeiro Inteligente.
+
+O produto é uma aplicação analítica de finanças pessoais para usuários individuais. Cada tenant representa o espaço financeiro de exatamente uma pessoa. O MVP acadêmico utiliza exclusivamente dados fictícios.
+
+Escopo
+
+O MVP inclui autenticação individual; contas e movimentações manuais; categorias e regras pessoais; dashboard; OFX; Pluggy Sandbox com sincronização diária e manual; investimentos disponibilizados pelo Sandbox; bens, financiamentos e passivos; patrimônio líquido; projeções determinísticas; e trilhas técnicas de auditoria.
+
+Visão geral do produto — fora do MVP
+
+PDF, impostos, alertas, notificações de produto, e-mail de produto, Stripe, cobrança, dados reais, painel administrativo, Redis, CQRS, Event Sourcing, GraphQL, gRPC e orquestração integral por eventos.
+
+Iniciação de pagamentos, Pix e qualquer movimentação de fundos estão permanentemente excluídos. Transferências cadastradas são apenas registros contábeis entre contas.">Centralizador Financeiro Inteligente
+Documento de Requisitos de Software
+
+Histórico de Revisão
+
+• 22/05/2026 — versão 1.1 — Revisão de funcionalidades e critérios de aceite — Samuel Mota.
+• 04/06/2026 — versão 1.2 — Revisão antes das decisões arquiteturais — Samuel Mota.
+• 06/06/2026 — versão 1.3 — Revisão geral e alinhamento de RNF — Thiago Marques e Miguel Candido.
+• 04/09/2026 — versão 1.4 — Alinhamento ao MVP acadêmico e à evolução SaaS aprovada — Equipe do projeto.
+
+Introdução
+
+Este documento define o escopo, as histórias de usuário, as regras de negócio, os requisitos não funcionais, os riscos e a direção evolutiva do Centralizador Financeiro Inteligente.
+
+O produto é uma aplicação analítica de finanças pessoais para usuários individuais. Cada tenant representa o espaço financeiro de exatamente uma pessoa. O MVP acadêmico utiliza exclusivamente dados fictícios.
+
+Escopo
+
+O MVP inclui autenticação individual; contas e movimentações manuais; categorias e regras pessoais; dashboard; OFX; Pluggy Sandbox com sincronização diária e manual; investimentos disponibilizados pelo Sandbox; bens, financiamentos e passivos; patrimônio líquido; projeções determinísticas; e trilhas técnicas de auditoria.
+
+Visão geral do produto — fora do MVP
+
+PDF, impostos, alertas, notificações de produto, e-mail de produto, Stripe, cobrança, dados reais, painel administrativo, Redis, CQRS, Event Sourcing, GraphQL, gRPC e orquestração integral por eventos.
+
+Iniciação de pagamentos, Pix e qualquer movimentação de fundos estão permanentemente excluídos. Transferências cadastradas são apenas registros contábeis entre contas.</pre></section><section class="paper" id="pagina-2" data-page="2"><div class="page-kicker"><span>PRD</span><span>Página 2 de 10</span></div><pre class="page-text" data-source="Visão geral dos requisitos funcionais
+
+Descrição das partes interessadas
+
+Ator                  Descrição
+Usuário individual    Pessoa física proprietária exclusiva de um tenant e dos dados nele registrados.
+
+Não há membros, convites, organizações, contas compartilhadas, perfis familiares ou profissionais nem administrador como ator do produto.
+
+Premissas e restrições técnicas
+
+Dependência           Responsabilidade
+Auth0                 Identidade por OAuth 2.0/OIDC, emissão de tokens e e-mails essenciais do ciclo da conta.
+Pluggy Sandbox        Dados fictícios de contas, transações e investimentos mediante consentimento.
+Infraestrutura        Vercel, Expo/EAS, Cloud Run, Neon, QStash e R2 conforme a arquitetura.
+
+Lista de histórias do MVP
+
+ID       História                                                        Prioridade
+HU-001   Autenticar usuário individual                                   Must
+HU-002   Registrar contas financeiras manualmente                        Must
+HU-003   Registrar receitas, despesas e transferências contábeis         Must
+HU-004   Importar extrato OFX                                            Must
+HU-005   Categorizar transações                                          Must
+HU-006   Criar regras pessoais de categorização                          Must
+HU-007   Conectar conta pelo Pluggy Sandbox                              Must
+HU-008   Sincronizar dados do Pluggy Sandbox                             Must
+HU-009   Consultar posições e informações de investimento                Must
+HU-010   Visualizar dashboard financeiro consolidado                     Must
+HU-011   Visualizar alocação por classe e instituição                    Must
+HU-012   Registrar bens, financiamentos e passivos                       Must
+HU-013   Calcular patrimônio líquido                                     Must
+HU-014   Projetar patrimônio de forma determinística                     Must
+HU-015   Registrar trilhas técnicas de auditoria                         Must">Visão geral dos requisitos funcionais
+
+Descrição das partes interessadas
+
+Ator                  Descrição
+Usuário individual    Pessoa física proprietária exclusiva de um tenant e dos dados nele registrados.
+
+Não há membros, convites, organizações, contas compartilhadas, perfis familiares ou profissionais nem administrador como ator do produto.
+
+Premissas e restrições técnicas
+
+Dependência           Responsabilidade
+Auth0                 Identidade por OAuth 2.0/OIDC, emissão de tokens e e-mails essenciais do ciclo da conta.
+Pluggy Sandbox        Dados fictícios de contas, transações e investimentos mediante consentimento.
+Infraestrutura        Vercel, Expo/EAS, Cloud Run, Neon, QStash e R2 conforme a arquitetura.
+
+Lista de histórias do MVP
+
+ID       História                                                        Prioridade
+HU-001   Autenticar usuário individual                                   Must
+HU-002   Registrar contas financeiras manualmente                        Must
+HU-003   Registrar receitas, despesas e transferências contábeis         Must
+HU-004   Importar extrato OFX                                            Must
+HU-005   Categorizar transações                                          Must
+HU-006   Criar regras pessoais de categorização                          Must
+HU-007   Conectar conta pelo Pluggy Sandbox                              Must
+HU-008   Sincronizar dados do Pluggy Sandbox                             Must
+HU-009   Consultar posições e informações de investimento                Must
+HU-010   Visualizar dashboard financeiro consolidado                     Must
+HU-011   Visualizar alocação por classe e instituição                    Must
+HU-012   Registrar bens, financiamentos e passivos                       Must
+HU-013   Calcular patrimônio líquido                                     Must
+HU-014   Projetar patrimônio de forma determinística                     Must
+HU-015   Registrar trilhas técnicas de auditoria                         Must</pre></section><section class="paper" id="pagina-3" data-page="3"><div class="page-kicker"><span>PRD</span><span>Página 3 de 10</span></div><pre class="page-text" data-source="Visão de histórias — identidade, registros e OFX
+
+HU-001 - Autenticar usuário individual
+
+Como usuário individual, quero autenticar-me para acessar somente meu espaço financeiro.
+Critérios de aceite:
+• Auth0 autentica por fluxo baseado em OAuth 2.0/OIDC e o backend valida o JWT.
+• NestJS associa a identidade ao usuário e ao tenant individual.
+• Requisições sem token válido ou sem autorização são rejeitadas.
+• Encerramento ou expiração de sessão impede acesso às áreas protegidas.
+
+HU-002 - Registrar contas financeiras manualmente
+
+Como usuário, quero registrar contas não conectadas para consolidá-las no dashboard.
+Critérios de aceite:
+• Nome, tipo, instituição e saldo inicial são validados.
+• A conta recebe vínculo inequívoco com o tenant.
+• Duplicidade entre conta manual e conectada é detectada ou apresentada para resolução.
+• Edição e remoção preservam a trilha de auditoria aplicável.
+
+HU-003 - Registrar receitas, despesas e transferências contábeis
+
+Como usuário, quero registrar movimentações para manter meu histórico financeiro.
+Critérios de aceite:
+• Conta, valor, data e tipo são obrigatórios.
+• Transferência cria lançamentos consistentes de saída e entrada entre contas do mesmo tenant.
+• A operação é idempotente quando uma mesma requisição é repetida.
+• O recurso não inicia transferência bancária, Pix ou movimentação real de fundos.
+
+HU-004 - Importar extrato OFX
+
+Como usuário, quero importar OFX para preencher lacunas históricas.
+Critérios de aceite:
+• Tipo, tamanho, estrutura e conteúdo processável são validados.
+• O sistema apresenta uma prévia antes da confirmação.
+• Duplicidades são ignoradas ou sinalizadas antes da gravação.
+• O resultado informa itens importados, ignorados e com erro.
+• Importação longa pode ser processada assincronamente com estado consultável.
+• PDF não é aceito no MVP.">Visão de histórias — identidade, registros e OFX
+
+HU-001 - Autenticar usuário individual
+
+Como usuário individual, quero autenticar-me para acessar somente meu espaço financeiro.
+Critérios de aceite:
+• Auth0 autentica por fluxo baseado em OAuth 2.0/OIDC e o backend valida o JWT.
+• NestJS associa a identidade ao usuário e ao tenant individual.
+• Requisições sem token válido ou sem autorização são rejeitadas.
+• Encerramento ou expiração de sessão impede acesso às áreas protegidas.
+
+HU-002 - Registrar contas financeiras manualmente
+
+Como usuário, quero registrar contas não conectadas para consolidá-las no dashboard.
+Critérios de aceite:
+• Nome, tipo, instituição e saldo inicial são validados.
+• A conta recebe vínculo inequívoco com o tenant.
+• Duplicidade entre conta manual e conectada é detectada ou apresentada para resolução.
+• Edição e remoção preservam a trilha de auditoria aplicável.
+
+HU-003 - Registrar receitas, despesas e transferências contábeis
+
+Como usuário, quero registrar movimentações para manter meu histórico financeiro.
+Critérios de aceite:
+• Conta, valor, data e tipo são obrigatórios.
+• Transferência cria lançamentos consistentes de saída e entrada entre contas do mesmo tenant.
+• A operação é idempotente quando uma mesma requisição é repetida.
+• O recurso não inicia transferência bancária, Pix ou movimentação real de fundos.
+
+HU-004 - Importar extrato OFX
+
+Como usuário, quero importar OFX para preencher lacunas históricas.
+Critérios de aceite:
+• Tipo, tamanho, estrutura e conteúdo processável são validados.
+• O sistema apresenta uma prévia antes da confirmação.
+• Duplicidades são ignoradas ou sinalizadas antes da gravação.
+• O resultado informa itens importados, ignorados e com erro.
+• Importação longa pode ser processada assincronamente com estado consultável.
+• PDF não é aceito no MVP.</pre></section><section class="paper" id="pagina-4" data-page="4"><div class="page-kicker"><span>PRD</span><span>Página 4 de 10</span></div><pre class="page-text" data-source="Visão de histórias — categorização e Pluggy
+
+HU-005 - Categorizar transações
+
+Como usuário, quero classificar minhas transações para analisar receitas e despesas.
+Critérios de aceite:
+• Uma transação pode receber categoria sugerida ou determinada por regra.
+• Resultado incerto ou não reconhecido permanece explícito para revisão.
+• O usuário pode corrigir a categoria.
+• Nenhuma precisão mínima é tratada como alcançada sem dataset e evidência executada.
+
+HU-006 - Criar regras pessoais de categorização
+
+Como usuário, quero definir regras para categorizar lançamentos futuros.
+Critérios de aceite:
+• Regra, condição e categoria pertencem ao mesmo tenant.
+• Regras do usuário prevalecem sobre regras gerais.
+• Conflitos seguem precedência determinística e informada.
+• Regras podem ser ativadas, desativadas, editadas e removidas.
+
+HU-007 - Conectar conta pelo Pluggy Sandbox
+
+Como usuário, quero autorizar uma conexão Sandbox para importar os dados disponíveis.
+Critérios de aceite:
+• O consentimento e seu escopo são registrados sem armazenar credenciais bancárias.
+• Expiração ou revogação interrompe novas coletas.
+• Remoção da conexão interrompe futuras sincronizações conforme a política aplicável.
+• Disponibilidade parcial do provedor é registrada por tipo de dado.
+
+HU-008 - Sincronizar dados do Pluggy Sandbox
+
+Como usuário, quero sincronização automática diária e disparo manual.
+Critérios de aceite:
+• Há uma execução diária agendada.
+• O usuário pode solicitar sincronização manual.
+• Repetições da mesma execução não duplicam contas, transações, posições ou movimentos.
+• Execuções sobrepostas para a mesma conexão são impedidas ou serializadas.
+• Falhas recebem retries controlados e estado rastreável.
+• Jobs carregam somente identificadores e metadados mínimos, nunca tokens ou payload financeiro desnecessário.">Visão de histórias — categorização e Pluggy
+
+HU-005 - Categorizar transações
+
+Como usuário, quero classificar minhas transações para analisar receitas e despesas.
+Critérios de aceite:
+• Uma transação pode receber categoria sugerida ou determinada por regra.
+• Resultado incerto ou não reconhecido permanece explícito para revisão.
+• O usuário pode corrigir a categoria.
+• Nenhuma precisão mínima é tratada como alcançada sem dataset e evidência executada.
+
+HU-006 - Criar regras pessoais de categorização
+
+Como usuário, quero definir regras para categorizar lançamentos futuros.
+Critérios de aceite:
+• Regra, condição e categoria pertencem ao mesmo tenant.
+• Regras do usuário prevalecem sobre regras gerais.
+• Conflitos seguem precedência determinística e informada.
+• Regras podem ser ativadas, desativadas, editadas e removidas.
+
+HU-007 - Conectar conta pelo Pluggy Sandbox
+
+Como usuário, quero autorizar uma conexão Sandbox para importar os dados disponíveis.
+Critérios de aceite:
+• O consentimento e seu escopo são registrados sem armazenar credenciais bancárias.
+• Expiração ou revogação interrompe novas coletas.
+• Remoção da conexão interrompe futuras sincronizações conforme a política aplicável.
+• Disponibilidade parcial do provedor é registrada por tipo de dado.
+
+HU-008 - Sincronizar dados do Pluggy Sandbox
+
+Como usuário, quero sincronização automática diária e disparo manual.
+Critérios de aceite:
+• Há uma execução diária agendada.
+• O usuário pode solicitar sincronização manual.
+• Repetições da mesma execução não duplicam contas, transações, posições ou movimentos.
+• Execuções sobrepostas para a mesma conexão são impedidas ou serializadas.
+• Falhas recebem retries controlados e estado rastreável.
+• Jobs carregam somente identificadores e metadados mínimos, nunca tokens ou payload financeiro desnecessário.</pre></section><section class="paper" id="pagina-5" data-page="5"><div class="page-kicker"><span>PRD</span><span>Página 5 de 10</span></div><pre class="page-text" data-source="Visão de histórias — investimentos e dashboard
+
+HU-009 - Consultar posições e informações de investimento
+
+Como usuário, quero visualizar os investimentos fornecidos pelo Pluggy Sandbox.
+Critérios de aceite:
+• O sistema apresenta posições e total da carteira quando disponíveis.
+• Exibe quantidade ou saldo, valor investido, resultado, instituição e data de referência quando fornecidos.
+• Exibe movimentações quando disponibilizadas.
+• Para renda fixa, exibe taxa, índice e vencimento quando fornecidos.
+• Campos ausentes, indisponíveis ou desatualizados são indicados explicitamente.
+• Cada registro preserva fonte, identificador externo, tipo de ativo, data de referência, moeda e qualidade do dado quando aplicáveis.
+
+HU-010 - Visualizar dashboard financeiro consolidado
+
+Como usuário, quero compreender minha situação financeira em uma única visão.
+Critérios de aceite:
+• O dashboard consolida contas, transações, investimentos, bens e passivos do tenant.
+• Exibe saldos, fluxo por período, gastos por categoria e patrimônio líquido.
+• O período e a referência temporal dos dados são claros.
+• Estado sem dados orienta o próximo passo.
+• Dados indisponíveis ou defasados não são apresentados como atuais.
+
+HU-011 - Visualizar alocação por classe e instituição
+
+Como usuário, quero analisar a composição da carteira.
+Critérios de aceite:
+• Percentuais são calculados sobre os dados disponíveis.
+• A composição pode ser agrupada por classe e instituição.
+• Posições sem classificação aparecem como não classificadas.
+• A fonte e a data de referência permanecem acessíveis.">Visão de histórias — investimentos e dashboard
+
+HU-009 - Consultar posições e informações de investimento
+
+Como usuário, quero visualizar os investimentos fornecidos pelo Pluggy Sandbox.
+Critérios de aceite:
+• O sistema apresenta posições e total da carteira quando disponíveis.
+• Exibe quantidade ou saldo, valor investido, resultado, instituição e data de referência quando fornecidos.
+• Exibe movimentações quando disponibilizadas.
+• Para renda fixa, exibe taxa, índice e vencimento quando fornecidos.
+• Campos ausentes, indisponíveis ou desatualizados são indicados explicitamente.
+• Cada registro preserva fonte, identificador externo, tipo de ativo, data de referência, moeda e qualidade do dado quando aplicáveis.
+
+HU-010 - Visualizar dashboard financeiro consolidado
+
+Como usuário, quero compreender minha situação financeira em uma única visão.
+Critérios de aceite:
+• O dashboard consolida contas, transações, investimentos, bens e passivos do tenant.
+• Exibe saldos, fluxo por período, gastos por categoria e patrimônio líquido.
+• O período e a referência temporal dos dados são claros.
+• Estado sem dados orienta o próximo passo.
+• Dados indisponíveis ou defasados não são apresentados como atuais.
+
+HU-011 - Visualizar alocação por classe e instituição
+
+Como usuário, quero analisar a composição da carteira.
+Critérios de aceite:
+• Percentuais são calculados sobre os dados disponíveis.
+• A composição pode ser agrupada por classe e instituição.
+• Posições sem classificação aparecem como não classificadas.
+• A fonte e a data de referência permanecem acessíveis.</pre></section><section class="paper" id="pagina-6" data-page="6"><div class="page-kicker"><span>PRD</span><span>Página 6 de 10</span></div><pre class="page-text" data-source="Visão de histórias — patrimônio, projeções e auditoria
+
+HU-012 - Registrar bens, financiamentos e passivos
+
+Como usuário, quero registrar componentes patrimoniais não fornecidos pelas integrações.
+Critérios de aceite:
+• Bens registram tipo, descrição, valor estimado, data da avaliação e fonte informada.
+• Financiamentos e passivos registram saldo devedor e dados aplicáveis.
+• Financiamento pode ser associado a um bem.
+• Alterações relevantes preservam histórico e auditoria.
+
+HU-013 - Calcular patrimônio líquido
+
+Como usuário, quero conhecer meu patrimônio líquido consolidado.
+Critérios de aceite:
+• O cálculo soma saldos, posições de investimento e bens.
+• Financiamentos e demais passivos são descontados.
+• A referência temporal e a origem dos valores são apresentadas.
+• Campos ausentes ou defasados são sinalizados.
+
+HU-014 - Projetar patrimônio de forma determinística
+
+Como usuário, quero estimar cenários futuros com premissas compreensíveis.
+Critérios de aceite:
+• O cálculo usa histórico disponível ou premissas informadas pelo usuário.
+• Horizonte, valores de entrada e método são exibidos.
+• Limitações e incerteza são informadas.
+• O resultado não é apresentado como garantia ou aconselhamento financeiro.
+• O mesmo conjunto de entradas produz o mesmo resultado.
+
+HU-015 - Registrar trilhas técnicas de auditoria
+
+Como responsável técnico, quero rastreabilidade mínima das ações relevantes.
+Critérios de aceite:
+• O registro contém ator, tenant, ação, recurso, instante, resultado e request/correlation id.
+• Não contém segredos, tokens, descrições completas ou payloads financeiros desnecessários.
+• Auditoria de negócio permanece distinta de logs técnicos.
+• Registros seguem acesso por menor privilégio.">Visão de histórias — patrimônio, projeções e auditoria
+
+HU-012 - Registrar bens, financiamentos e passivos
+
+Como usuário, quero registrar componentes patrimoniais não fornecidos pelas integrações.
+Critérios de aceite:
+• Bens registram tipo, descrição, valor estimado, data da avaliação e fonte informada.
+• Financiamentos e passivos registram saldo devedor e dados aplicáveis.
+• Financiamento pode ser associado a um bem.
+• Alterações relevantes preservam histórico e auditoria.
+
+HU-013 - Calcular patrimônio líquido
+
+Como usuário, quero conhecer meu patrimônio líquido consolidado.
+Critérios de aceite:
+• O cálculo soma saldos, posições de investimento e bens.
+• Financiamentos e demais passivos são descontados.
+• A referência temporal e a origem dos valores são apresentadas.
+• Campos ausentes ou defasados são sinalizados.
+
+HU-014 - Projetar patrimônio de forma determinística
+
+Como usuário, quero estimar cenários futuros com premissas compreensíveis.
+Critérios de aceite:
+• O cálculo usa histórico disponível ou premissas informadas pelo usuário.
+• Horizonte, valores de entrada e método são exibidos.
+• Limitações e incerteza são informadas.
+• O resultado não é apresentado como garantia ou aconselhamento financeiro.
+• O mesmo conjunto de entradas produz o mesmo resultado.
+
+HU-015 - Registrar trilhas técnicas de auditoria
+
+Como responsável técnico, quero rastreabilidade mínima das ações relevantes.
+Critérios de aceite:
+• O registro contém ator, tenant, ação, recurso, instante, resultado e request/correlation id.
+• Não contém segredos, tokens, descrições completas ou payloads financeiros desnecessários.
+• Auditoria de negócio permanece distinta de logs técnicos.
+• Registros seguem acesso por menor privilégio.</pre></section><section class="paper" id="pagina-7" data-page="7"><div class="page-kicker"><span>PRD</span><span>Página 7 de 10</span></div><pre class="page-text" data-source="Lista de regras de negócio
+
+ID       Regra
+RN-001   Cada tenant representa exatamente um usuário individual.
+RN-002   Todo dado financeiro pertence a um tenant_id direto ou a uma relação de propriedade obrigatória.
+RN-003   NestJS autentica e autoriza toda requisição; PostgreSQL RLS fornece defesa em profundidade.
+RN-004   Um módulo não acessa repositório interno ou tabela pertencente a outro módulo.
+RN-005   Transferências registradas são contábeis e não movimentam fundos.
+RN-006   Importações OFX são validadas e deduplicadas antes da persistência definitiva.
+RN-007   Sincronizações são idempotentes e protegidas contra duplicidade e concorrência.
+RN-008   Consentimentos Pluggy limitam escopo e continuidade da coleta.
+RN-009   PostgreSQL é a fonte de verdade; falha externa não elimina dados já persistidos.
+RN-010   Dados de investimento preservam fonte, referência e qualidade; ausência e defasagem são explícitas.
+RN-011   Patrimônio líquido soma recursos, investimentos e bens e desconta financiamentos e passivos.
+RN-012   Projeções exibem horizonte, premissas, incerteza e aviso não consultivo.
+RN-013   PostgreSQL guarda metadados e referências de objetos; arquivos ficam no R2 conforme ciclo de vida aprovado.
+RN-014   Jobs carregam identificadores e metadados mínimos, sem segredos ou payload financeiro desnecessário.
+RN-015   Logs técnicos e registros de auditoria são distintos e minimizam dados.
+RN-016   E-mails essenciais de identidade podem ser enviados pelo Auth0; não há e-mail de produto no MVP.
+RN-017   Nenhuma função pode iniciar pagamentos, Pix, ordens ou outra movimentação de fundos.">Lista de regras de negócio
+
+ID       Regra
+RN-001   Cada tenant representa exatamente um usuário individual.
+RN-002   Todo dado financeiro pertence a um tenant_id direto ou a uma relação de propriedade obrigatória.
+RN-003   NestJS autentica e autoriza toda requisição; PostgreSQL RLS fornece defesa em profundidade.
+RN-004   Um módulo não acessa repositório interno ou tabela pertencente a outro módulo.
+RN-005   Transferências registradas são contábeis e não movimentam fundos.
+RN-006   Importações OFX são validadas e deduplicadas antes da persistência definitiva.
+RN-007   Sincronizações são idempotentes e protegidas contra duplicidade e concorrência.
+RN-008   Consentimentos Pluggy limitam escopo e continuidade da coleta.
+RN-009   PostgreSQL é a fonte de verdade; falha externa não elimina dados já persistidos.
+RN-010   Dados de investimento preservam fonte, referência e qualidade; ausência e defasagem são explícitas.
+RN-011   Patrimônio líquido soma recursos, investimentos e bens e desconta financiamentos e passivos.
+RN-012   Projeções exibem horizonte, premissas, incerteza e aviso não consultivo.
+RN-013   PostgreSQL guarda metadados e referências de objetos; arquivos ficam no R2 conforme ciclo de vida aprovado.
+RN-014   Jobs carregam identificadores e metadados mínimos, sem segredos ou payload financeiro desnecessário.
+RN-015   Logs técnicos e registros de auditoria são distintos e minimizam dados.
+RN-016   E-mails essenciais de identidade podem ser enviados pelo Auth0; não há e-mail de produto no MVP.
+RN-017   Nenhuma função pode iniciar pagamentos, Pix, ordens ou outra movimentação de fundos.</pre></section><section class="paper" id="pagina-8" data-page="8"><div class="page-kicker"><span>PRD</span><span>Página 8 de 10</span></div><pre class="page-text" data-source="Lista de requisitos não funcionais
+
+ID       Requisito e verificação
+RNF-001  HTTPS/TLS em todas as comunicações; verificar configuração e ausência de endpoints inseguros.
+RNF-002  Auth0 valida identidade; NestJS aplica autorização; RLS impede acesso cruzado; verificar com testes explícitos de tenant e políticas.
+RNF-003  Zod valida entradas nas bordas; schemas não se tornam entidades de domínio.
+RNF-004  Segredos permanecem fora do código e dos clientes; revisar bundles, variáveis e logs.
+RNF-005  Logs JSON vão para stdout/Google Cloud Logging; métricas nativas do Cloud Run acompanham o serviço.
+RNF-006  P90 inferior a dois segundos para o cenário de dashboard com dataset acadêmico de até 10.000 transações por usuário é objetivo a validar, não garantia.
+RNF-007  O relatório de desempenho documenta dataset, condições, fronteira de medição e resultado observado.
+RNF-008  Falha de integração preserva o último dado válido e apresenta disponibilidade ou defasagem.
+RNF-009  Web e mobile mantêm experiência responsiva e acessível segundo seus próprios critérios de plataforma.
+RNF-010  O MVP possui ambientes local e demonstração acadêmica e não assume RPO/RTO formal ou backup próprio.
+RNF-011  SaaS terá staging e produção separados, backup automatizado, testes de restauração, runbooks, RPO 24h e RTO 8h.
+RNF-012  99,5% de disponibilidade mensal é objetivo operacional SaaS a medir, não atributo já garantido.
+RNF-013  A arquitetura usa índices, paginação e otimização de consultas; cache distribuído só será avaliado mediante medição.
+RNF-014  A autorização segue menor privilégio e nenhuma informação sensível é registrada em logs.
+RNF-015  Controles LGPD completos tornam-se obrigatórios com dados reais na evolução SaaS.">Lista de requisitos não funcionais
+
+ID       Requisito e verificação
+RNF-001  HTTPS/TLS em todas as comunicações; verificar configuração e ausência de endpoints inseguros.
+RNF-002  Auth0 valida identidade; NestJS aplica autorização; RLS impede acesso cruzado; verificar com testes explícitos de tenant e políticas.
+RNF-003  Zod valida entradas nas bordas; schemas não se tornam entidades de domínio.
+RNF-004  Segredos permanecem fora do código e dos clientes; revisar bundles, variáveis e logs.
+RNF-005  Logs JSON vão para stdout/Google Cloud Logging; métricas nativas do Cloud Run acompanham o serviço.
+RNF-006  P90 inferior a dois segundos para o cenário de dashboard com dataset acadêmico de até 10.000 transações por usuário é objetivo a validar, não garantia.
+RNF-007  O relatório de desempenho documenta dataset, condições, fronteira de medição e resultado observado.
+RNF-008  Falha de integração preserva o último dado válido e apresenta disponibilidade ou defasagem.
+RNF-009  Web e mobile mantêm experiência responsiva e acessível segundo seus próprios critérios de plataforma.
+RNF-010  O MVP possui ambientes local e demonstração acadêmica e não assume RPO/RTO formal ou backup próprio.
+RNF-011  SaaS terá staging e produção separados, backup automatizado, testes de restauração, runbooks, RPO 24h e RTO 8h.
+RNF-012  99,5% de disponibilidade mensal é objetivo operacional SaaS a medir, não atributo já garantido.
+RNF-013  A arquitetura usa índices, paginação e otimização de consultas; cache distribuído só será avaliado mediante medição.
+RNF-014  A autorização segue menor privilégio e nenhuma informação sensível é registrada em logs.
+RNF-015  Controles LGPD completos tornam-se obrigatórios com dados reais na evolução SaaS.</pre></section><section class="paper" id="pagina-9" data-page="9"><div class="page-kicker"><span>PRD</span><span>Página 9 de 10</span></div><pre class="page-text" data-source="Visão de fases, riscos e dependências
+
+Visão do MVP acadêmico
+
+Dados fictícios; Pluggy Sandbox; OFX; registros manuais; investimentos Sandbox; patrimônio líquido; projeções; auditoria; ambientes local e demonstração.
+
+Visão da primeira evolução SaaS
+
+Dados reais do Pluggy, fontes oficiais do Banco Central, dados abertos da CVM com ETL, associação por CNPJ e atraso de publicação, e históricos oficiais do Tesouro Direto. Staging, produção, LGPD completa, backups, restauração, runbooks e infraestrutura como código são obrigatórios.
+
+Visão de possibilidades condicionais
+
+PDF, estimativas fiscais, notificações de produto, Stripe, backoffice, dados licenciados da B3 e criptomoedas. Cognito, cache distribuído, eventos adicionais ou extração de serviços dependem de benefício demonstrado.
+
+Risco                                   Mitigação
+Dados parciais do Sandbox               Exibir fonte, referência, ausência e qualidade.
+Duplicidade de OFX ou sincronização      Chaves idempotentes, deduplicação e controle de concorrência.
+Acesso entre tenants                    Autorização NestJS, RLS e testes explícitos.
+Projeção interpretada como conselho      Premissas, incerteza e aviso não prescritivo.
+Vazamento em jobs ou logs                Payload mínimo, mascaramento e revisão.
+Meta de desempenho não atingida          Medir, indexar, paginar e otimizar antes de considerar cache.
+Dependência de provedor                  Ports e conceitos de investimento neutros.">Visão de fases, riscos e dependências
+
+Visão do MVP acadêmico
+
+Dados fictícios; Pluggy Sandbox; OFX; registros manuais; investimentos Sandbox; patrimônio líquido; projeções; auditoria; ambientes local e demonstração.
+
+Visão da primeira evolução SaaS
+
+Dados reais do Pluggy, fontes oficiais do Banco Central, dados abertos da CVM com ETL, associação por CNPJ e atraso de publicação, e históricos oficiais do Tesouro Direto. Staging, produção, LGPD completa, backups, restauração, runbooks e infraestrutura como código são obrigatórios.
+
+Visão de possibilidades condicionais
+
+PDF, estimativas fiscais, notificações de produto, Stripe, backoffice, dados licenciados da B3 e criptomoedas. Cognito, cache distribuído, eventos adicionais ou extração de serviços dependem de benefício demonstrado.
+
+Risco                                   Mitigação
+Dados parciais do Sandbox               Exibir fonte, referência, ausência e qualidade.
+Duplicidade de OFX ou sincronização      Chaves idempotentes, deduplicação e controle de concorrência.
+Acesso entre tenants                    Autorização NestJS, RLS e testes explícitos.
+Projeção interpretada como conselho      Premissas, incerteza e aviso não prescritivo.
+Vazamento em jobs ou logs                Payload mínimo, mascaramento e revisão.
+Meta de desempenho não atingida          Medir, indexar, paginar e otimizar antes de considerar cache.
+Dependência de provedor                  Ports e conceitos de investimento neutros.</pre></section><section class="paper" id="pagina-10" data-page="10"><div class="page-kicker"><span>PRD</span><span>Página 10 de 10</span></div><pre class="page-text" data-source="Visão de testes e uso responsável
+
+Estratégia de testes do backend
+
+Tipo                              Ferramenta ou abordagem
+Unidade                           Vitest para domínio e casos de uso.
+Integração                        Vitest com Prisma e PostgreSQL.
+REST crítico                      Supertest.
+Isolamento                        Casos explícitos de tenant e PostgreSQL RLS.
+Contrato                          OpenAPI e clientes tipados gerados para web e mobile.
+Adapters                          Mocks, fakes ou Pluggy Sandbox conforme o caso.
+Ponta a ponta                     Somente fluxos críticos.
+Desempenho acadêmico              Dataset de 10.000 transações, sem garantir resultado antecipado.
+
+Não são prescritas bibliotecas de teste web ou mobile sem decisão específica das respectivas aplicações.
+
+Critérios globais de aceite
+
+• Somente o usuário autenticado acessa o próprio tenant.
+• OFX e Pluggy Sandbox não criam duplicidades.
+• Sincronizações diárias e manuais não se sobrepõem.
+• Campos financeiros ausentes ou defasados permanecem explícitos.
+• Projeções são determinísticas, transparentes e não consultivas.
+• O produto não inicia pagamentos nem movimenta fundos.
+• Escopo MVP, evolução SaaS obrigatória e futuro opcional permanecem distintos.
+
+Declaração de uso responsável de IA
+
+Ferramentas de IA apoiaram revisão e organização deste documento. A equipe do projeto permanece responsável pela exatidão, conformidade acadêmica e validação. Nenhum resultado de teste, garantia operacional ou capacidade implementada é afirmado sem evidência executada.">Visão de testes e uso responsável
+
+Estratégia de testes do backend
+
+Tipo                              Ferramenta ou abordagem
+Unidade                           Vitest para domínio e casos de uso.
+Integração                        Vitest com Prisma e PostgreSQL.
+REST crítico                      Supertest.
+Isolamento                        Casos explícitos de tenant e PostgreSQL RLS.
+Contrato                          OpenAPI e clientes tipados gerados para web e mobile.
+Adapters                          Mocks, fakes ou Pluggy Sandbox conforme o caso.
+Ponta a ponta                     Somente fluxos críticos.
+Desempenho acadêmico              Dataset de 10.000 transações, sem garantir resultado antecipado.
+
+Não são prescritas bibliotecas de teste web ou mobile sem decisão específica das respectivas aplicações.
+
+Critérios globais de aceite
+
+• Somente o usuário autenticado acessa o próprio tenant.
+• OFX e Pluggy Sandbox não criam duplicidades.
+• Sincronizações diárias e manuais não se sobrepõem.
+• Campos financeiros ausentes ou defasados permanecem explícitos.
+• Projeções são determinísticas, transparentes e não consultivas.
+• O produto não inicia pagamentos nem movimenta fundos.
+• Escopo MVP, evolução SaaS obrigatória e futuro opcional permanecem distintos.
+
+Declaração de uso responsável de IA
+
+Ferramentas de IA apoiaram revisão e organização deste documento. A equipe do projeto permanece responsável pela exatidão, conformidade acadêmica e validação. Nenhum resultado de teste, garantia operacional ou capacidade implementada é afirmado sem evidência executada.</pre></section></article></div>
+  </main>
+  <footer class="site-footer">Documentação acadêmica · UCB · 2026 · Samuel Mota, Thiago Marques e Miguel Candido</footer>
+  <script src="assets/app.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+

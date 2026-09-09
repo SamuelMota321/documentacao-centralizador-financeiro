@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Especificação normativa do modelo de dados de Identity e Accounts">
+  <title>Modelo de Dados · Identity e Accounts · Centralizador Financeiro Inteligente</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&amp;family=Outfit:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body style="--accent: #0ea5e9">
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M16 13h4"/><path d="M2 10h20"/></svg></span><span>Centralizador Financeiro</span></a>
+    <nav class="doc-nav" aria-label="Documentos"><a href="index.html">Início</a><a href="visao.html">Visão</a><a href="prd.html">PRD</a><a href="arquitetura.html" aria-current="page">Arquitetura</a><a href="Plano_Divisao_Atividades_Sprint_1.html">Sprint 1</a></nav>
+  </header>
+  <main id="conteudo">
+    <section class="hero">
+      <p class="eyebrow">Especificação normativa · S1-02/S1-03</p>
+      <h1>Modelo de Dados de Identity e Accounts</h1>
+      <p class="lead">Contrato de implementação para usuários, tenants, identidades externas e contas financeiras.</p>
+      <div class="meta-row"><span class="meta-chip">Versão 1.0</span><span class="meta-chip">09 set 2026</span><span class="meta-chip">Status: aprovado</span></div>
+    </section>
+    <div class="reader">
+      <aside class="sidebar" aria-label="Navegação por seções">
+        <p class="sidebar-title">Neste documento</p>
+        <nav class="page-nav" aria-label="Seções do documento"></nav>
+        <p class="result-note">Especificação integral</p>
+      </aside>
+      <article class="pages" aria-label="Conteúdo integral">
+        <section class="paper" id="pagina-1" data-page="1">
+          <div class="page-kicker"><span>Modelo de dados</span><span>Fundamentos</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">1. Finalidade, autoridade e escopo</h2>
+            <p class="doc-paragraph">Este documento é normativo para S1-02 e S1-03. Define o modelo mínimo e completo de <code>users</code>, <code>tenants</code>, <code>identity_links</code> e <code>accounts</code>. Não define endpoints, movimentações, conexões Pluggy, auditoria, OpenAPI ou CRUD posterior.</p>
+            <p class="doc-paragraph">Entradas autoritativas: Documento de Visão 1.3; PRD 1.4, em especial HU-001, HU-002, RN-001 a RN-004 e RNF-002 a RNF-003; Arquitetura 1.5; Plano da Sprint 1, S1-02 e S1-03. Em conflito, prevalecem requisito explícito atual, contrato formal e decisão aprovada, nessa ordem.</p>
+            <h2 class="doc-heading">2. Fronteiras e terminologia</h2>
+            <ul class="doc-list">
+              <li><strong>Identity</strong> possui <code>users</code>, <code>tenants</code> e <code>identity_links</code>.</li>
+              <li><strong>Accounts</strong> possui <code>accounts</code>.</li>
+              <li>Um módulo usa somente a interface pública de Application de outro módulo; não acessa tabela nem repositório interno alheio.</li>
+              <li>Domain e Application não importam Prisma, PostgreSQL, Neon, NestJS, HTTP, Auth0 ou Zod.</li>
+              <li><strong>Tenant</strong> é o espaço financeiro exclusivo de uma pessoa. <strong>User</strong> é a identidade interna. <strong>Identity link</strong> associa uma identidade autenticada externa ao user interno.</li>
+            </ul>
+            <h2 class="doc-heading">3. Identificadores e cardinalidades</h2>
+            <p class="doc-paragraph">Todas as chaves internas são UUIDv4 em PostgreSQL <code>uuid</code>, geradas pelo banco com <code>gen_random_uuid()</code>. Prisma representa-as como <code>String @db.Uuid</code>; Domain e API usam strings UUID canônicas validadas, preferencialmente encapsuladas em tipos nominais próprios.</p>
+            <ul class="doc-list">
+              <li>Um tenant possui exatamente um user e um user pertence exatamente a um tenant.</li>
+              <li><code>users.tenant_id</code> é obrigatório e único; trigger diferido impede tenant sem user ao final da transação.</li>
+              <li>Um user possui uma ou mais identity links; cada link pertence a exatamente um user.</li>
+              <li>Um tenant possui zero ou mais accounts; cada account pertence a exatamente um tenant.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-2" data-page="2">
+          <div class="page-kicker"><span>Modelo de dados</span><span>Tabelas Identity</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">4. Tabela tenants</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Coluna</th><th>PostgreSQL / Prisma</th><th>Nulidade, default e finalidade</th></tr></thead><tbody>
+              <tr><th>id</th><td>uuid / String @db.Uuid</td><td>PK, não nulo, gen_random_uuid(); identificador do espaço financeiro.</td></tr>
+              <tr><th>created_at</th><td>timestamptz(3) / DateTime</td><td>Não nulo, CURRENT_TIMESTAMP; instante de criação.</td></tr>
+              <tr><th>updated_at</th><td>timestamptz(3) / DateTime</td><td>Não nulo; atualizado por Prisma e trigger de defesa.</td></tr>
+            </tbody></table></div></div>
+            <p class="doc-paragraph">PK <code>tenants_pkey</code>. Não há nome, organização, plano ou membros. Exclusão é operação de ciclo de vida fora do CRUD de Accounts; só pode ocorrer depois da remoção explícita das accounts. A exclusão do tenant propaga ao único user e, deste, às identity links.</p>
+            <h2 class="doc-heading">5. Tabela users</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Coluna</th><th>PostgreSQL / Prisma</th><th>Nulidade, default e finalidade</th></tr></thead><tbody>
+              <tr><th>id</th><td>uuid / String @db.Uuid</td><td>PK, não nulo, gen_random_uuid(); user interno.</td></tr>
+              <tr><th>tenant_id</th><td>uuid / String @db.Uuid</td><td>Não nulo, FK única para tenants.id; ownership direto.</td></tr>
+              <tr><th>created_at</th><td>timestamptz(3) / DateTime</td><td>Não nulo, CURRENT_TIMESTAMP.</td></tr>
+              <tr><th>updated_at</th><td>timestamptz(3) / DateTime</td><td>Não nulo; atualização automática.</td></tr>
+            </tbody></table></div></div>
+            <p class="doc-paragraph">Constraints: <code>users_pkey</code>, <code>users_tenant_id_key</code> e <code>users_tenant_id_fkey</code>. FK usa <code>ON DELETE CASCADE ON UPDATE RESTRICT</code>. User não replica e-mail, nome, avatar, senha ou token do Auth0; atributos de perfil só poderão ser adicionados por requisito posterior.</p>
+            <h2 class="doc-heading">6. Tabela identity_links</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Coluna</th><th>Tipo</th><th>Regra</th></tr></thead><tbody>
+              <tr><th>id</th><td>uuid</td><td>PK, gen_random_uuid().</td></tr>
+              <tr><th>user_id</th><td>uuid</td><td>FK obrigatória para users.id; CASCADE no delete e RESTRICT no update.</td></tr>
+              <tr><th>provider</th><td>identity_provider</td><td>Obrigatório; somente auth0 no escopo atual.</td></tr>
+              <tr><th>issuer</th><td>varchar(255)</td><td>Issuer HTTPS exato e allowlisted do JWT validado; case-sensitive.</td></tr>
+              <tr><th>subject</th><td>varchar(255)</td><td>Claim sub opaca, exata e case-sensitive; nunca inferida de e-mail.</td></tr>
+              <tr><th>created_at / updated_at</th><td>timestamptz(3)</td><td>Obrigatórios, precisão de milissegundo.</td></tr>
+            </tbody></table></div></div>
+            <p class="doc-paragraph">Unicidade global interna em <code>(issuer, subject)</code>, constraint <code>identity_links_issuer_subject_key</code>; índice <code>identity_links_user_id_idx</code>. Repetição resolve idempotentemente para o mesmo user. Conflito com outro user é erro <code>IdentityAlreadyLinked</code>. Várias identidades por user são permitidas somente após autenticação comprovada de ambas; correspondência por e-mail é proibida. Provider, issuer e subject não são alterados: correção exige remover e recriar o vínculo por fluxo confiável.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-3" data-page="3">
+          <div class="page-kicker"><span>Modelo de dados</span><span>Accounts e dinheiro</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">7. Tabela accounts</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Coluna</th><th>PostgreSQL / Prisma</th><th>Regra</th></tr></thead><tbody>
+              <tr><th>id</th><td>uuid / String @db.Uuid</td><td>PK, gen_random_uuid().</td></tr>
+              <tr><th>tenant_id</th><td>uuid / String @db.Uuid</td><td>FK obrigatória; ON DELETE/UPDATE RESTRICT.</td></tr>
+              <tr><th>name</th><td>varchar(100) / String</td><td>1–100 caracteres depois da normalização.</td></tr>
+              <tr><th>type</th><td>account_type / AccountType</td><td>checking, savings, payment, cash, credit_card, investment ou other.</td></tr>
+              <tr><th>origin</th><td>account_origin / AccountOrigin</td><td>manual por default; ou connected.</td></tr>
+              <tr><th>institution_name</th><td>varchar(120) / String?</td><td>Opcional; se presente, 1–120 caracteres normalizados.</td></tr>
+              <tr><th>initial_balance</th><td>numeric(19,2) / Decimal</td><td>Obrigatório e assinado.</td></tr>
+              <tr><th>initial_balance_as_of</th><td>date / DateTime @db.Date</td><td>Data civil obrigatória de referência do saldo.</td></tr>
+              <tr><th>currency_code</th><td>varchar(3) / String</td><td>Obrigatório, default e único valor permitido BRL.</td></tr>
+              <tr><th>external_provider</th><td>account_external_provider?</td><td>Nulo para manual; pluggy para connected.</td></tr>
+              <tr><th>external_account_id</th><td>varchar(255) / String?</td><td>Identificador opaco; nulo para manual e obrigatório para connected.</td></tr>
+              <tr><th>archived_at</th><td>timestamptz(3) / DateTime?</td><td>Nulo enquanto ativa; instante de desativação.</td></tr>
+              <tr><th>created_at / updated_at</th><td>timestamptz(3)</td><td>Obrigatórios, precisão de milissegundo.</td></tr>
+            </tbody></table></div></div>
+            <p class="doc-paragraph">Nome não é chave de unicidade: contas reais podem compartilhar nome, tipo e instituição. Contas conectadas são únicas por <code>(tenant_id, external_provider, external_account_id)</code>. Possível duplicidade manual/conectada é apresentada para decisão; não há merge automático. O fluxo comum desativa preenchendo <code>archived_at</code>. Hard delete exige autorização explícita, ausência de dependências e registro de auditoria aplicável.</p>
+            <h2 class="doc-heading">8. Semântica monetária</h2>
+            <ul class="doc-list">
+              <li><code>initial_balance</code> é o saldo líquido da conta no fim da data <code>initial_balance_as_of</code>, antes das movimentações acompanhadas posteriormente.</li>
+              <li>Positivo representa ativo; negativo representa obrigação ou déficit; zero é válido. Tipo de conta não altera essa convenção.</li>
+              <li>Intervalo: −99.999.999.999.999.999,99 a 99.999.999.999.999.999,99.</li>
+              <li>Entrada aceita string decimal canônica com no máximo duas casas. Mais casas são rejeitadas; não há arredondamento implícito na borda.</li>
+              <li>Domain usa <code>Money</code> imutável com <code>amountInCents: bigint</code> e <code>currency: 'BRL'</code>. API recebe e devolve decimal string com duas casas. Nunca usa <code>number</code> binário para persistência ou serialização.</li>
+              <li>A data de referência não pode ser futura em UTC no momento da criação. Alterá-la depois exige revalidação conjunta do saldo.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-4" data-page="4">
+          <div class="page-kicker"><span>Modelo de dados</span><span>Validação e migrations</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">9. Validação em profundidade</h2>
+            <ul class="doc-list">
+              <li>Textos humanos passam por Unicode NFC, trim e colapso de whitespace Unicode interno para um espaço.</li>
+              <li><code>name</code>: obrigatório, 1–100 caracteres Unicode; <code>institution_name</code>: opcional, 1–120 quando presente. String vazia de instituição vira <code>null</code>.</li>
+              <li>Caracteres de controle e de formatação invisível são rejeitados. Letras, números, acentos, símbolos e emoji visíveis são aceitos.</li>
+              <li>Issuer, subject e IDs externos são opacos: não sofrem lowercase, NFC ou colapso; rejeitam vazio, bordas em branco, NUL/controles e excesso de tamanho.</li>
+              <li>Zod valida somente na borda inbound. O domínio repete as invariantes sem importar Zod. O adapter traduz Prisma/SQLSTATE para erros tipados.</li>
+              <li>Erros mínimos: <code>InvalidAccountName</code>, <code>InvalidInstitution</code>, <code>InvalidAccountType</code>, <code>InvalidMoney</code>, <code>InvalidBalanceReferenceDate</code>, <code>ExternalAccountConflict</code>, <code>IdentityAlreadyLinked</code>, <code>OwnerNotFound</code> e <code>TenantMismatch</code>.</li>
+            </ul>
+            <h2 class="doc-heading">10. Responsabilidade por camada</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Camada</th><th>Responsabilidades</th></tr></thead><tbody>
+              <tr><th>Inbound adapter</th><td>JWT validado, Zod, normalização, tradução HTTP e rejeição de precisão inválida.</td></tr>
+              <tr><th>Application</th><td>Orquestra ownership, duplicidade, provisionamento, desativação e erros tipados; recebe TenantContext explícito.</td></tr>
+              <tr><th>Domain</th><td>AccountType, Money, datas e invariantes, sem tipos de framework.</td></tr>
+              <tr><th>Prisma adapter</th><td>Mapeamento, transação tenant-aware, Decimal↔centavos e tradução de constraints.</td></tr>
+              <tr><th>PostgreSQL</th><td>PK, FK, unique, check, enum, timestamps, cardinalidade diferida e RLS.</td></tr>
+            </tbody></table></div></div>
+            <h2 class="doc-heading">11. Convenções de migration</h2>
+            <p class="doc-paragraph">Migrations usam diretórios Prisma ordenados e nomes descritivos, por exemplo <code>20260909_identity_accounts_foundation</code> e <code>20260909_identity_accounts_rls</code>. Gerar com <code>prisma migrate dev --create-only</code>, revisar e acrescentar SQL customizado antes de aplicar. Constraints seguem <code>&lt;tabela&gt;_&lt;colunas&gt;_&lt;tipo&gt;</code>; índices, <code>&lt;tabela&gt;_&lt;colunas&gt;_idx</code>; policies, <code>&lt;tabela&gt;_&lt;comando&gt;_own</code>.</p>
+            <p class="doc-paragraph">Não editar migration já aplicada. Mudanças futuras seguem forward migration e, quando houver risco de dados, expand/contract. Recuperação usa correção forward ou restore controlado; rollback destrutivo não é presumido. RLS, triggers e checks não expressáveis no Prisma permanecem SQL revisado na mesma história de migrations. <code>db push</code> não substitui migrations versionadas.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-5" data-page="5">
+          <div class="page-kicker"><span>Modelo de dados</span><span>Schema Prisma</span></div>
+          <div class="normative-content"><h2 class="doc-heading">12. Schema Prisma normativo</h2></div>
+          <pre style="overflow:auto;white-space:pre;font:11px/1.55 'Cascadia Mono',Consolas,monospace" aria-label="Schema Prisma proposto"><code>enum IdentityProvider {
+  AUTH0 @map("auth0")
+  @@map("identity_provider")
+}
+
+enum AccountOrigin {
+  MANUAL @map("manual")
+  CONNECTED @map("connected")
+  @@map("account_origin")
+}
+
+enum AccountExternalProvider {
+  PLUGGY @map("pluggy")
+  @@map("account_external_provider")
+}
+enum AccountType {
+  CHECKING @map("checking")
+  SAVINGS @map("savings")
+  PAYMENT @map("payment")
+  CASH @map("cash")
+  CREDIT_CARD @map("credit_card")
+  INVESTMENT @map("investment")
+  OTHER @map("other")
+  @@map("account_type")
+}
+
+model Tenant {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  user User?
+  accounts Account[]
+  @@map("tenants")
+}
+
+model User {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId String @unique(map: "users_tenant_id_key") @map("tenant_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "users_tenant_id_fkey")
+  identityLinks IdentityLink[]
+  @@map("users")
+}
+
+model IdentityLink {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId String @map("user_id") @db.Uuid
+  provider IdentityProvider
+  issuer String @db.VarChar(255)
+  subject String @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "identity_links_user_id_fkey")
+  @@unique([issuer, subject], map: "identity_links_issuer_subject_key")
+  @@index([userId], map: "identity_links_user_id_idx")
+  @@map("identity_links")
+}
+
+model Account {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+  name String @db.VarChar(100)
+  type AccountType
+  origin AccountOrigin @default(MANUAL)
+  institutionName String? @map("institution_name") @db.VarChar(120)
+  initialBalance Decimal @map("initial_balance") @db.Decimal(19, 2)
+  initialBalanceAsOf DateTime @map("initial_balance_as_of") @db.Date
+  currencyCode String @default("BRL") @map("currency_code") @db.VarChar(3)
+  externalProvider AccountExternalProvider? @map("external_provider")
+  externalAccountId String? @map("external_account_id") @db.VarChar(255)
+  archivedAt DateTime? @map("archived_at") @db.Timestamptz(3)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "accounts_tenant_id_fkey")
+  @@unique([tenantId, externalProvider, externalAccountId], map: "accounts_external_identity_key")
+  @@index([tenantId, archivedAt], map: "accounts_tenant_id_archived_at_idx")
+  @@index([tenantId, type], map: "accounts_tenant_id_type_idx")
+  @@map("accounts")
+}</code></pre>
+        </section>
+
+        <section class="paper" id="pagina-6" data-page="6">
+          <div class="page-kicker"><span>Modelo de dados</span><span>SQL complementar</span></div>
+          <div class="normative-content"><h2 class="doc-heading">13. SQL não expressável integralmente pelo Prisma</h2></div>
+          <pre style="overflow:auto;white-space:pre;font:11px/1.55 'Cascadia Mono',Consolas,monospace" aria-label="SQL complementar"><code>ALTER TABLE public.accounts
+  ADD CONSTRAINT accounts_name_normalized_check CHECK (
+    char_length(name) BETWEEN 1 AND 100
+    AND name = regexp_replace(btrim(name), '[[:space:]]+', ' ', 'g')
+    AND name !~ '[[:cntrl:]]'
+  ),
+  ADD CONSTRAINT accounts_institution_normalized_check CHECK (
+    institution_name IS NULL OR (
+      char_length(institution_name) BETWEEN 1 AND 120
+      AND institution_name = regexp_replace(btrim(institution_name), '[[:space:]]+', ' ', 'g')
+      AND institution_name !~ '[[:cntrl:]]'
+    )
+  ),
+  ADD CONSTRAINT accounts_currency_code_check CHECK (currency_code = 'BRL'),
+  ADD CONSTRAINT accounts_origin_external_check CHECK (
+    (origin = 'manual' AND external_provider IS NULL AND external_account_id IS NULL)
+    OR
+    (origin = 'connected' AND external_provider IS NOT NULL
+      AND external_account_id IS NOT NULL
+      AND char_length(external_account_id) BETWEEN 1 AND 255
+      AND external_account_id = btrim(external_account_id)
+      AND external_account_id !~ '[[:cntrl:]]')
+  );
+
+ALTER TABLE public.identity_links
+  ADD CONSTRAINT identity_links_issuer_check CHECK (
+    char_length(issuer) BETWEEN 1 AND 255
+    AND issuer = btrim(issuer) AND issuer !~ '[[:cntrl:]]'
+  ),
+  ADD CONSTRAINT identity_links_subject_check CHECK (
+    char_length(subject) BETWEEN 1 AND 255
+    AND subject = btrim(subject) AND subject !~ '[[:cntrl:]]'
+  );
+
+CREATE OR REPLACE FUNCTION public.set_updated_at() RETURNS trigger
+LANGUAGE plpgsql AS $$ BEGIN NEW.updated_at := CURRENT_TIMESTAMP; RETURN NEW; END $$;
+
+CREATE TRIGGER tenants_set_updated_at BEFORE UPDATE ON public.tenants
+FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+CREATE TRIGGER users_set_updated_at BEFORE UPDATE ON public.users
+FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+CREATE TRIGGER identity_links_set_updated_at BEFORE UPDATE ON public.identity_links
+FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+CREATE TRIGGER accounts_set_updated_at BEFORE UPDATE ON public.accounts
+FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+
+CREATE OR REPLACE FUNCTION public.assert_tenant_has_user() RETURNS trigger
+LANGUAGE plpgsql AS $$
+DECLARE checked_tenant uuid;
+BEGIN
+  IF TG_TABLE_NAME = 'tenants' THEN
+    checked_tenant := NEW.id;
+  ELSIF TG_OP = 'DELETE' THEN
+    checked_tenant := OLD.tenant_id;
+  ELSE
+    checked_tenant := OLD.tenant_id;
+  END IF;
+
+  IF EXISTS (SELECT 1 FROM public.tenants t WHERE t.id = checked_tenant)
+     AND NOT EXISTS (SELECT 1 FROM public.users u WHERE u.tenant_id = checked_tenant) THEN
+    RAISE EXCEPTION 'tenant must have exactly one user' USING ERRCODE = '23514';
+  END IF;
+
+  IF TG_TABLE_NAME = 'users' AND TG_OP = 'UPDATE'
+     AND NEW.tenant_id IS DISTINCT FROM OLD.tenant_id
+     AND EXISTS (SELECT 1 FROM public.tenants t WHERE t.id = NEW.tenant_id)
+     AND NOT EXISTS (SELECT 1 FROM public.users u WHERE u.tenant_id = NEW.tenant_id) THEN
+    RAISE EXCEPTION 'tenant must have exactly one user' USING ERRCODE = '23514';
+  END IF;
+
+  RETURN NULL;
+END $$;
+
+CREATE CONSTRAINT TRIGGER tenants_require_user
+AFTER INSERT OR UPDATE OF id ON public.tenants DEFERRABLE INITIALLY DEFERRED
+FOR EACH ROW EXECUTE FUNCTION public.assert_tenant_has_user();
+CREATE CONSTRAINT TRIGGER users_preserve_tenant_user
+AFTER DELETE OR UPDATE OF tenant_id ON public.users DEFERRABLE INITIALLY DEFERRED
+FOR EACH ROW EXECUTE FUNCTION public.assert_tenant_has_user();</code></pre>
+        </section>
+
+        <section class="paper" id="pagina-7" data-page="7">
+          <div class="page-kicker"><span>Modelo de dados</span><span>Casos e decisões</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">14. Edge cases e resultados</h2>
+            <ul class="doc-list">
+              <li>Tenant inexistente, owner removido ou relação inconsistente: FK/check falha; adapter devolve <code>OwnerNotFound</code> ou <code>TenantMismatch</code>.</li>
+              <li>Segundo user no mesmo tenant: <code>users_tenant_id_key</code> rejeita. Tenant sem user no commit: trigger diferido rejeita.</li>
+              <li>Tipo inválido, nome vazio, instituição inválida ou origem incoerente: rejeição antes do banco e constraint como defesa.</li>
+              <li>Limites monetários inclusivos são aceitos; overflow é rejeitado. Mais de duas casas é rejeitado na borda/domínio; escrita SQL direta em numeric pode arredondar e é risco residual controlado por privilégios.</li>
+              <li>Exclusão de tenant com account existente: RESTRICT. Exclusão autorizada do tenant após limpeza das accounts: cascade para user e links.</li>
+            </ul>
+            <h2 class="doc-heading">15. Registro de decisões</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Decisão</th><th>Evidência e razão</th><th>Consequência</th></tr></thead><tbody>
+              <tr><th>Tenant individual 1:1</th><td>RN-001; unique mais trigger diferido.</td><td>Sem membros ou compartilhamento.</td></tr>
+              <tr><th>UUIDv4 no banco</th><td>Identificadores desacoplados de sequência e úteis no provisionamento.</td><td>API usa string UUID; índice maior que bigint.</td></tr>
+              <tr><th>Issuer + subject</th><td>Claims Auth0 validados e unicidade por issuer.</td><td>E-mail não identifica usuário.</td></tr>
+              <tr><th>Enums PostgreSQL</th><td>Conjuntos fechados aprovados.</td><td>Alterações futuras exigem migration.</td></tr>
+              <tr><th>numeric(19,2), BRL</th><td>Valor exato e escopo monetário do MVP.</td><td>Multimoeda exige decisão posterior.</td></tr>
+              <tr><th>Desativação por archived_at</th><td>Sprint exige desativar/excluir e auditoria aplicável.</td><td>Listagem comum filtra arquivadas.</td></tr>
+            </tbody></table></div></div>
+            <h2 class="doc-heading">16. Checklist S1-02/S1-03</h2>
+            <ul class="doc-list">
+              <li>Transcrever enums e quatro models sem expor tipos Prisma nos ports.</li>
+              <li>Gerar migration create-only, revisar nomes e incorporar checks/triggers e SQL RLS do ADR.</li>
+              <li>Implementar normalização, Money em centavos e erros tipados.</li>
+              <li>Provisionar papéis antes de migrations; usar URL direta para migration e pooled para runtime.</li>
+              <li>Testar cardinalidade, limites, duplicidades, cascades/restrict e isolamento.</li>
+            </ul>
+            <h2 class="doc-heading">17. Referências oficiais</h2>
+            <ul class="doc-list">
+              <li><a href="https://www.postgresql.org/docs/current/datatype-uuid.html">PostgreSQL — UUID</a></li>
+              <li><a href="https://www.postgresql.org/docs/current/datatype-numeric.html">PostgreSQL — tipos numéricos exatos</a></li>
+              <li><a href="https://docs.prisma.io/docs/orm/reference/prisma-schema-reference">Prisma — schema e tipos nativos</a></li>
+              <li><a href="https://docs.prisma.io/docs/orm/prisma-migrate/workflows/unsupported-database-features">Prisma — SQL customizado em migrations</a></li>
+              <li><a href="https://auth0.com/docs/manage-users/user-accounts/identify-users">Auth0 — identificação de usuários</a></li>
+              <li><a href="https://auth0.com/docs/manage-users/user-accounts/user-account-linking/link-user-accounts">Auth0 — vinculação de identidades</a></li>
+              <li><a href="https://zod.dev/api">Zod — strings, enums e transforms</a></li>
+            </ul>
+          </div>
+        </section>
+      </article>
+    </div>
+  </main>
+  <footer class="site-footer">Documentação acadêmica · UCB · 2026 · Samuel Mota, Thiago Marques e Miguel Candido</footer>
+  <script src="assets/app.js"></script>
+</body>
+</html>

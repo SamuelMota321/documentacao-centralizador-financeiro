@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ADR normativo de isolamento por tenant com PostgreSQL RLS">
+  <title>ADR RLS PostgreSQL · Centralizador Financeiro Inteligente</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&amp;family=Outfit:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body style="--accent: #f59e0b">
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M16 13h4"/><path d="M2 10h20"/></svg></span><span>Centralizador Financeiro</span></a>
+    <nav class="doc-nav" aria-label="Documentos"><a href="index.html">Início</a><a href="visao.html">Visão</a><a href="prd.html">PRD</a><a href="arquitetura.html" aria-current="page">Arquitetura</a><a href="Plano_Divisao_Atividades_Sprint_1.html">Sprint 1</a></nav>
+  </header>
+  <main id="conteudo">
+    <section class="hero">
+      <p class="eyebrow">ADR-001 · Segurança e tenancy</p>
+      <h1>Isolamento por tenant com PostgreSQL RLS</h1>
+      <p class="lead">Decisão fail closed e segura para Prisma, Neon pooling e NestJS.</p>
+      <div class="meta-row"><span class="meta-chip">Versão 1.0</span><span class="meta-chip">09 set 2026</span><span class="meta-chip">Status: aceito</span></div>
+    </section>
+    <div class="reader">
+      <aside class="sidebar" aria-label="Navegação por seções"><p class="sidebar-title">Neste documento</p><nav class="page-nav" aria-label="Seções do documento"></nav><p class="result-note">ADR integral</p></aside>
+      <article class="pages" aria-label="Conteúdo integral">
+        <section class="paper" id="pagina-1" data-page="1">
+          <div class="page-kicker"><span>ADR RLS</span><span>Contexto</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">1. Status, contexto e escopo</h2>
+            <p class="doc-paragraph"><strong>Status: aceito em 09/09/2026.</strong> Esta decisão fecha o mecanismo pendente na Arquitetura 1.5 para S1-02/S1-03. Aplica-se às tabelas <code>tenants</code>, <code>users</code>, <code>identity_links</code> e <code>accounts</code>, ao tráfego REST e a trabalhos autenticados que as acessem.</p>
+            <p class="doc-paragraph">Drivers: RN-001 a RN-004, RNF-002, menor privilégio, reutilização segura de conexões serverless, independência de Domain/Application e testes cross-tenant reproduzíveis. RLS é defesa em profundidade e não substitui autenticação Auth0, autorização NestJS, TenantContext, filtros de repositório ou constraints.</p>
+            <h2 class="doc-heading">2. Threat model e objetivos</h2>
+            <ul class="doc-list">
+              <li>Erro de filtro, ID controlado pelo cliente, consulta raw incorreta ou reuso de conexão não pode revelar linha de outro tenant.</li>
+              <li>INSERT/UPDATE não pode atribuir ownership alheio; UPDATE não pode mover linha entre tenants; DELETE cross-tenant não pode afetar linhas.</li>
+              <li>Contexto ausente, vazio, malformado ou expirado nega acesso.</li>
+              <li>São considerados: requisições concorrentes, pooling transacional, retries, jobs, migrações e provisionamento inicial.</li>
+              <li>Não cobre comprometimento do papel de migration/provisionamento, superusuário, exfiltração de credenciais nem vulnerabilidade do próprio PostgreSQL.</li>
+            </ul>
+            <h2 class="doc-heading">3. Alternativas avaliadas</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Alternativa</th><th>Resultado</th><th>Motivo</th></tr></thead><tbody>
+              <tr><th>Somente filtros Prisma</th><td>Rejeitada</td><td>Não protege consulta esquecida/raw; contraria RNF-002.</td></tr>
+              <tr><th>Variável de sessão</th><td>Rejeitada</td><td>Estado pode persistir ou não ser preservado em pooling; risco de vazamento.</td></tr>
+              <tr><th>SET ROLE por tenant</th><td>Rejeitada</td><td>Explosão de papéis e operação incompatível com modelo individual dinâmico.</td></tr>
+              <tr><th>JWT inteiro no banco</th><td>Rejeitada</td><td>Amplia dados sensíveis e acoplamento a Auth0.</td></tr>
+              <tr><th>GUC local à transação</th><td>Aceita</td><td>Escopo curto, limpeza automática e compatibilidade com conexão alocada por transação.</td></tr>
+            </tbody></table></div></div>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-2" data-page="2">
+          <div class="page-kicker"><span>ADR RLS</span><span>Fluxo decidido</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">4. Decisão de contexto</h2>
+            <ol class="doc-list">
+              <li>Guard NestJS valida assinatura, algoritmo, issuer, audience, expiração e permissões do access token Auth0.</li>
+              <li>Identity recebe somente <code>provider='auth0'</code>, <code>issuer</code> e <code>subject</code> já validados e resolve <code>userId</code>/<code>tenantId</code> internos.</li>
+              <li>Application recebe <code>TenantContext { userId, tenantId }</code> explícito, sem Request, JWT ou tipos NestJS.</li>
+              <li>O adapter abre uma interactive transaction curta e executa <code>set_config('app.current_tenant_id', tenantId, true)</code> como primeira instrução.</li>
+              <li>Toda operação protegida usa exclusivamente o cliente transacional <code>tx</code>. Commit/rollback elimina o valor local.</li>
+            </ol>
+            <p class="doc-paragraph">O adapter valida UUID canônico antes de abrir a transação. Contexto ausente ou inválido gera <code>InvalidTenantContext</code>. A função SQL também converte valor inválido em <code>NULL</code>: SELECT retorna zero linhas e WITH CHECK rejeita mutações.</p>
+            <h2 class="doc-heading">5. Prisma, pooling e transações</h2>
+            <ul class="doc-list">
+              <li>Runtime usa endpoint pooled <code>-pooler</code> do Neon; migration e administração usam endpoint direto.</li>
+              <li>Não são usados <code>SET</code> de sessão, <code>RESET</code>, temporary tables nem session advisory locks.</li>
+              <li>Interactive transaction permanece curta e não contém chamada Auth0, Pluggy, HTTP ou outra I/O externa.</li>
+              <li>Transação tenant-aware não é aninhada. Casos compostos recebem o mesmo <code>tx</code>; código interno não inicia outra <code>$transaction</code>.</li>
+              <li>Retry repete a unidade completa, inclusive <code>set_config</code>, somente para falhas transitórias classificadas e operações idempotentes.</li>
+              <li>Jobs resolvem TenantContext a partir de IDs internos mínimos e seguem o mesmo wrapper.</li>
+            </ul>
+          </div>
+          <pre style="overflow:auto;white-space:pre;font:11px/1.55 'Cascadia Mono',Consolas,monospace" aria-label="Contrato transacional Prisma"><code>type TenantContext = Readonly&lt;{ tenantId: string; userId: string }&gt;;
+
+return prisma.$transaction(async (tx) =&gt; {
+  await tx.$queryRaw`
+    SELECT set_config('app.current_tenant_id', ${context.tenantId}, true)
+  `;
+  return operation(tx);
+});</code></pre>
+        </section>
+
+        <section class="paper" id="pagina-3" data-page="3">
+          <div class="page-kicker"><span>ADR RLS</span><span>Papéis e ownership</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">6. Papéis e privilégios</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Papel</th><th>Atributos</th><th>Uso</th></tr></thead><tbody>
+              <tr><th>cfi_owner</th><td>NOLOGIN, NOBYPASSRLS</td><td>Proprietário dos objetos; sujeito a FORCE RLS.</td></tr>
+              <tr><th>cfi_migrator</th><td>LOGIN administrativo</td><td>Somente migration direta; nunca tráfego da aplicação.</td></tr>
+              <tr><th>cfi_runtime</th><td>LOGIN, NOSUPERUSER, NOCREATEDB, NOCREATEROLE, NOBYPASSRLS</td><td>Tráfego API/jobs com DML mínimo.</td></tr>
+              <tr><th>cfi_identity_provisioner</th><td>NOLOGIN, BYPASSRLS</td><td>Dono exclusivo da função estreita de resolução/provisionamento.</td></tr>
+              <tr><th>cfi_test</th><td>LOGIN, NOBYPASSRLS</td><td>Somente banco/branch isolado; DML necessário à matriz.</td></tr>
+            </tbody></table></div></div>
+            <p class="doc-paragraph">Papéis de login runtime/test devem ser criados por SQL e auditados em <code>pg_roles</code>. Papéis criados pelo Console/CLI/API do Neon podem herdar <code>neon_superuser</code> e não servem para tráfego protegido. Startup falha se runtime for superuser, possuir BYPASSRLS ou for owner das tabelas.</p>
+            <p class="doc-paragraph">Revogar de PUBLIC: CREATE no schema público quando aplicável, todos os privilégios nas quatro tabelas e EXECUTE nas funções novas. Runtime recebe USAGE nos schemas, SELECT nas quatro tabelas, INSERT/UPDATE/DELETE em accounts e EXECUTE somente nas funções aprovadas. Alteração de identity_links ocorre apenas por funções estreitas com comprovação de identidade. Runtime não recebe TRUNCATE, REFERENCES, TRIGGER, ownership ou grant option.</p>
+            <h2 class="doc-heading">7. Caminhos de propriedade</h2>
+            <ul class="doc-list">
+              <li><code>tenants.id = current_tenant_id()</code>.</li>
+              <li><code>users.tenant_id = current_tenant_id()</code>.</li>
+              <li><code>identity_links.user_id → users.tenant_id = current_tenant_id()</code>.</li>
+              <li><code>accounts.tenant_id = current_tenant_id()</code>.</li>
+            </ul>
+            <p class="doc-paragraph"><code>ENABLE</code> e <code>FORCE ROW LEVEL SECURITY</code> são obrigatórios nas quatro tabelas. Policies são permissivas, específicas por comando e limitadas a runtime/test.</p>
+          </div>
+          <pre style="overflow:auto;white-space:pre;font:11px/1.55 'Cascadia Mono',Consolas,monospace" aria-label="Bootstrap privilegiado de papéis"><code>-- Executar uma única vez por ambiente, com administrador Neon e segredos injetados.
+-- As variáveis :'...' são do psql; este bloco não integra a migration Prisma.
+CREATE ROLE cfi_owner NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE
+  NOINHERIT NOREPLICATION NOBYPASSRLS;
+CREATE ROLE cfi_identity_provisioner NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE
+  NOINHERIT NOREPLICATION BYPASSRLS;
+CREATE ROLE cfi_migrator LOGIN PASSWORD :'migrator_password'
+  NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT NOREPLICATION NOBYPASSRLS;
+CREATE ROLE cfi_runtime LOGIN PASSWORD :'runtime_password'
+  NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOREPLICATION NOBYPASSRLS;
+CREATE ROLE cfi_test LOGIN PASSWORD :'test_password'
+  NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOREPLICATION NOBYPASSRLS;
+
+GRANT cfi_owner, cfi_identity_provisioner TO cfi_migrator;
+REVOKE cfi_owner, cfi_identity_provisioner FROM cfi_runtime, cfi_test;</code></pre>
+        </section>
+
+        <section class="paper" id="pagina-4" data-page="4">
+          <div class="page-kicker"><span>ADR RLS</span><span>SQL de contexto</span></div>
+          <div class="normative-content"><h2 class="doc-heading">8. Helper, habilitação e grants</h2></div>
+          <pre style="overflow:auto;white-space:pre;font:11px/1.55 'Cascadia Mono',Consolas,monospace" aria-label="SQL de contexto RLS"><code>ALTER TYPE public.identity_provider OWNER TO cfi_owner;
+ALTER TYPE public.account_origin OWNER TO cfi_owner;
+ALTER TYPE public.account_external_provider OWNER TO cfi_owner;
+ALTER TYPE public.account_type OWNER TO cfi_owner;
+ALTER TABLE public.tenants OWNER TO cfi_owner;
+ALTER TABLE public.users OWNER TO cfi_owner;
+ALTER TABLE public.identity_links OWNER TO cfi_owner;
+ALTER TABLE public.accounts OWNER TO cfi_owner;
+ALTER FUNCTION public.set_updated_at() OWNER TO cfi_owner;
+ALTER FUNCTION public.assert_tenant_has_user() OWNER TO cfi_owner;
+
+CREATE SCHEMA IF NOT EXISTS app_private AUTHORIZATION cfi_owner;
+REVOKE ALL ON SCHEMA app_private FROM PUBLIC;
+REVOKE CREATE ON SCHEMA public FROM PUBLIC;
+
+CREATE OR REPLACE FUNCTION app_private.current_tenant_id()
+RETURNS uuid LANGUAGE sql STABLE PARALLEL SAFE
+SET search_path = pg_catalog
+AS $$
+  SELECT CASE
+    WHEN value ~* '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+      THEN value::uuid
+    ELSE NULL
+  END
+  FROM (VALUES (current_setting('app.current_tenant_id', true))) AS setting(value)
+$$;
+
+ALTER FUNCTION app_private.current_tenant_id() OWNER TO cfi_owner;
+REVOKE ALL ON FUNCTION app_private.current_tenant_id() FROM PUBLIC;
+GRANT USAGE ON SCHEMA app_private TO cfi_runtime, cfi_test;
+GRANT EXECUTE ON FUNCTION app_private.current_tenant_id() TO cfi_runtime, cfi_test;
+GRANT USAGE ON SCHEMA public TO cfi_runtime, cfi_identity_provisioner, cfi_test;
+
+REVOKE ALL ON public.tenants, public.users, public.identity_links, public.accounts FROM PUBLIC;
+GRANT SELECT ON public.tenants, public.users, public.identity_links, public.accounts TO cfi_runtime;
+GRANT INSERT, UPDATE, DELETE ON public.accounts TO cfi_runtime;
+GRANT SELECT, INSERT ON public.tenants, public.users, public.identity_links
+  TO cfi_identity_provisioner;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.tenants, public.users,
+  public.identity_links, public.accounts TO cfi_test;
+
+ALTER TABLE public.tenants ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.identity_links ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.accounts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.tenants FORCE ROW LEVEL SECURITY;
+ALTER TABLE public.users FORCE ROW LEVEL SECURITY;
+ALTER TABLE public.identity_links FORCE ROW LEVEL SECURITY;
+ALTER TABLE public.accounts FORCE ROW LEVEL SECURITY;</code></pre>
+        </section>
+
+        <section class="paper" id="pagina-5" data-page="5">
+          <div class="page-kicker"><span>ADR RLS</span><span>Policies completas</span></div>
+          <div class="normative-content"><h2 class="doc-heading">9. Policies por comando</h2></div>
+          <pre style="overflow:auto;white-space:pre;font:10px/1.5 'Cascadia Mono',Consolas,monospace" aria-label="Policies RLS completas"><code>CREATE POLICY tenants_select_own ON public.tenants FOR SELECT TO cfi_runtime, cfi_test
+USING (id = app_private.current_tenant_id());
+CREATE POLICY tenants_insert_own ON public.tenants FOR INSERT TO cfi_runtime, cfi_test
+WITH CHECK (id = app_private.current_tenant_id());
+CREATE POLICY tenants_update_own ON public.tenants FOR UPDATE TO cfi_runtime, cfi_test
+USING (id = app_private.current_tenant_id()) WITH CHECK (id = app_private.current_tenant_id());
+CREATE POLICY tenants_delete_own ON public.tenants FOR DELETE TO cfi_runtime, cfi_test
+USING (id = app_private.current_tenant_id());
+
+CREATE POLICY users_select_own ON public.users FOR SELECT TO cfi_runtime, cfi_test
+USING (tenant_id = app_private.current_tenant_id());
+CREATE POLICY users_insert_own ON public.users FOR INSERT TO cfi_runtime, cfi_test
+WITH CHECK (tenant_id = app_private.current_tenant_id());
+CREATE POLICY users_update_own ON public.users FOR UPDATE TO cfi_runtime, cfi_test
+USING (tenant_id = app_private.current_tenant_id()) WITH CHECK (tenant_id = app_private.current_tenant_id());
+CREATE POLICY users_delete_own ON public.users FOR DELETE TO cfi_runtime, cfi_test
+USING (tenant_id = app_private.current_tenant_id());
+
+CREATE POLICY identity_links_select_own ON public.identity_links FOR SELECT TO cfi_runtime, cfi_test
+USING (EXISTS (SELECT 1 FROM public.users u WHERE u.id = user_id AND u.tenant_id = app_private.current_tenant_id()));
+CREATE POLICY identity_links_insert_own ON public.identity_links FOR INSERT TO cfi_runtime, cfi_test
+WITH CHECK (EXISTS (SELECT 1 FROM public.users u WHERE u.id = user_id AND u.tenant_id = app_private.current_tenant_id()));
+CREATE POLICY identity_links_update_own ON public.identity_links FOR UPDATE TO cfi_runtime, cfi_test
+USING (EXISTS (SELECT 1 FROM public.users u WHERE u.id = user_id AND u.tenant_id = app_private.current_tenant_id()))
+WITH CHECK (EXISTS (SELECT 1 FROM public.users u WHERE u.id = user_id AND u.tenant_id = app_private.current_tenant_id()));
+CREATE POLICY identity_links_delete_own ON public.identity_links FOR DELETE TO cfi_runtime, cfi_test
+USING (EXISTS (SELECT 1 FROM public.users u WHERE u.id = user_id AND u.tenant_id = app_private.current_tenant_id()));
+
+CREATE POLICY accounts_select_own ON public.accounts FOR SELECT TO cfi_runtime, cfi_test
+USING (tenant_id = app_private.current_tenant_id());
+CREATE POLICY accounts_insert_own ON public.accounts FOR INSERT TO cfi_runtime, cfi_test
+WITH CHECK (tenant_id = app_private.current_tenant_id());
+CREATE POLICY accounts_update_own ON public.accounts FOR UPDATE TO cfi_runtime, cfi_test
+USING (tenant_id = app_private.current_tenant_id()) WITH CHECK (tenant_id = app_private.current_tenant_id());
+CREATE POLICY accounts_delete_own ON public.accounts FOR DELETE TO cfi_runtime, cfi_test
+USING (tenant_id = app_private.current_tenant_id());</code></pre>
+          <div class="normative-content"><p class="doc-paragraph">Policies não substituem GRANT. Runtime não recebe INSERT/UPDATE/DELETE direto em tenants/users nem UPDATE em identity_links, embora as policies existam para cobertura completa e teste isolado. Antes de recriar policy, migration usa <code>DROP POLICY IF EXISTS</code> somente quando a mudança foi explicitamente planejada.</p></div>
+        </section>
+
+        <section class="paper" id="pagina-6" data-page="6">
+          <div class="page-kicker"><span>ADR RLS</span><span>Bootstrap</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">10. Resolução e provisionamento de identidade</h2>
+            <p class="doc-paragraph">Antes de existir TenantContext, a aplicação chama <code>app_private.resolve_or_provision_identity('auth0', issuer, subject)</code>. A função é <code>SECURITY DEFINER</code>, pertence a <code>cfi_identity_provisioner NOLOGIN BYPASSRLS</code>, fixa <code>search_path=pg_catalog</code>, qualifica todos os objetos e tem EXECUTE revogado de PUBLIC.</p>
+            <ol class="doc-list">
+              <li>Rejeita provider diferente de auth0, issuer sem HTTPS, valores vazios, controles e excesso de 255 caracteres. A allowlist do issuer é validada pelo backend antes da chamada.</li>
+              <li>Busca exatamente `(issuer, subject)` e retorna somente user_id/tenant_id se já existir.</li>
+              <li>Se não existir, gera tenant e user UUID, insere tenant, user e primeiro link na mesma transação.</li>
+              <li>Unique violation concorrente desfaz o subbloco, relê o vínculo vencedor e retorna o mesmo par.</li>
+              <li>Qualquer outra falha aborta integralmente; não permanece tenant órfão.</li>
+            </ol>
+            <p class="doc-paragraph">O issuer aceito não é fornecido livremente pelo cliente: deve coincidir com configuração do backend e com o JWT validado. A função não lista usuários, não recebe tenant/user arbitrário, não vincula segunda identidade e não acessa accounts. Vinculação adicional será caso de uso separado com prova das duas identidades.</p>
+          </div>
+          <pre style="white-space:pre-wrap;overflow:auto"><code>CREATE OR REPLACE FUNCTION app_private.resolve_or_provision_identity(
+  p_provider text,
+  p_issuer text,
+  p_subject text
+) RETURNS TABLE(user_id uuid, tenant_id uuid)
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = pg_catalog
+AS $$
+DECLARE
+  v_user_id uuid;
+  v_tenant_id uuid;
+BEGIN
+  IF p_provider IS DISTINCT FROM 'auth0'
+     OR p_issuer IS NULL OR p_issuer !~ '^https://'
+     OR char_length(p_issuer) NOT BETWEEN 1 AND 255
+     OR p_issuer IS DISTINCT FROM btrim(p_issuer)
+     OR p_issuer ~ '[[:cntrl:]]'
+     OR p_subject IS NULL
+     OR char_length(p_subject) NOT BETWEEN 1 AND 255
+     OR p_subject IS DISTINCT FROM btrim(p_subject)
+     OR p_subject ~ '[[:cntrl:]]' THEN
+    RAISE EXCEPTION 'invalid identity'
+      USING ERRCODE = '22023';
+  END IF;
+
+  LOOP
+    SELECT il.user_id, u.tenant_id
+      INTO v_user_id, v_tenant_id
+      FROM public.identity_links AS il
+      JOIN public.users AS u ON u.id = il.user_id
+     WHERE il.issuer = p_issuer
+       AND il.subject = p_subject;
+
+    IF FOUND THEN
+      RETURN QUERY SELECT v_user_id, v_tenant_id;
+      RETURN;
+    END IF;
+
+    v_tenant_id := gen_random_uuid();
+    v_user_id := gen_random_uuid();
+
+    BEGIN
+      INSERT INTO public.tenants (id) VALUES (v_tenant_id);
+      INSERT INTO public.users (id, tenant_id) VALUES (v_user_id, v_tenant_id);
+      INSERT INTO public.identity_links (id, user_id, provider, issuer, subject)
+      VALUES (
+        gen_random_uuid(), v_user_id,
+        p_provider::public.identity_provider, p_issuer, p_subject
+      );
+
+      RETURN QUERY SELECT v_user_id, v_tenant_id;
+      RETURN;
+    EXCEPTION WHEN unique_violation THEN
+      -- O subbloco é revertido; a próxima iteração relê o vínculo vencedor.
+    END;
+  END LOOP;
+END
+$$;
+
+ALTER FUNCTION app_private.resolve_or_provision_identity(text, text, text)
+  OWNER TO cfi_identity_provisioner;
+REVOKE ALL ON FUNCTION app_private.resolve_or_provision_identity(text, text, text)
+  FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION app_private.resolve_or_provision_identity(text, text, text)
+  TO cfi_runtime, cfi_test;</code></pre>
+          <div class="normative-content">
+            <h2 class="doc-heading">11. Operação e observabilidade</h2>
+            <ul class="doc-list">
+              <li>Migrations, grants, RLS e seeds administrativos usam papel/URL de migration; runtime nunca recebe essa URL.</li>
+              <li>Seed ou demonstração tenant-owned usa a mesma função de provisionamento e transações contextualizadas, com IDs obviamente fictícios.</li>
+              <li>Logs registram correlation id, operação, resultado e IDs internos quando necessários; não registram token, issuer+subject completos, connection string, nomes ou valores financeiros.</li>
+              <li>Métrica de contexto ausente, policy violation e erro de provisionamento não contém payload.</li>
+              <li>Startup consulta <code>current_user</code>, <code>pg_roles.rolsuper/rolbypassrls</code> e ownership; divergência impede readiness.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-7" data-page="7">
+          <div class="page-kicker"><span>ADR RLS</span><span>Falhas e defesa</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">12. Falhas e resposta esperada</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Cenário</th><th>Resultado</th></tr></thead><tbody>
+              <tr><th>Contexto ausente/vazio/malformado</th><td>Adapter rejeita; SQL retorna NULL; nenhuma linha exposta.</td></tr>
+              <tr><th>Leitura cross-tenant</th><td>Zero linhas; aplicação devolve not found sem confirmar existência.</td></tr>
+              <tr><th>INSERT cross-tenant</th><td>WITH CHECK gera violação de policy.</td></tr>
+              <tr><th>Troca de owner no UPDATE</th><td>USING valida a antiga e WITH CHECK rejeita a nova.</td></tr>
+              <tr><th>DELETE cross-tenant</th><td>Zero linhas afetadas.</td></tr>
+              <tr><th>Contexto stale/pool leak</th><td>Impossível pelo escopo local; cada transação redefine contexto.</td></tr>
+              <tr><th>Papel owner/BYPASS no runtime</th><td>Readiness falha; tráfego não inicia.</td></tr>
+              <tr><th>Nested transaction</th><td>Erro de programação; adapter exige tx existente.</td></tr>
+              <tr><th>Requests concorrentes</th><td>Transações e conexões isoladas; nenhuma memória global mutável.</td></tr>
+              <tr><th>Migration com papel errado</th><td>Falha de privilégio ou preflight; não elevar runtime.</td></tr>
+            </tbody></table></div></div>
+            <h2 class="doc-heading">13. Defesa em profundidade</h2>
+            <p class="doc-paragraph">Auth0 prova a origem do token; Guard NestJS valida e autoriza; Identity resolve IDs internos; Application carrega TenantContext explícito; repositório inclui filtro de ownership; transaction wrapper fixa o contexto; RLS restringe linhas; constraints preservam integridade. Cada camada cobre uma classe diferente de erro e nenhuma autoriza remover as demais.</p>
+            <h2 class="doc-heading">14. Riscos residuais</h2>
+            <ul class="doc-list">
+              <li>Comprometimento de credencial de migration ou da função provisionadora ignora RLS; reduzir acesso, rotacionar e auditar.</li>
+              <li>Foreign keys/unique podem revelar conflito por canal lateral; aplicação não expõe detalhe de recurso alheio.</li>
+              <li>Disponibilidade de criação do papel BYPASSRLS no Neon deve ser comprovada antes da migration real; se indisponível, revisar o ADR.</li>
+              <li>O SQL permanece sujeito a validação executável em PostgreSQL autorizado; esta documentação não afirma execução.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-8" data-page="8">
+          <div class="page-kicker"><span>ADR RLS</span><span>Verificação</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">15. Matriz reproduzível</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Operação</th><th>Mesmo tenant</th><th>Outro tenant / sem contexto</th></tr></thead><tbody>
+              <tr><th>SELECT 4 tabelas</th><td>Linha própria visível.</td><td>Zero linhas.</td></tr>
+              <tr><th>INSERT 4 tabelas</th><td>Aceito se GRANT e constraints permitirem.</td><td>Policy violation.</td></tr>
+              <tr><th>UPDATE 4 tabelas</th><td>Aceito sem mudar owner.</td><td>Zero linhas ou policy violation.</td></tr>
+              <tr><th>DELETE 4 tabelas</th><td>Aceito se GRANT/FK permitirem.</td><td>Zero linhas.</td></tr>
+              <tr><th>Aplicação</th><td>Casos de uso retornam somente recursos próprios.</td><td>Not found/forbidden sem vazamento.</td></tr>
+              <tr><th>Pool reuse</th><td>Nova transação redefine tenant.</td><td>Transação sem set_config não herda acesso.</td></tr>
+            </tbody></table></div></div>
+            <p class="doc-paragraph">Executar em branch/banco local autorizado com UUIDs fictícios <code>11111111-1111-4111-8111-111111111111</code> e <code>22222222-2222-4222-8222-222222222222</code>. Para cada tenant: iniciar transação, chamar <code>set_config(..., true)</code>, executar operação e rollback. Repetir sem configuração e com valor malformado. Confirmar também <code>relrowsecurity</code>, <code>relforcerowsecurity</code>, policies, grants, ownership e atributos dos papéis.</p>
+          </div>
+          <pre style="overflow:auto;white-space:pre;font:11px/1.55 'Cascadia Mono',Consolas,monospace" aria-label="Exemplo de verificação SQL"><code>BEGIN;
+SELECT set_config('app.current_tenant_id',
+  '11111111-1111-4111-8111-111111111111', true);
+SELECT id, tenant_id FROM public.accounts;
+ROLLBACK;
+
+BEGIN;
+SELECT set_config('app.current_tenant_id',
+  '22222222-2222-4222-8222-222222222222', true);
+UPDATE public.accounts
+SET tenant_id = '11111111-1111-4111-8111-111111111111'
+WHERE id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'; -- deve falhar/não afetar
+ROLLBACK;
+
+BEGIN;
+SELECT id FROM public.accounts; -- deve retornar zero linhas
+ROLLBACK;</code></pre>
+        </section>
+
+        <section class="paper" id="pagina-9" data-page="9">
+          <div class="page-kicker"><span>ADR RLS</span><span>Decisões e fontes</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">16. Registro de decisões</h2>
+            <ul class="doc-list">
+              <li>GUC local transacional: evita estado de sessão e acompanha a conexão durante a transação Prisma.</li>
+              <li>Contexto interno explícito: preserva Application/Domain livres de HTTP/Auth0.</li>
+              <li>ENABLE + FORCE nas quatro tabelas: reduz bypass acidental do owner.</li>
+              <li>Runtime não owner e NOBYPASSRLS: requisito operacional bloqueante.</li>
+              <li>Policies separadas: tornam USING/WITH CHECK e cobertura por comando auditáveis.</li>
+              <li>Função provisionadora estreita: resolve o bootstrap sem entregar credencial owner ao tráfego comum.</li>
+            </ul>
+            <h2 class="doc-heading">17. Checklist S1-02/S1-03</h2>
+            <ul class="doc-list">
+              <li>Criar papéis com segredo fora da migration e validar atributos.</li>
+              <li>Usar conexão direta somente em Prisma Migrate e pooled no runtime.</li>
+              <li>Adicionar helper, grants, 16 policies e FORCE na migration create-only revisada.</li>
+              <li>Implementar resolve/provision com testes de replay e concorrência.</li>
+              <li>Implementar wrapper transacional sem nesting e startup fail-fast.</li>
+              <li>Executar matriz em PostgreSQL isolado e testes Application/Supertest sem dados reais.</li>
+            </ul>
+            <h2 class="doc-heading">18. Referências oficiais</h2>
+            <ul class="doc-list">
+              <li><a href="https://www.postgresql.org/docs/current/ddl-rowsecurity.html">PostgreSQL — Row Security Policies</a></li>
+              <li><a href="https://www.postgresql.org/docs/current/sql-createpolicy.html">PostgreSQL — CREATE POLICY</a></li>
+              <li><a href="https://www.postgresql.org/docs/current/functions-admin.html">PostgreSQL — current_setting e set_config</a></li>
+              <li><a href="https://www.postgresql.org/docs/current/ddl-priv.html">PostgreSQL — privilégios</a></li>
+              <li><a href="https://www.prisma.io/docs/orm/prisma-client/queries/transactions">Prisma — transações</a></li>
+              <li><a href="https://docs.prisma.io/docs/orm/prisma-migrate/workflows/unsupported-database-features">Prisma — recursos não representados no schema</a></li>
+              <li><a href="https://www.prisma.io/docs/orm/overview/databases/neon">Prisma — Neon</a></li>
+              <li><a href="https://neon.com/docs/connect/connection-pooling">Neon — connection pooling</a></li>
+              <li><a href="https://neon.com/docs/reference/compatibility">Neon — compatibilidade e papéis</a></li>
+              <li><a href="https://auth0.com/docs/secure/tokens/access-tokens/validate-access-tokens">Auth0 — validação de access tokens</a></li>
+              <li><a href="https://docs.nestjs.com/guards">NestJS — Guards</a></li>
+              <li><a href="https://docs.nestjs.com/recipes/async-local-storage">NestJS — Async Local Storage</a></li>
+            </ul>
+          </div>
+        </section>
+      </article>
+    </div>
+  </main>
+  <footer class="site-footer">Documentação acadêmica · UCB · 2026 · Samuel Mota, Thiago Marques e Miguel Candido</footer>
+  <script src="assets/app.js"></script>
+</body>
+</html>

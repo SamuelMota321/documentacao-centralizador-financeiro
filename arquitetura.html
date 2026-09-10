@@ -12,10 +12,10 @@
   <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
   <header class="topbar"><a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M16 13h4"/><path d="M2 10h20"/></svg></span><span>Centralizador Financeiro</span></a><nav class="doc-nav" aria-label="Documentos"><a href="index.html">Início</a><a href="visao.html">Visão</a><a href="prd.html">PRD</a><a href="arquitetura.html" aria-current="page">Arquitetura</a><a href="Plano_Divisao_Atividades_Sprint_1.html">Sprint 1</a></nav></header>
   <main id="conteudo">
-    <section class="hero"><p class="eyebrow">Decisões técnicas</p><h1>Arquitetura de Software</h1><p class="lead">Arquitetura Modular Clean/Hexagonal para o MVP acadêmico e sua evolução condicionada.</p><div class="meta-row"><span class="meta-chip">Versão 1.5</span><span class="meta-chip">09 set 2026</span><span class="meta-chip">Leitura integral</span></div></section>
+    <section class="hero"><p class="eyebrow">Decisões técnicas</p><h1>Arquitetura de Software</h1><p class="lead">Arquitetura Modular Clean/Hexagonal para o MVP acadêmico e sua evolução condicionada.</p><div class="meta-row"><span class="meta-chip">Versão 1.6</span><span class="meta-chip">10 set 2026</span><span class="meta-chip">Leitura integral</span></div></section>
     <div class="reader"><aside class="sidebar" aria-label="Navegação por páginas"><p class="sidebar-title">Neste documento</p><label class="search"><span class="skip-link">Buscar</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="doc-search" type="search" placeholder="Buscar no texto…" autocomplete="off"></label><nav class="page-nav"><a href="#pagina-1" aria-label="Ir para a página 1">1</a><a href="#pagina-2" aria-label="Ir para a página 2">2</a><a href="#pagina-3" aria-label="Ir para a página 3">3</a><a href="#pagina-4" aria-label="Ir para a página 4">4</a><a href="#pagina-5" aria-label="Ir para a página 5">5</a><a href="#pagina-6" aria-label="Ir para a página 6">6</a><a href="#pagina-7" aria-label="Ir para a página 7">7</a><a href="#pagina-8" aria-label="Ir para a página 8">8</a><a href="#pagina-9" aria-label="Ir para a página 9">9</a><a href="#pagina-10" aria-label="Ir para a página 10">10</a><a href="#pagina-11" aria-label="Ir para a página 11">11</a><a href="#pagina-12" aria-label="Ir para a página 12">12</a><a href="#pagina-13" aria-label="Ir para a página 13">13</a></nav><p class="result-note">13 páginas</p></aside><article class="pages" aria-label="Conteúdo integral"><section class="paper" id="pagina-1" data-page="1"><div class="page-kicker"><span>Arquitetura</span><span>Página 1 de 13</span></div><pre class="page-text" data-source="Centralizador Financeiro Inteligente
 Documento de Arquitetura de Software
-Versão 1.5
+Versão 1.6
 
 Histórico da Revisão
 
@@ -25,6 +25,7 @@ Histórico da Revisão
 • 04/09/2026 — versão 1.3 — Arquitetura modular do MVP e evolução SaaS aprovada — Equipe do projeto.
 • 08/09/2026 — versão 1.4 — Fechamento do baseline backend da S1-01 — Equipe do projeto.
 • 09/09/2026 — versão 1.5 — Modelo normativo Identity/Accounts e ADR de RLS PostgreSQL para S1-02/S1-03 — Equipe do projeto.
+• 10/09/2026 — versão 1.6 — Fechamento do baseline dos clientes web e mobile da S1-01 — Equipe do projeto.
 
 Introdução
 
@@ -40,7 +41,7 @@ Arquitetura Modular Clean/Hexagonal, inicialmente implantada como um único serv
 
 A topologia inicial de um único serviço implantável não reduz a arquitetura interna a um monólito sem qualificação. O backend possui módulos de negócio e dependências orientadas ao núcleo de aplicação e domínio.">Centralizador Financeiro Inteligente
 Documento de Arquitetura de Software
-Versão 1.5
+Versão 1.6
 
 Histórico da Revisão
 
@@ -50,6 +51,7 @@ Histórico da Revisão
 • 04/09/2026 — versão 1.3 — Arquitetura modular do MVP e evolução SaaS aprovada — Equipe do projeto.
 • 08/09/2026 — versão 1.4 — Fechamento do baseline backend da S1-01 — Equipe do projeto.
 • 09/09/2026 — versão 1.5 — Modelo normativo Identity/Accounts e ADR de RLS PostgreSQL para S1-02/S1-03 — Equipe do projeto.
+• 10/09/2026 — versão 1.6 — Fechamento do baseline dos clientes web e mobile da S1-01 — Equipe do projeto.
 
 Introdução
 
@@ -215,7 +217,19 @@ A API REST é versionada em /api/v1. Operações que exigem resposta imediata pe
 
 Zod executa validação em bordas de apresentação e adapters. Schemas Zod não são entidades de domínio e não são compartilhados como pacote-fonte entre repositórios.
 
-Web e mobile podem seguir a mesma identidade visual documentada e o mesmo contrato OpenAPI, mas não compartilham componentes, navegação ou código-fonte.">Visão Clean/Hexagonal pragmática
+Web e mobile podem seguir a mesma identidade visual documentada e o mesmo contrato OpenAPI, mas não compartilham componentes, navegação ou código-fonte.
+
+As aplicações web em Next.js na Vercel e mobile em React Native com Expo, distribuída por Expo/EAS, são independentes. Cada repositório mantém a própria navegação, o próprio estado e o próprio ciclo de build, sem componentes, rotas ou código-fonte compartilhados e sem monorepo, Solito ou Tamagui.
+
+Cada cliente gera e consome o seu próprio cliente tipado a partir do contrato OpenAPI do backend. Nenhuma biblioteca geradora está aprovada e não existe pacote-fonte de schemas comum aos repositórios. A conformidade com o contrato é verificada por testes de contrato sobre o OpenAPI e os clientes gerados.
+
+Cada cliente executa OAuth 2.0 e OpenID Connect conforme a sua plataforma, obtém o JWT emitido pelo Auth0 e o envia como Bearer nas chamadas a /api/v1. A validação do JWT e a autorização de propriedade pertencem ao backend; regras de autorização do produto não são incorporadas à configuração do Auth0. Sessão, armazenamento do token, redirecionamentos e logout de cada plataforma são detalhados em S1-04 e não são tratados como decididos nesta baseline.
+
+Zod executa validação apenas nas bordas de apresentação de cada cliente, nas entradas de formulário e nas respostas da API, de forma independente por repositório. Os schemas Zod não são compartilhados como pacote-fonte, não são entidades de domínio e não substituem a validação do backend.
+
+Web e mobile podem seguir a mesma identidade visual documentada sem compartilhar código-fonte. O documento de identidade visual ainda não existe; enquanto não for publicado, cada cliente segue as convenções da sua plataforma.
+
+A baseline do Dev 2 respeita, do Dev 1, o contrato OpenAPI e os endpoints REST /api/v1 pertencentes ao backend, a validação de JWT, o contexto de usuário e tenant resolvido pelo módulo Identity e o isolamento por tenant_id com RLS; e, do Dev 3, os critérios de aceite, a estratégia de testes e as convenções dos três repositórios, incluindo os testes de contrato e os casos cross-tenant.">Visão Clean/Hexagonal pragmática
 
 Representação das camadas e dependências
 
@@ -237,7 +251,19 @@ A API REST é versionada em /api/v1. Operações que exigem resposta imediata pe
 
 Zod executa validação em bordas de apresentação e adapters. Schemas Zod não são entidades de domínio e não são compartilhados como pacote-fonte entre repositórios.
 
-Web e mobile podem seguir a mesma identidade visual documentada e o mesmo contrato OpenAPI, mas não compartilham componentes, navegação ou código-fonte.</pre></section><section class="paper" id="pagina-6" data-page="6"><div class="page-kicker"><span>Arquitetura</span><span>Página 6 de 13</span></div><pre class="page-text" data-source="Decisões arquiteturais
+Web e mobile podem seguir a mesma identidade visual documentada e o mesmo contrato OpenAPI, mas não compartilham componentes, navegação ou código-fonte.
+
+As aplicações web em Next.js na Vercel e mobile em React Native com Expo, distribuída por Expo/EAS, são independentes. Cada repositório mantém a própria navegação, o próprio estado e o próprio ciclo de build, sem componentes, rotas ou código-fonte compartilhados e sem monorepo, Solito ou Tamagui.
+
+Cada cliente gera e consome o seu próprio cliente tipado a partir do contrato OpenAPI do backend. Nenhuma biblioteca geradora está aprovada e não existe pacote-fonte de schemas comum aos repositórios. A conformidade com o contrato é verificada por testes de contrato sobre o OpenAPI e os clientes gerados.
+
+Cada cliente executa OAuth 2.0 e OpenID Connect conforme a sua plataforma, obtém o JWT emitido pelo Auth0 e o envia como Bearer nas chamadas a /api/v1. A validação do JWT e a autorização de propriedade pertencem ao backend; regras de autorização do produto não são incorporadas à configuração do Auth0. Sessão, armazenamento do token, redirecionamentos e logout de cada plataforma são detalhados em S1-04 e não são tratados como decididos nesta baseline.
+
+Zod executa validação apenas nas bordas de apresentação de cada cliente, nas entradas de formulário e nas respostas da API, de forma independente por repositório. Os schemas Zod não são compartilhados como pacote-fonte, não são entidades de domínio e não substituem a validação do backend.
+
+Web e mobile podem seguir a mesma identidade visual documentada sem compartilhar código-fonte. O documento de identidade visual ainda não existe; enquanto não for publicado, cada cliente segue as convenções da sua plataforma.
+
+A baseline do Dev 2 respeita, do Dev 1, o contrato OpenAPI e os endpoints REST /api/v1 pertencentes ao backend, a validação de JWT, o contexto de usuário e tenant resolvido pelo módulo Identity e o isolamento por tenant_id com RLS; e, do Dev 3, os critérios de aceite, a estratégia de testes e as convenções dos três repositórios, incluindo os testes de contrato e os casos cross-tenant.</pre></section><section class="paper" id="pagina-6" data-page="6"><div class="page-kicker"><span>Arquitetura</span><span>Página 6 de 13</span></div><pre class="page-text" data-source="Decisões arquiteturais
 
 Item arquitetural       Decisão do MVP
 Topologia               Um serviço NestJS serverless em container no Google Cloud Run.

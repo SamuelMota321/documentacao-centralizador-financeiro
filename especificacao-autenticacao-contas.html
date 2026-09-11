@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Especificação aprovada para autenticação Auth0 e contas da Sprint 1">
+  <title>Especificação de Autenticação e Contas · Sprint 1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&amp;family=Outfit:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body style="--accent: #8b5cf6">
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M16 13h4"/><path d="M2 10h20"/></svg></span><span>Centralizador Financeiro</span></a>
+    <nav class="doc-nav" aria-label="Documentos"><a href="index.html">Início</a><a href="visao.html">Visão</a><a href="prd.html">PRD</a><a href="arquitetura.html">Arquitetura</a><a href="Plano_Divisao_Atividades_Sprint_1.html" aria-current="page">Sprint 1</a></nav>
+  </header>
+  <main id="conteudo">
+    <section class="hero">
+      <p class="eyebrow">Especificação aprovada · S1-04/S1-05</p>
+      <h1>Autenticação e Contas</h1>
+      <p class="lead">Contrato técnico aprovado para validar identidades Auth0 e criar e listar contas financeiras com isolamento por tenant.</p>
+      <div class="meta-row"><span class="meta-chip">Versão 1.0</span><span class="meta-chip">10 set 2026</span><span class="meta-chip">Status: aprovado</span></div>
+    </section>
+    <div class="reader">
+      <aside class="sidebar" aria-label="Navegação por seções"><p class="sidebar-title">Neste documento</p><nav class="page-nav" aria-label="Seções do documento"></nav><p class="result-note">Especificação integral</p></aside>
+      <article class="pages" aria-label="Conteúdo integral">
+        <section class="paper" id="pagina-1" data-page="1">
+          <div class="page-kicker"><span>Sprint 1</span><span>Autoridade e escopo</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">1. Status, finalidade e autoridade</h2>
+            <p class="doc-paragraph"><strong>Status: aprovado em 10/09/2026.</strong> Este documento fecha decisões necessárias à execução das contribuições de Dev 1 em S1-04 e S1-05 e integra a base normativa da Sprint 1.</p>
+            <p class="doc-paragraph">Entradas: Documento de Visão 1.3; PRD 1.4, especialmente HU-001, HU-002, RN-001 a RN-004 e RNF-002/RNF-003; Arquitetura 1.5; Plano da Sprint 1; Modelo de Dados de Identity e Accounts 1.0; ADR-001 de RLS. Em conflito, prevalecem requisito explícito atual, contrato formal e decisão aprovada, nessa ordem.</p>
+            <h2 class="doc-heading">2. Escopo</h2>
+            <ul class="doc-list">
+              <li>Validação de access token JWT emitido pelo Auth0 no backend NestJS.</li>
+              <li>Resolução ou provisionamento da identidade externa para user e tenant internos.</li>
+              <li>Proteção da criação e listagem de contas sob <code>/api/v1</code>.</li>
+              <li>Validação, persistência e consulta tenant-aware de contas.</li>
+              <li>Tratamento explícito de possível duplicidade manual/conectada.</li>
+              <li>Contrato OpenAPI, erros e critérios de teste diretamente afetados.</li>
+            </ul>
+            <h2 class="doc-heading">3. Fora do escopo</h2>
+            <p class="doc-paragraph">Login, callback, sessão, refresh e logout dos clientes web/mobile; RBAC; edição, arquivamento ou exclusão; vinculação de segunda identidade; importação Pluggy; auditoria completa; e consolidação da suíte de Dev 3.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-2" data-page="2">
+          <div class="page-kicker"><span>Identity</span><span>Validação Auth0</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">4. Contrato de autenticação</h2>
+            <p class="doc-paragraph">Endpoints protegidos recebem <code>Authorization: Bearer &lt;access-token&gt;</code>. O backend usa <code>express-oauth2-jwt-bearer</code>, encapsulado por um Guard NestJS, com <code>AUTH0_ISSUER_BASE_URL</code> e <code>AUTH0_AUDIENCE</code> obrigatórios. A descoberta OAuth 2.0/OIDC do issuer localiza metadados e JWKS; valores reais permanecem fora do repositório.</p>
+            <ul class="doc-list">
+              <li>Validar assinatura, algoritmo aceito pela biblioteca, issuer, audience e expiração.</li>
+              <li>Aceitar somente access token destinado à API. ID token não autentica requisição da API.</li>
+              <li>Exigir <code>iss</code> e <code>sub</code> válidos; não usar e-mail, nome, avatar ou claims de perfil para associação.</li>
+              <li>Não exigir scopes ou permissions em S1-04: nenhuma política RBAC está aprovada.</li>
+              <li>Não registrar token, header JWT, payload completo, issuer+subject completos ou configuração sensível.</li>
+            </ul>
+            <h2 class="doc-heading">5. Fronteira protegida</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Recurso</th><th>Acesso</th><th>Razão</th></tr></thead><tbody>
+              <tr><th>POST /api/v1/accounts</th><td>Protegido</td><td>Cria dado financeiro do tenant autenticado.</td></tr>
+              <tr><th>GET /api/v1/accounts</th><td>Protegido</td><td>Lista dados financeiros do tenant autenticado.</td></tr>
+              <tr><th>Health live/ready</th><td>Público</td><td>Estado técnico mínimo, sem diagnóstico sensível.</td></tr>
+              <tr><th>Docs/OpenAPI</th><td>Público no MVP</td><td>Contrato não concede acesso a dados.</td></tr>
+            </tbody></table></div></div>
+            <p class="doc-paragraph">A proteção é declarada no controller de Accounts. Não há Guard global nesta fase.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-3" data-page="3">
+          <div class="page-kicker"><span>Identity</span><span>Contexto interno</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">6. Resolução e provisionamento</h2>
+            <ol class="doc-list">
+              <li>O Guard valida o access token e entrega somente issuer e subject confiáveis à interface pública de Identity.</li>
+              <li>Identity constrói <code>ExternalIdentity.auth0(issuer, subject)</code>.</li>
+              <li><code>resolve_or_provision_identity</code> procura exatamente <code>(issuer, subject)</code>.</li>
+              <li>Vínculo íntegro reutiliza o mesmo <code>userId</code>/<code>tenantId</code>.</li>
+              <li>Ausência de vínculo cria tenant, user e primeiro identity link atomicamente; corrida converge para o vínculo vencedor.</li>
+              <li>O controller recebe <code>TenantContext</code> explícito e o fornece aos casos de uso de Accounts.</li>
+            </ol>
+            <h2 class="doc-heading">7. Falhas de identidade</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Cenário</th><th>Resultado</th></tr></thead><tbody>
+              <tr><th>Bearer ausente ou malformado</th><td>401; caso de uso não executa.</td></tr>
+              <tr><th>Assinatura, issuer, audience ou expiração inválidos</th><td>401 genérico.</td></tr>
+              <tr><th><code>iss</code> ou <code>sub</code> ausente/inválido</th><td>401 genérico.</td></tr>
+              <tr><th>Associação local inconsistente após autenticação</th><td>403 genérico, sem confirmar user ou tenant.</td></tr>
+              <tr><th>Falha técnica de banco/provisionamento</th><td>500 genérico; não fingir identidade inexistente.</td></tr>
+            </tbody></table></div></div>
+            <p class="doc-paragraph">Identity não expõe seus repositórios ou tabelas ao módulo Accounts. Application e Domain permanecem independentes de Request, JWT, NestJS, Auth0 e Prisma.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-4" data-page="4">
+          <div class="page-kicker"><span>Accounts</span><span>Criação manual</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">8. POST /api/v1/accounts</h2>
+            <p class="doc-paragraph">Cria exclusivamente conta de origem manual para o tenant derivado da identidade autenticada. O cliente não envia <code>tenantId</code>, <code>origin</code>, moeda, provider ou identificador externo.</p>
+            <pre style="white-space:pre-wrap;overflow:auto"><code>{
+  "name": "Conta principal",
+  "type": "checking",
+  "institutionName": "Banco Exemplo",
+  "initialBalance": "1250.00",
+  "initialBalanceAsOf": "2026-09-10",
+  "confirmPossibleDuplicate": false
+}</code></pre>
+            <h2 class="doc-heading">9. Validação da entrada</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Campo</th><th>Contrato</th></tr></thead><tbody>
+              <tr><th>name</th><td>Obrigatório; 1–100 caracteres após NFC, trim e colapso de whitespace; rejeita controles e formatação invisível.</td></tr>
+              <tr><th>type</th><td>checking, savings, payment, cash, credit_card, investment ou other.</td></tr>
+              <tr><th>institutionName</th><td>Opcional; vazio normaliza para null; 1–120 caracteres quando presente.</td></tr>
+              <tr><th>initialBalance</th><td>String decimal canônica assinada, até duas casas, nos limites de numeric(19,2); sem arredondamento implícito.</td></tr>
+              <tr><th>initialBalanceAsOf</th><td>Data civil YYYY-MM-DD, não futura em UTC.</td></tr>
+              <tr><th>confirmPossibleDuplicate</th><td>Boolean opcional; default false; não é persistido.</td></tr>
+            </tbody></table></div></div>
+            <p class="doc-paragraph">A moeda é sempre BRL. Campos desconhecidos são rejeitados. Em sucesso, retorna 201 com a representação da conta criada.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-5" data-page="5">
+          <div class="page-kicker"><span>Accounts</span><span>Duplicidade</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">10. Possível duplicidade manual/conectada</h2>
+            <p class="doc-paragraph">A detecção é heurística e não cria unicidade. Antes do INSERT, o caso de uso pesquisa somente contas conectadas ativas do mesmo tenant com nome, tipo e instituição normalizados e iguais aos da proposta manual.</p>
+            <ul class="doc-list">
+              <li>Uma candidata é indício, não confirmação: contas reais podem compartilhar esses campos.</li>
+              <li>Sem candidata, a criação prossegue normalmente.</li>
+              <li>Com candidata e confirmação ausente/false, nada é persistido e a API retorna 409.</li>
+              <li>A resposta contém código estável e resumos mínimos das candidatas do próprio tenant.</li>
+              <li>Nova requisição com <code>confirmPossibleDuplicate: true</code> cria a conta manual separadamente.</li>
+              <li>Não há merge, arquivamento ou mutação automática da conta conectada.</li>
+            </ul>
+            <pre style="white-space:pre-wrap;overflow:auto"><code>{
+  "type": "about:blank",
+  "title": "Possible connected account duplicate",
+  "status": 409,
+  "code": "POSSIBLE_CONNECTED_ACCOUNT_DUPLICATE",
+  "detail": "Confirm that the manual account must remain separate.",
+  "candidates": [
+    { "id": "0d82025d-d915-4e82-af65-a6a0f2db68fc", "name": "Conta principal", "type": "checking", "origin": "connected", "institutionName": "Banco Exemplo" }
+  ]
+}</code></pre>
+            <p class="doc-paragraph">A busca inclui filtro explícito de <code>tenantId</code> e executa na mesma transação tenant-aware protegida por RLS.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-6" data-page="6">
+          <div class="page-kicker"><span>Accounts</span><span>Listagem e representação</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">11. GET /api/v1/accounts</h2>
+            <p class="doc-paragraph">Lista contas manuais e conectadas ativas do tenant autenticado. Query: <code>page</code> inteiro positivo, default 1; <code>pageSize</code> inteiro entre 1 e 100, default 20. A ordem é <code>createdAt DESC</code> e, em empate, <code>id DESC</code>.</p>
+            <pre style="white-space:pre-wrap;overflow:auto"><code>{
+  "items": [
+    {
+      "id": "f40f9cdd-f0c4-44a0-a4f1-cff830394527",
+      "name": "Conta principal",
+      "type": "checking",
+      "origin": "manual",
+      "institutionName": "Banco Exemplo",
+      "initialBalance": "1250.00",
+      "initialBalanceAsOf": "2026-09-10",
+      "currencyCode": "BRL",
+      "archivedAt": null,
+      "createdAt": "2026-09-10T15:00:00.000Z",
+      "updatedAt": "2026-09-10T15:00:00.000Z"
+    }
+  ],
+  "page": 1,
+  "pageSize": 20,
+  "total": 1
+}</code></pre>
+            <h2 class="doc-heading">12. Representação pública</h2>
+            <p class="doc-paragraph">Criação e listagem usam a mesma representação. Não expõem <code>tenantId</code>, external account id, claims, subject, issuer ou detalhes de integração. <code>initialBalance</code> sempre tem duas casas; datas civis usam YYYY-MM-DD e instantes usam UTC ISO 8601.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-7" data-page="7">
+          <div class="page-kicker"><span>HTTP</span><span>Erros e OpenAPI</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">13. Contrato de erros</h2>
+            <p class="doc-paragraph">Erros usam <code>application/problem+json</code> com <code>type</code>, <code>title</code>, <code>status</code>, <code>code</code> e <code>detail</code>. Validação pode acrescentar <code>errors</code> com <code>path</code>, <code>code</code> e mensagem segura. Valores recebidos, stack traces, SQL, tokens e IDs internos não são ecoados.</p>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Status</th><th>Código</th><th>Uso</th></tr></thead><tbody>
+              <tr><th>400</th><td>INVALID_REQUEST</td><td>Body ou query inválidos.</td></tr>
+              <tr><th>401</th><td>AUTHENTICATION_REQUIRED</td><td>Token ausente ou rejeitado.</td></tr>
+              <tr><th>403</th><td>IDENTITY_CONTEXT_UNAVAILABLE</td><td>Identidade autenticada sem contexto local íntegro.</td></tr>
+              <tr><th>409</th><td>POSSIBLE_CONNECTED_ACCOUNT_DUPLICATE</td><td>Confirmação necessária.</td></tr>
+              <tr><th>500</th><td>INTERNAL_ERROR</td><td>Falha não classificada, sem detalhe técnico.</td></tr>
+            </tbody></table></div></div>
+            <h2 class="doc-heading">14. OpenAPI</h2>
+            <ul class="doc-list">
+              <li>Declarar security scheme HTTP bearer com formato JWT.</li>
+              <li>Aplicar security somente às duas operações de Accounts.</li>
+              <li>Documentar request, account response, paginação, Problem Details e conflito de duplicidade.</li>
+              <li>Manter health e documentação sem requisito de autenticação.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-8" data-page="8">
+          <div class="page-kicker"><span>Qualidade</span><span>Aceite e referências</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">15. Matriz de aceitação</h2>
+            <ul class="doc-list">
+              <li>Token válido resolve ou provisiona uma única identidade e um único tenant.</li>
+              <li>Token ausente, malformado, inválido ou expirado nunca executa Accounts.</li>
+              <li>Falhas não expõem token, claims, existência de tenant ou dados financeiros.</li>
+              <li>Criação persiste valores normalizados e dinheiro exato somente no tenant autenticado.</li>
+              <li>Possível duplicidade exige confirmação e não realiza merge.</li>
+              <li>Listagem inclui apenas contas ativas próprias, em ordem e paginação determinísticas.</li>
+              <li>Filtro de ownership da aplicação e RLS negam acesso cruzado independentemente.</li>
+              <li>OpenAPI reproduz status, payloads e segurança observáveis.</li>
+            </ul>
+            <h2 class="doc-heading">16. Riscos e decisões diferidas</h2>
+            <ul class="doc-list">
+              <li>A heurística de duplicidade pode gerar falso positivo; a confirmação humana preserva ambas as contas.</li>
+              <li>Não há índice novo nesta especificação; o comportamento deve ser medido antes de migration de otimização.</li>
+              <li>Scopes, permissions, RBAC e vinculação adicional exigem requisito posterior.</li>
+              <li>Alteração deste contrato exige nova versão, revisão e aprovação documental explícita.</li>
+            </ul>
+            <h2 class="doc-heading">17. Referências</h2>
+            <ul class="doc-list">
+              <li><a href="prd.html">Documento de Requisitos 1.4</a></li>
+              <li><a href="arquitetura.html">Arquitetura 1.5</a></li>
+              <li><a href="Plano_Divisao_Atividades_Sprint_1.html">Plano da Sprint 1</a></li>
+              <li><a href="modelo-dados-identity-accounts.html">Modelo de Dados de Identity e Accounts 1.0</a></li>
+              <li><a href="adr-rls-postgresql.html">ADR-001 — RLS PostgreSQL</a></li>
+              <li><a href="https://developer.auth0.com/resources/guides/api/express/basic-authorization/typescript">Auth0 — autorização de API Node.js/TypeScript</a></li>
+              <li><a href="https://auth0.github.io/node-oauth2-jwt-bearer/functions/auth.html">Auth0 — express-oauth2-jwt-bearer</a></li>
+              <li><a href="https://www.rfc-editor.org/rfc/rfc9457.html">RFC 9457 — Problem Details for HTTP APIs</a></li>
+            </ul>
+          </div>
+        </section>
+      </article>
+    </div>
+  </main>
+  <footer class="site-footer">Documentação acadêmica · UCB · 2026 · Samuel Mota, Thiago Marques e Miguel Candido</footer>
+  <script src="assets/app.js"></script>
+</body>
+</html>

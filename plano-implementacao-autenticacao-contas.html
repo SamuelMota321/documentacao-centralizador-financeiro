@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Plano aprovado de implementação de autenticação e contas da Sprint 1">
+  <title>Plano de Implementação de Autenticação e Contas · Sprint 1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&amp;family=Outfit:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body style="--accent: #ec4899">
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M16 13h4"/><path d="M2 10h20"/></svg></span><span>Centralizador Financeiro</span></a>
+    <nav class="doc-nav" aria-label="Documentos"><a href="index.html">Início</a><a href="visao.html">Visão</a><a href="prd.html">PRD</a><a href="arquitetura.html">Arquitetura</a><a href="Plano_Divisao_Atividades_Sprint_1.html" aria-current="page">Sprint 1</a></nav>
+  </header>
+  <main id="conteudo">
+    <section class="hero">
+      <p class="eyebrow">Plano aprovado · Dev 1 · S1-04/S1-05</p>
+      <h1>Implementação de Autenticação e Contas</h1>
+      <p class="lead">Sequência verificável para implementar o contrato técnico aprovado sem ultrapassar a responsabilidade de Dev 1.</p>
+      <div class="meta-row"><span class="meta-chip">Versão 1.0</span><span class="meta-chip">10 set 2026</span><span class="meta-chip">Status: aprovado</span></div>
+    </section>
+    <div class="reader">
+      <aside class="sidebar" aria-label="Navegação por seções"><p class="sidebar-title">Neste documento</p><nav class="page-nav" aria-label="Seções do documento"></nav><p class="result-note">5 fases</p></aside>
+      <article class="pages" aria-label="Conteúdo integral">
+        <section class="paper" id="pagina-1" data-page="1">
+          <div class="page-kicker"><span>Plano</span><span>Pré-requisitos</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">1. Finalidade e condição de execução</h2>
+            <p class="doc-paragraph"><strong>Status: aprovado em 10/09/2026.</strong> Este plano descreve o trabalho futuro no backend com base na <a href="especificacao-autenticacao-contas.html">Especificação de Autenticação e Contas 1.0</a>. A execução permanece sujeita ao checkpoint específico de implementação e não autoriza acesso a ambiente compartilhado ou operação destrutiva.</p>
+            <h2 class="doc-heading">2. Pré-requisitos verificados</h2>
+            <ul class="doc-list">
+              <li>NestJS 11, TypeScript, Prisma 7, PostgreSQL, Zod, Vitest e Supertest já integram o backend.</li>
+              <li><code>/api/v1</code>, Swagger/OpenAPI, configuração validada e módulos Identity/Accounts existem.</li>
+              <li>Modelo, invariantes de Account, função de provisionamento, wrapper tenant-aware e RLS estão versionados.</li>
+              <li>O repositório ainda não contém Guard Auth0, casos de uso/repositório de Accounts nem endpoints de contas.</li>
+            </ul>
+            <h2 class="doc-heading">3. Restrições</h2>
+            <p class="doc-paragraph">Preservar Clean/Hexagonal, impedir tipos NestJS/Auth0/Prisma em Domain e Application, não implementar clientes, manutenção de conta ou testes consolidados de Dev 3, e não executar operação destrutiva ou remota.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-2" data-page="2">
+          <div class="page-kicker"><span>Fase 1</span><span>Identidade e autenticação</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">4. Configuração e dependência</h2>
+            <p class="doc-paragraph"><strong>1. Ambiente Auth0</strong> — Acrescentar issuer base URL e audience ao schema de ambiente e ao exemplo seguro. Produção deve falhar na inicialização quando a configuração necessária estiver ausente ou inválida.</p>
+            <p class="doc-paragraph"><strong>2. Middleware oficial</strong> — Adicionar <code>express-oauth2-jwt-bearer</code> após aprovação explícita da dependência, mantendo o lockfile consistente e sem segredo no repositório.</p>
+            <h2 class="doc-heading">5. Adapter inbound de Identity</h2>
+            <p class="doc-paragraph"><strong>3. Guard Auth0</strong> — Criar adapter que delega validação do bearer token à biblioteca oficial e traduz qualquer rejeição de autenticação para resposta genérica.</p>
+            <p class="doc-paragraph"><strong>4. Contexto autenticado</strong> — Criar mecanismo request-scoped explícito para transportar apenas issuer/subject validados e o TenantContext resolvido, sem memória global mutável.</p>
+            <p class="doc-paragraph"><strong>5. Caso de uso público</strong> — Encapsular construção de ExternalIdentity e resolução/provisionamento em uma interface pública de Application do módulo Identity.</p>
+            <h2 class="doc-heading">6. Arquivos previstos</h2>
+            <ul class="doc-list">
+              <li><code>package.json</code> e <code>package-lock.json</code></li>
+              <li><code>.env.example</code> e <code>src/config/environment.schema.ts</code></li>
+              <li><code>src/modules/identity/identity.module.ts</code></li>
+              <li><code>src/modules/identity/application/resolve-identity-context.ts</code></li>
+              <li><code>src/modules/identity/adapters/inbound/auth0-jwt.guard.ts</code></li>
+              <li><code>src/modules/identity/adapters/inbound/tenant-context.decorator.ts</code></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-3" data-page="3">
+          <div class="page-kicker"><span>Fases 2–3</span><span>Aplicação e persistência</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">7. Fase 2 — Casos de uso de Accounts</h2>
+            <p class="doc-paragraph"><strong>6. Port de repositório</strong> — Definir operações mínimas para procurar candidatas conectadas, criar conta manual e listar página ativa, sempre exigindo TenantContext.</p>
+            <p class="doc-paragraph"><strong>7. Criação manual</strong> — Orquestrar domínio, busca de possível duplicidade, confirmação explícita e persistência; devolver erros tipados sem conceitos HTTP.</p>
+            <p class="doc-paragraph"><strong>8. Listagem</strong> — Validar paginação na borda e retornar representação de aplicação ordenada, sem expor ownership ou identificadores externos.</p>
+            <h2 class="doc-heading">8. Fase 3 — Adapter Prisma</h2>
+            <p class="doc-paragraph"><strong>9. Persistência tenant-aware</strong> — Implementar as três operações com filtro explícito de tenant e dentro de <code>PrismaTenantTransaction</code>; mapear Decimal para centavos/string sem usar number binário.</p>
+            <p class="doc-paragraph"><strong>10. Duplicidade</strong> — Pesquisar somente contas conectadas ativas do tenant usando a comparação aprovada; nunca usar constraint de nome nem realizar merge.</p>
+            <p class="doc-paragraph"><strong>11. Paginação</strong> — Contar e buscar a página na mesma fronteira tenant-aware, com ordem determinística. Medir antes de propor índice ou migration.</p>
+            <h2 class="doc-heading">9. Arquivos previstos</h2>
+            <ul class="doc-list">
+              <li><code>src/modules/accounts/application/ports/accounts.repository.ts</code></li>
+              <li><code>src/modules/accounts/application/use-cases/create-manual-account.ts</code></li>
+              <li><code>src/modules/accounts/application/use-cases/list-accounts.ts</code></li>
+              <li><code>src/modules/accounts/adapters/outbound/prisma-accounts.repository.ts</code></li>
+              <li><code>src/modules/accounts/accounts.module.ts</code></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-4" data-page="4">
+          <div class="page-kicker"><span>Fase 4</span><span>REST e OpenAPI</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">10. Controller e validação</h2>
+            <p class="doc-paragraph"><strong>12. Schemas Zod</strong> — Estender o schema inbound existente para confirmação e criar schema estrito de query, preservando validação repetida pelo domínio.</p>
+            <p class="doc-paragraph"><strong>13. Controller</strong> — Implementar POST/GET em <code>accounts</code>, aplicar Guard explicitamente e fornecer TenantContext aos casos de uso.</p>
+            <p class="doc-paragraph"><strong>14. Tradução de falhas</strong> — Adicionar filtro/mapper inbound para Problem Details, incluindo erros de validação, autenticação, associação e conflito, sem ecoar payload.</p>
+            <h2 class="doc-heading">11. Contrato versionado</h2>
+            <p class="doc-paragraph"><strong>15. Swagger</strong> — Declarar bearer security, DTOs de documentação, paginação, respostas de conta e Problem Details.</p>
+            <p class="doc-paragraph"><strong>16. Geração</strong> — Incluir Accounts no módulo usado pelo gerador e atualizar <code>openapi/openapi.json</code>; comparar artefato gerado com o contrato aprovado.</p>
+            <h2 class="doc-heading">12. Arquivos previstos</h2>
+            <ul class="doc-list">
+              <li><code>src/modules/accounts/adapters/inbound/accounts.controller.ts</code></li>
+              <li><code>src/modules/accounts/adapters/inbound/account-input.schema.ts</code></li>
+              <li><code>src/modules/accounts/adapters/inbound/account-query.schema.ts</code></li>
+              <li><code>src/modules/accounts/adapters/inbound/account-http.mapper.ts</code></li>
+              <li><code>src/main.ts</code>, <code>scripts/generate-openapi.ts</code> e <code>openapi/openapi.json</code></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-5" data-page="5">
+          <div class="page-kicker"><span>Fase 5</span><span>Verificação e riscos</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">13. Verificação prevista</h2>
+            <p class="doc-paragraph"><strong>17. Testes focados</strong> — Cobrir casos de uso com fakes, Guard com tokens controlados/mocks do verifier, adapter Prisma em PostgreSQL isolado e operações REST críticas com Supertest.</p>
+            <p class="doc-paragraph"><strong>18. Isolamento</strong> — Demonstrar criação/listagem próprias, zero leitura cruzada e rejeição de ownership alheio pela aplicação e pelo RLS.</p>
+            <p class="doc-paragraph"><strong>19. Qualidade</strong> — Executar geração OpenAPI, unitários, integração autorizada, e2e focado, typecheck, lint, build e format check; ampliar somente se o impacto justificar.</p>
+            <h2 class="doc-heading">14. Arquivos de teste previstos</h2>
+            <ul class="doc-list">
+              <li><code>src/modules/identity/adapters/inbound/auth0-jwt.guard.spec.ts</code></li>
+              <li><code>src/modules/accounts/application/use-cases/create-manual-account.spec.ts</code></li>
+              <li><code>src/modules/accounts/application/use-cases/list-accounts.spec.ts</code></li>
+              <li><code>test/integration/accounts-repository.integration.spec.ts</code></li>
+              <li><code>test/e2e/accounts.e2e.spec.ts</code></li>
+            </ul>
+            <h2 class="doc-heading">15. Efeitos e riscos</h2>
+            <ul class="doc-list">
+              <li><strong>Dependência:</strong> uma biblioteca Auth0 nova; rollback remove Guard, configuração e pacote.</li>
+              <li><strong>Banco:</strong> nenhuma alteração de schema prevista; migration futura somente após evidência de índice insuficiente.</li>
+              <li><strong>Contrato:</strong> dois endpoints e schemas novos exigem regeneração dos clientes por Dev 2.</li>
+              <li><strong>Segurança:</strong> risco principal é aceitar token destinado a outra API ou propagar payload sensível; issuer/audience e respostas genéricas são obrigatórios.</li>
+              <li><strong>Operação:</strong> descoberta/JWKS depende da disponibilidade do Auth0; falhas não podem liberar acesso.</li>
+            </ul>
+            <h2 class="doc-heading">16. Critério de conclusão</h2>
+            <p class="doc-paragraph">A fase termina somente quando o contrato aprovado estiver implementado, testes focados e validações relevantes passarem, OpenAPI refletir o comportamento e nenhum segredo ou dado financeiro aparecer em logs ou artefatos.</p>
+          </div>
+        </section>
+      </article>
+    </div>
+  </main>
+  <footer class="site-footer">Documentação acadêmica · UCB · 2026 · Samuel Mota, Thiago Marques e Miguel Candido</footer>
+  <script src="assets/app.js"></script>
+</body>
+</html>

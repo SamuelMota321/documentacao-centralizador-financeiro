@@ -250,6 +250,8 @@ def nav(active: str | None = None) -> str:
     for doc in DOCUMENTS:
         current = ' aria-current="page"' if active == doc["slug"] else ""
         links.append(f'<a href="{doc["slug"]}.html"{current}>{html.escape(doc["label"])}</a>')
+    links.append('<a href="Plano_Divisao_Atividades_Sprint_1.html">Sprint 1</a>')
+    links.append('<a href="style-guide.html">Style Guide</a>')
     return "".join(links)
 
 
@@ -260,16 +262,16 @@ def shell(title: str, accent: str, active: str, body_content: str) -> str:
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Documentação do Centralizador Financeiro Inteligente">
-  <title>{html.escape(title)} · Centralizador Financeiro Inteligente</title>
+  <title>{html.escape(title)} · Coinciente</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/styles.css">
 </head>
-<body style="--accent: {accent}">
+<body>
   <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
   <header class="topbar">
-    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M16 13h4"/><path d="M2 10h20"/></svg></span><span>Centralizador Financeiro</span></a>
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"><img src="assets/coinciente-symbol.svg" alt=""></span><span class="brand-name"><em>Coin</em>ciente</span></a>
     <nav class="doc-nav" aria-label="Documentos">{nav(active)}</nav>
   </header>
   {body_content}
@@ -340,12 +342,25 @@ def build_index() -> None:
         <p>{html.escape(doc['subtitle'])}</p>
         <span class="card-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
       </a>""")
+    cards.append("""
+      <a class="doc-card" href="Plano_Divisao_Atividades_Sprint_1.html" style="--card-accent:#087a55">
+        <span class="doc-number">DOCUMENTO 04</span>
+        <h2>Sprint 1</h2>
+        <p>Divisão de atividades, responsabilidades, dependências e critérios de conclusão.</p>
+        <span class="card-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
+      </a>
+      <a class="doc-card" href="style-guide.html" style="--card-accent:#087a55">
+        <span class="doc-number">DOCUMENTO 05</span>
+        <h2>Style Guide</h2>
+        <p>Identidade, cores, tipografia, linguagem visual e aplicações da Coinciente.</p>
+        <span class="card-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
+      </a>""")
     content = f"""
   <main id="conteudo">
     <section class="hero home-hero">
       <p class="eyebrow">Biblioteca do projeto</p>
-      <h1>Uma visão única do produto, dos requisitos e da arquitetura.</h1>
-      <p class="lead">Navegue pela documentação do Centralizador Financeiro Inteligente. Todo o conteúdo dos PDFs foi convertido para HTML pesquisável e responsivo.</p>
+      <h1>Clareza para construir uma visão financeira consciente.</h1>
+      <p class="lead">Navegue pela documentação da Coinciente, identidade de produto do Centralizador Financeiro Inteligente. Todo o conteúdo permanece pesquisável e responsivo.</p>
     </section>
     <p class="home-note">Escolha um documento para iniciar a leitura.</p>
     <section class="document-grid" aria-label="Documentos">{''.join(cards)}</section>

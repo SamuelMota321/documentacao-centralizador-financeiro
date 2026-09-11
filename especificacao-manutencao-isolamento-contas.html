@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Especificação normativa para manutenção de contas e isolamento por usuário na Sprint 1">
+  <title>Especificação de Manutenção e Isolamento de Contas · Sprint 1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&amp;family=Outfit:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body style="--accent: #0ea5e9">
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M16 13h4"/><path d="M2 10h20"/></svg></span><span>Centralizador Financeiro</span></a>
+    <nav class="doc-nav" aria-label="Documentos"><a href="index.html">Início</a><a href="visao.html">Visão</a><a href="prd.html">PRD</a><a href="arquitetura.html">Arquitetura</a><a href="Plano_Divisao_Atividades_Sprint_1.html" aria-current="page">Sprint 1</a></nav>
+  </header>
+  <main id="conteudo">
+    <section class="hero">
+      <p class="eyebrow">Especificação normativa · Dev 1 · S1-06/S1-07</p>
+      <h1>Manutenção e Isolamento de Contas</h1>
+      <p class="lead">Contrato técnico para editar e desativar contas, preservar auditoria e impedir acesso entre tenants no backend da Sprint 1.</p>
+      <div class="meta-row"><span class="meta-chip">Versão 1.0</span><span class="meta-chip">11 set 2026</span><span class="meta-chip">Status: aprovado</span></div>
+    </section>
+    <div class="reader">
+      <aside class="sidebar" aria-label="Navegação por seções"><p class="sidebar-title">Neste documento</p><label class="search"><span class="skip-link">Buscar</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="doc-search" type="search" placeholder="Buscar no texto…" autocomplete="off"></label><nav class="page-nav" aria-label="Seções do documento"></nav><p class="result-note">Especificação integral</p></aside>
+      <article class="pages" aria-label="Conteúdo integral">
+        <section class="paper" id="pagina-1" data-page="1">
+          <div class="page-kicker"><span>Sprint 1</span><span>Autoridade e escopo</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">1. Status, autoridade e finalidade</h2>
+            <p class="doc-paragraph"><strong>Status: aprovado em 11/09/2026.</strong> Esta especificação é normativa para as contribuições de Dev 1 em S1-06 — editar e desativar conta — e S1-07 — aplicar isolamento por usuário. Ela fecha as decisões que faltavam para uma implementação backend segura; não afirma que o backend já as implementa.</p>
+            <p class="doc-paragraph">A hierarquia de fontes é: requisito atual aprovado; esta especificação; contratos formais; testes existentes; implementação atual; material informal. As entradas são o Documento de Visão 1.3, PRD 1.4, Arquitetura 1.5, Plano da Sprint 1, Modelo de Dados de Identity e Accounts 1.0, ADR-001 de RLS e a Especificação de Autenticação e Contas 1.0.</p>
+            <h2 class="doc-heading">2. Relação com contratos anteriores</h2>
+            <ul class="doc-list">
+              <li>Estende S1-04/S1-05 com PATCH, desativação suave, auditoria de mutações e regras de isolamento para manutenção.</li>
+              <li>Supersede apenas a exclusão de edição, arquivamento e auditoria completa que era explicitamente fora do escopo de S1-04/S1-05; não altera autenticação Auth0, representação de Account, criação manual, listagem ativa ou duplicidade já aprovadas.</li>
+              <li>Estende o ADR de RLS à tabela tenant-owned <code>audit_records</code>; mantém GUC local à transação, <code>TenantContext</code>, filtros explícitos, <code>ENABLE</code>/<code>FORCE ROW LEVEL SECURITY</code> e papéis de menor privilégio.</li>
+              <li>A expressão “desativar/excluir” do plano da Sprint é resolvida para desativação lógica em S1-06. Nenhuma autoridade específica aprova hard delete nesta Sprint.</li>
+            </ul>
+            <h2 class="doc-heading">3. Escopo e exclusões</h2>
+            <p class="doc-paragraph">Dev 1 implementará domínio, Application, ports, adapters Prisma, migration forward-only, RLS, REST/OpenAPI, tradução de erros e auditoria necessários a Accounts e ao isolamento de Identity/Accounts. Dev 2 permanece responsável pelos clientes, confirmação visual e estado de interface; Dev 3 permanece responsável pela consolidação e execução da validação crítica. Ficam fora deste contrato: OAuth/sessão dos clientes, RBAC, painel administrativo, reativação, hard delete, vinculação de identidades, sincronização Pluggy, movimentações, controles LGPD completos, retenção formal, observabilidade avançada e qualquer trabalho de segurança não necessário a S1-06/S1-07.</p>
+          </div>
+          <div hidden aria-hidden="true"><pre class="page-text" data-source="1. Status autoridade finalidade. Especificação normativa aprovada em 11 set 2026 para Dev 1, S1-06 e S1-07. Fontes: Visão 1.3, PRD 1.4, Arquitetura 1.5, Plano Sprint 1, Modelo Identity Accounts 1.0, ADR RLS, especificação S1-04 S1-05. Estende manutenção, auditoria e isolamento. Resolve desativar excluir como soft deactivation, sem hard delete. Escopo backend NestJS, Domain, Application, Prisma, PostgreSQL, RLS, REST, OpenAPI. Fora do escopo Dev 2 clientes, Dev 3 consolidação, OAuth, RBAC, reativação, hard delete, Pluggy, LGPD, retenção formal."></pre></div>
+        </section>
+
+        <section class="paper" id="pagina-2" data-page="2">
+          <div class="page-kicker"><span>Accounts</span><span>Lifecycle</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">4. Estados e transições da conta</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Estado</th><th>Representação</th><th>Transições permitidas em S1</th></tr></thead><tbody>
+              <tr><th>Ativa</th><td><code>archived_at IS NULL</code>.</td><td>Atualizar campos permitidos ou desativar.</td></tr>
+              <tr><th>Arquivada</th><td><code>archived_at</code> contém o instante UTC da desativação.</td><td>Desativação repetida idempotente; sem PATCH e sem reativação.</td></tr>
+              <tr><th>Inexistente</th><td>Nenhuma linha visível no tenant contextualizado.</td><td>Não há transição; responder como recurso não encontrado.</td></tr>
+            </tbody></table></div></div>
+            <p class="doc-paragraph">O default documentado de desativação é preencher <code>archived_at</code>. A linha não é apagada, sua identidade não muda e sua auditoria permanece preservada. A listagem existente <code>GET /api/v1/accounts</code> continua retornando somente contas ativas; não há endpoint comum de leitura de arquivadas em S1-06. A resposta da própria desativação pode representar a conta agora arquivada.</p>
+            <h2 class="doc-heading">5. Regras de lifecycle</h2>
+            <ul class="doc-list">
+              <li>Conta ativa desativada: grava o instante atual do banco em <code>archived_at</code>, atualiza <code>updated_at</code>, registra auditoria e retorna <code>200</code>.</li>
+              <li>Conta já arquivada desativada novamente: não altera o instante original, retorna a representação atual com <code>200</code> e registra auditoria com transição <code>already_archived</code>.</li>
+              <li>Conta arquivada submetida a PATCH: retorna <code>409 ACCOUNT_ARCHIVED</code>; não reativa nem altera campos.</li>
+              <li>Conta conectada pode ser desativada, mas sua atualização é somente leitura em S1-06. Provider, identificador externo e dados controlados pela integração nunca são modificados pela API de manutenção.</li>
+              <li>Hard delete e qualquer endpoint <code>DELETE /api/v1/accounts/{accountId}</code> estão excluídos. A FK e os registros de auditoria não autorizam presumir remoção física.</li>
+            </ul>
+            <h2 class="doc-heading">6. Idempotência e concorrência</h2>
+            <p class="doc-paragraph">Não há ETag, <code>If-Match</code>, versão pública ou optimistic concurrency em S1. Cada update/deactivate usa uma transação tenant-aware curta e bloqueia a linha-alvo com lock equivalente a <code>SELECT ... FOR UPDATE</code> antes de decidir o estado. Requests concorrentes são serializados; o último PATCH que obtiver a linha ativa vence. Se a desativação chegar primeiro, um PATCH subsequente recebe <code>ACCOUNT_ARCHIVED</code>. A desativação repetida permanece idempotente.</p>
+          </div>
+          <div hidden aria-hidden="true"><pre class="page-text" data-source="4. Estados lifecycle. Ativa archived_at null. Arquivada archived_at com instante UTC. Inexistente sem linha visível. Soft deactivation preenche archived_at, preserva identidade e auditoria. GET lista somente ativas. Conta arquivada recebe 409 ACCOUNT_ARCHIVED em PATCH. Repetição de POST deactivate retorna 200 e não altera archived_at. Conta connected pode desativar, mas não editar. Hard delete, DELETE e reativação fora de S1. Concorrência usa lock FOR UPDATE em transação curta; sem ETag, If-Match ou optimistic concurrency."></pre></div>
+        </section>
+
+        <section class="paper" id="pagina-3" data-page="3">
+          <div class="page-kicker"><span>HTTP</span><span>REST e OpenAPI</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">7. PATCH /api/v1/accounts/{accountId}</h2>
+            <p class="doc-paragraph">A operação é protegida por <code>Authorization: Bearer &lt;access-token&gt;</code> e pelo <code>Auth0JwtGuard</code>. O path <code>accountId</code> deve ser UUID canônico. O body é um objeto PATCH estrito, parcial e não vazio:</p>
+            <pre style="white-space:pre-wrap;overflow:auto"><code>{
+  "name": "Conta principal",
+  "type": "checking",
+  "institutionName": null,
+  "initialBalance": "1250.00",
+  "initialBalanceAsOf": "2026-09-10",
+  "confirmPossibleDuplicate": false
+}</code></pre>
+            <p class="doc-paragraph">Todos os campos são opcionais, mas pelo menos um campo de negócio deve existir. <code>confirmPossibleDuplicate</code> é apenas controle inbound e não é persistido. O retorno de sucesso é <code>200 application/json</code> com a representação completa de <code>AccountView</code>, incluindo <code>archivedAt</code>. O servidor sempre retorna <code>X-Request-Id</code>.</p>
+            <h2 class="doc-heading">8. POST /api/v1/accounts/{accountId}/deactivate</h2>
+            <p class="doc-paragraph">A operação não recebe body de negócio; body não vazio é inválido. Exige os mesmos headers de autenticação e correlação. Conta ativa é marcada como arquivada; conta já arquivada é tratada idempotentemente. O retorno de sucesso é <code>200 application/json</code> com <code>AccountView</code>. Não existe rota DELETE.</p>
+            <h2 class="doc-heading">9. Headers e correlação</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Header</th><th>Regra</th></tr></thead><tbody>
+              <tr><th>Authorization</th><td>Bearer access token Auth0 validado; ID token não é aceito.</td></tr>
+              <tr><th>X-Request-Id</th><td>Opcional; se UUID canônico válido, é propagado. Se ausente ou inválido, o servidor gera UUIDv4 novo e nunca ecoa valor não validado.</td></tr>
+              <tr><th>Resposta X-Request-Id</th><td>Sempre contém o identificador canônico usado na requisição e na auditoria, inclusive em erros HTTP tratados.</td></tr>
+            </tbody></table></div></div>
+            <h2 class="doc-heading">10. Segurança OpenAPI</h2>
+            <p class="doc-paragraph">As duas operações declaram <code>security: [{ auth0: [] }]</code>, o bearer HTTP JWT existente, request bodies estritos, path UUID, resposta 200, Problem Details para 400/401/403/404/409/500 e os códigos estáveis desta especificação. Nenhuma operação concede escopo ou permission adicional; RBAC continua fora do MVP.</p>
+          </div>
+          <div hidden aria-hidden="true"><pre class="page-text" data-source="7. REST. PATCH /api/v1/accounts/{accountId}, body parcial estrito não vazio, retorna 200 AccountView. 8. POST /api/v1/accounts/{accountId}/deactivate, sem body, retorna 200 AccountView. Não existe DELETE. Authorization Bearer Auth0 obrigatório. accountId UUID canônico. X-Request-Id opcional UUID válido, servidor gera UUIDv4 quando ausente ou inválido, resposta sempre retorna header. OpenAPI declara bearer security, bodies, path, success e Problem Details 400 401 403 404 409 500. Sem RBAC e sem escopos."></pre></div>
+        </section>
+
+        <section class="paper" id="pagina-4" data-page="4">
+          <div class="page-kicker"><span>Accounts</span><span>PATCH e validação</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">11. Campos mutáveis e imutáveis</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Campo</th><th>Manual ativa</th><th>Connected ou arquivada</th></tr></thead><tbody>
+              <tr><th>name</th><td>Mutável; NFC, trim, whitespace colapsado, 1–100 code points.</td><td>Connected: bloqueado; arquivada: bloqueado.</td></tr>
+              <tr><th>type</th><td>Mutável entre os sete valores aprovados.</td><td>Connected: bloqueado; arquivada: bloqueado.</td></tr>
+              <tr><th>institutionName</th><td>Mutável; string vazia normaliza para null.</td><td>Connected: bloqueado; arquivada: bloqueado.</td></tr>
+              <tr><th>initialBalance / initialBalanceAsOf</th><td>Mutáveis somente juntos; mesma validação da criação.</td><td>Connected: bloqueados; arquivada: bloqueados.</td></tr>
+              <tr><th>confirmPossibleDuplicate</th><td>Controle transitório; nunca persistido.</td><td>Não altera a regra de connected/arquivada.</td></tr>
+              <tr><th>tenantId, origin, currencyCode, externalProvider, externalAccountId</th><td colspan="2">Imutáveis e não aceitos como campos de negócio; tentativa gera erro de campo imutável.</td></tr>
+              <tr><th>id, createdAt, updatedAt, archivedAt</th><td colspan="2">Gerenciados pelo sistema; não aceitos no body.</td></tr>
+            </tbody></table></div></div>
+            <h2 class="doc-heading">12. Body, null, normalização e dinheiro</h2>
+            <ul class="doc-list">
+              <li>Body ausente, não objeto ou vazio: <code>400 INVALID_REQUEST</code> com erro <code>EMPTY_PATCH</code> quando aplicável.</li>
+              <li>Campos desconhecidos: <code>UNKNOWN_FIELD</code>. Campos conhecidos porém imutáveis: <code>IMMUTABLE_FIELD</code>. Não se ignora entrada para mascarar tentativa de ownership mutation.</li>
+              <li><code>institutionName: null</code> é permitido; string vazia normaliza para null; null em qualquer outro campo é inválido. Campo omitido permanece inalterado.</li>
+              <li><code>name</code> e instituição repetem NFC, trim, colapso de whitespace Unicode e rejeição de controles/formatação invisível.</li>
+              <li><code>type</code> aceita checking, savings, payment, cash, credit_card, investment ou other.</li>
+              <li><code>initialBalance</code> é string decimal canônica assinada, até duas casas, no intervalo de numeric(19,2), sem arredondamento. <code>initialBalanceAsOf</code> é data real YYYY-MM-DD não futura em UTC.</li>
+              <li>Se apenas um membro do par saldo/data for enviado, retorna <code>BALANCE_REFERENCE_PAIR_REQUIRED</code>. Se ambos forem enviados, ambos são revalidados e aplicados como novo baseline.</li>
+            </ul>
+            <h2 class="doc-heading">13. Duplicidade em update</h2>
+            <p class="doc-paragraph">Quando uma atualização manual altera ou fornece <code>name</code>, <code>type</code> ou <code>institutionName</code>, o caso de uso calcula a representação final e pesquisa, no mesmo tenant, contas connected ativas com os três campos normalizados iguais, excluindo a própria conta. Sem candidata, prossegue. Com candidata e <code>confirmPossibleDuplicate</code> ausente/false, retorna <code>409 POSSIBLE_CONNECTED_ACCOUNT_DUPLICATE</code> com apenas os resumos já aprovados. Com true, atualiza a conta manual; não há merge. Atualizações somente financeiras não repetem essa busca.</p>
+          </div>
+          <div hidden aria-hidden="true"><pre class="page-text" data-source="11. Campos. Manual ativa permite name, type, institutionName, initialBalance e initialBalanceAsOf. Connected somente deactivate. Arquivada bloqueada. tenantId origin currencyCode externalProvider externalAccountId id createdAt updatedAt archivedAt imutáveis. 12. PATCH estrito, unknown field, immutable field, empty patch, null somente institutionName, normalização NFC trim whitespace, tipos, dinheiro decimal canônico numeric 19 2, data YYYY-MM-DD não futura UTC. Saldo e data juntos. 13. Duplicidade update manual compara name type institution normalizados com connected ativa do mesmo tenant, exclui própria conta, confirmação false retorna 409 POSSIBLE_CONNECTED_ACCOUNT_DUPLICATE."></pre></div>
+        </section>
+
+        <section class="paper" id="pagina-5" data-page="5">
+          <div class="page-kicker"><span>Segurança</span><span>Autorização e erros</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">14. Caminhos protegidos de Identity e Accounts</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Caminho</th><th>Contexto e defesa exigidos</th></tr></thead><tbody>
+              <tr><th>Guard Auth0</th><td>Valida bearer, assinatura, algoritmo, issuer, audience, expiração e subject; falha não executa caso de uso.</td></tr>
+              <tr><th>Resolver de Identity</th><td>Recebe somente provider/issuer/subject validados e chama a função estreita de provisionamento; não recebe tenant ou user do cliente.</td></tr>
+              <tr><th>POST/GET existentes</th><td>Continuam protegidos; listagem mantém filtro explícito <code>tenantId</code> e <code>archivedAt IS NULL</code>.</td></tr>
+              <tr><th>PATCH/deactivate</th><td>Guard, <code>TenantContext { userId, tenantId }</code>, UUID validado, lookup/update/deactivate com ownership explícito e transação RLS.</td></tr>
+              <tr><th>RLS</th><td>Camada independente: GUC local, policy por comando, role sem BYPASSRLS, ownership de banco separado.</td></tr>
+            </tbody></table></div></div>
+            <p class="doc-paragraph">A aplicação nunca aceita <code>tenantId</code> ou <code>userId</code> do body/path como autoridade. O contexto é derivado do token validado e da associação local de Identity. Accounts não acessa tabela ou repositório interno de Identity.</p>
+            <h2 class="doc-heading">15. Respostas e códigos Problem Details</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Status</th><th>Code</th><th>Regra</th></tr></thead><tbody>
+              <tr><th>400</th><td>INVALID_REQUEST</td><td>UUID inválido, body vazio, tipo/valor inválido, unknown/immutable field ou par saldo/data incompleto; detalhes somente em paths e códigos seguros.</td></tr>
+              <tr><th>401</th><td>AUTHENTICATION_REQUIRED</td><td>Bearer ausente, malformado, assinatura, issuer, audience, expiração ou token inválido.</td></tr>
+              <tr><th>403</th><td>IDENTITY_CONTEXT_UNAVAILABLE</td><td>Token autenticado sem contexto local íntegro.</td></tr>
+              <tr><th>404</th><td>ACCOUNT_NOT_FOUND</td><td>Conta inexistente ou pertencente a outro tenant; mesma mensagem e formato.</td></tr>
+              <tr><th>409</th><td>ACCOUNT_ARCHIVED</td><td>PATCH de conta arquivada.</td></tr>
+              <tr><th>409</th><td>CONNECTED_ACCOUNT_READ_ONLY</td><td>PATCH de conta conectada.</td></tr>
+              <tr><th>409</th><td>POSSIBLE_CONNECTED_ACCOUNT_DUPLICATE</td><td>Atualização manual colide com connected ativa sem confirmação.</td></tr>
+              <tr><th>500</th><td>INTERNAL_ERROR</td><td>Falha de banco, RLS inesperada ou auditoria; nunca confirmar causa técnica.</td></tr>
+            </tbody></table></div></div>
+            <p class="doc-paragraph">Todos os erros usam <code>application/problem+json</code> com <code>type</code>, <code>title</code>, <code>status</code>, <code>code</code> e <code>detail</code>. Não ecoam body, path cru, SQL, stack, token, claims, nomes, saldos, tenantId ou existência de outro tenant.</p>
+          </div>
+          <div hidden aria-hidden="true"><pre class="page-text" data-source="14. Identity Accounts. Auth0 guard, Identity resolver estreito, TenantContext explícito, filtros tenantId, RLS independente, PATCH e deactivate protegidos. 15. Problem Details. 400 INVALID_REQUEST, 401 AUTHENTICATION_REQUIRED, 403 IDENTITY_CONTEXT_UNAVAILABLE, 404 ACCOUNT_NOT_FOUND uniforme para missing e cross tenant, 409 ACCOUNT_ARCHIVED, CONNECTED_ACCOUNT_READ_ONLY, POSSIBLE_CONNECTED_ACCOUNT_DUPLICATE, 500 INTERNAL_ERROR. application/problem+json sem SQL stack token claims nomes saldos tenantId ou existência alheia."></pre></div>
+        </section>
+
+        <section class="paper" id="pagina-6" data-page="6">
+          <div class="page-kicker"><span>Audit</span><span>Modelo persistido</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">16. Fronteira e propriedade de auditoria</h2>
+            <p class="doc-paragraph">O módulo <strong>Audit</strong> possui o modelo e o port de escrita. Accounts emite um comando tipado de auditoria através do port de Application; Domain não conhece Prisma, PostgreSQL, HTTP, logger ou JSON. O adapter Prisma do Audit escreve no mesmo transaction client recebido pela unidade de trabalho tenant-aware. Não haverá event bus, outbox, leitura de auditoria ou API de auditoria em S1.</p>
+            <h2 class="doc-heading">17. Tabela audit_records</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Coluna</th><th>PostgreSQL / Prisma</th><th>Null/default/constraint</th></tr></thead><tbody>
+              <tr><th>id</th><td>uuid / String @db.Uuid</td><td>PK, NOT NULL, <code>gen_random_uuid()</code>.</td></tr>
+              <tr><th>tenant_id</th><td>uuid / String @db.Uuid</td><td>NOT NULL, FK tenants.id, ON DELETE/UPDATE RESTRICT; ownership direto.</td></tr>
+              <tr><th>actor_user_id</th><td>uuid / String @db.Uuid</td><td>NOT NULL, FK users.id, ON DELETE/UPDATE RESTRICT; user interno do TenantContext.</td></tr>
+              <tr><th>action</th><td>enum audit_action / AuditAction</td><td>NOT NULL; account_updated ou account_deactivated.</td></tr>
+              <tr><th>resource_type</th><td>enum audit_resource_type / AuditResourceType</td><td>NOT NULL; somente account em S1.</td></tr>
+              <tr><th>resource_id</th><td>uuid / String @db.Uuid</td><td>NOT NULL, FK accounts.id, ON DELETE/UPDATE RESTRICT.</td></tr>
+              <tr><th>outcome</th><td>enum audit_outcome / AuditOutcome</td><td>NOT NULL; somente success em S1.</td></tr>
+              <tr><th>request_id</th><td>uuid / String @db.Uuid</td><td>NOT NULL; correlação, sem unicidade e sem valor externo não validado.</td></tr>
+              <tr><th>metadata</th><td>jsonb / Json</td><td>NOT NULL, default <code>{}</code>; objeto máximo de 2048 bytes e sem chaves proibidas.</td></tr>
+              <tr><th>created_at</th><td>timestamptz(3) / DateTime</td><td>NOT NULL, default CURRENT_TIMESTAMP; timestamp imutável.</td></tr>
+            </tbody></table></div></div>
+            <p class="doc-paragraph">Não há <code>updated_at</code>. A combinação de <code>tenant_id</code>, <code>actor_user_id</code> e <code>resource_id</code> é validada pela aplicação na mesma transação; RLS valida que <code>tenant_id</code> coincide com o tenant contextualizado. Enums são preferidos a strings livres por compatibilidade com o schema Prisma existente.</p>
+            <h2 class="doc-heading">18. Metadata e ações obrigatórias</h2>
+            <ul class="doc-list">
+              <li><code>account_updated</code>: metadata contém somente <code>changedFields</code>, array de nomes dentre <code>name</code>, <code>type</code>, <code>institutionName</code>, <code>initialBalance</code> e <code>initialBalanceAsOf</code>; array vazio é permitido para no-op aceito.</li>
+              <li><code>account_deactivated</code>: metadata contém somente <code>stateTransition</code>, com <code>active_to_archived</code> ou <code>already_archived</code>.</li>
+              <li>São proibidos valores before/after, body completo, nomes, instituição, saldos, datas financeiras, currency, provider, externalAccountId, issuer, subject, claims, token, connection string e stack trace.</li>
+              <li>Update autorizado e desativação autorizada sempre geram um registro de sucesso. Tentativas denied, invalid, missing e cross-tenant não são registros de auditoria de negócio; o log técnico pode conter somente operação, resultado genérico e request id.</li>
+              <li>Não há retenção formal adicional autorizada para o MVP acadêmico. A política futura deverá ser decidida antes de SaaS com dados reais.</li>
+            </ul>
+          </div>
+          <div hidden aria-hidden="true"><pre class="page-text" data-source="16. Audit module owns audit_records and write port. Accounts emits typed audit command. Same transaction client, no event bus, outbox, read API or audit API in Sprint. 17. audit_records columns id uuid PK, tenant_id uuid FK tenants, actor_user_id uuid FK users, action audit_action, resource_type audit_resource_type, resource_id uuid FK accounts, outcome audit_outcome, request_id uuid, metadata jsonb, created_at timestamptz 3. Enums account_updated account_deactivated, account, success. RLS tenant ownership. 18. Metadata changedFields or stateTransition only, max 2048 bytes, no before after, financial values, names, tokens, claims, issuer subject, provider or external id. Successful update and deactivate audited. Denied invalid missing cross tenant not business audit. No formal retention."></pre></div>
+        </section>
+
+        <section class="paper" id="pagina-7" data-page="7">
+          <div class="page-kicker"><span>PostgreSQL</span><span>RLS e atomicidade</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">19. Transação de manutenção</h2>
+            <ol class="doc-list">
+              <li>Validar UUID e normalizar entrada antes do banco, sem consulta que diferencie existência.</li>
+              <li>Resolver contexto Auth0 e obter <code>TenantContext</code> explícito.</li>
+              <li>Abrir a unidade de trabalho Prisma tenant-aware e executar primeiro <code>set_config('app.current_tenant_id', tenantId, true)</code>.</li>
+              <li>Localizar a conta com <code>id = accountId</code>, <code>tenant_id = context.tenantId</code> e lock de linha. Nenhum SELECT global de existência é permitido.</li>
+              <li>Aplicar estado, regras de origem, campos e duplicidade; persistir a conta.</li>
+              <li>Inserir o registro de auditoria com actor, tenant, resource, action, outcome, metadata e request id no mesmo <code>tx</code>.</li>
+              <li>Commit somente após as duas operações. Qualquer falha de auditoria faz rollback da alteração e chega ao HTTP como <code>500 INTERNAL_ERROR</code>.</li>
+            </ol>
+            <h2 class="doc-heading">20. RLS, roles, grants e policies</h2>
+            <p class="doc-paragraph"><code>audit_records</code> terá <code>ENABLE ROW LEVEL SECURITY</code> e <code>FORCE ROW LEVEL SECURITY</code>, ownership de <code>cfi_owner</code> e as mesmas regras de migration direta do ADR. A policy de INSERT para <code>cfi_runtime</code> e <code>cfi_test</code> exige <code>tenant_id = app_private.current_tenant_id()</code>. A policy de SELECT existe somente para <code>cfi_test</code> e usa o mesmo predicado. Não haverá policy nem GRANT de UPDATE/DELETE. <code>cfi_runtime</code> recebe apenas USAGE de schema e INSERT; não recebe SELECT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER ou grant option. O adapter usa INSERT parametrizado sem exigir leitura runtime.</p>
+            <pre style="overflow:auto;white-space:pre;font:11px/1.55 'Cascadia Mono',Consolas,monospace" aria-label="Políticas RLS de auditoria"><code>ALTER TABLE public.audit_records ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.audit_records FORCE ROW LEVEL SECURITY;
+
+CREATE POLICY audit_records_select_test ON public.audit_records
+  FOR SELECT TO cfi_test
+  USING (tenant_id = app_private.current_tenant_id());
+
+CREATE POLICY audit_records_insert_own ON public.audit_records
+  FOR INSERT TO cfi_runtime, cfi_test
+  WITH CHECK (tenant_id = app_private.current_tenant_id());</code></pre>
+            <h2 class="doc-heading">21. Fail closed e migration</h2>
+            <p class="doc-paragraph">Contexto ausente, vazio, malformed, inválido ou stale é convertido pelo helper existente em NULL: SELECT retorna zero linhas e INSERT falha pela policy. O pool nunca usa estado de sessão; cada transação redefine o GUC localmente. A migration nova é forward-only e não edita migrations aplicadas. O script de verificação deve confirmar tabela, model Prisma, precisão de timestamp, enums, constraints, índices, RLS, policies, grants, ownership, atributos de roles e operações cross-tenant em role <code>cfi_test</code> sem BYPASSRLS.</p>
+          </div>
+          <div hidden aria-hidden="true"><pre class="page-text" data-source="19. Transação. UUID antes do banco, TenantContext, set_config local como primeira instrução, lookup account id e tenant_id com lock FOR UPDATE, update, audit insert e commit no mesmo tx. Falha de auditoria rollback e 500 INTERNAL_ERROR. 20. audit_records ENABLE FORCE RLS. INSERT runtime test exige tenant_id current_tenant_id. SELECT somente cfi_test. Sem UPDATE DELETE grants policies. Runtime somente INSERT e schema usage, sem select truncate references trigger. 21. Contexto ausente vazio malformado inválido stale vira NULL, SELECT zero linhas, INSERT falha. Pool transaction local. Migration forward-only, verify RLS roles grants ownership e cross tenant."></pre></div>
+        </section>
+
+        <section class="paper" id="pagina-8" data-page="8">
+          <div class="page-kicker"><span>Threat model</span><span>Edge cases</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">22. Matriz de casos de borda e ameaça</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Cenário</th><th>Resultado obrigatório</th><th>Proteção</th></tr></thead><tbody>
+              <tr><th>Update autorizado</th><td>200, AccountView, audit account_updated.</td><td>Guard, ownership, lock, RLS, atomicidade.</td></tr>
+              <tr><th>Deactivation autorizada</th><td>200, archivedAt preenchido, audit account_deactivated.</td><td>Soft state transition, same transaction.</td></tr>
+              <tr><th>Missing ou conta de outro tenant</th><td>404 ACCOUNT_NOT_FOUND uniforme.</td><td>Filtro de tenant e ausência de existência distinta.</td></tr>
+              <tr><th>Arquivada</th><td>PATCH 409; deactivate repetido 200 idempotente.</td><td>Lock e state machine.</td></tr>
+              <tr><th>UUID inválido / PATCH vazio</th><td>400 sem consulta de conta.</td><td>Validação inbound, sem ecoar valor.</td></tr>
+              <tr><th>Unknown ou immutable field</th><td>400 com UNKNOWN_FIELD ou IMMUTABLE_FIELD.</td><td>Schema strict; tenant/origin/currency não são mutáveis.</td></tr>
+              <tr><th>Texto, dinheiro ou data inválidos</th><td>400 seguro.</td><td>Normalização e domínio repetidos; sem arredondamento.</td></tr>
+              <tr><th>Saldo/data parcial</th><td>400 BALANCE_REFERENCE_PAIR_REQUIRED.</td><td>Regra de par no schema/use case.</td></tr>
+              <tr><th>Connected account</th><td>PATCH 409 CONNECTED_ACCOUNT_READ_ONLY; deactivate permitido.</td><td>Origem/provider/external id protegidos.</td></tr>
+              <tr><th>Ownership mutation</th><td>400 antes da persistência.</td><td>Campos não aceitos e RLS WITH CHECK.</td></tr>
+              <tr><th>RLS ausente/malformed/stale</th><td>Zero linhas ou falha de policy; nunca acesso.</td><td>GUC local e NOBYPASSRLS.</td></tr>
+              <tr><th>Role inseguro</th><td>Readiness falha.</td><td>Preflight contra superuser, owner e BYPASSRLS.</td></tr>
+              <tr><th>Audit insert falha</th><td>Rollback completo e 500 genérico.</td><td>Mesma transação, sem estado parcial.</td></tr>
+              <tr><th>Concorrência</th><td>Operações serializadas; sem lost update silencioso dentro do lock.</td><td>FOR UPDATE e transação curta.</td></tr>
+              <tr><th>Resposta, logs e auditoria</th><td>Somente representação e metadata mínima.</td><td>Sem payload financeiro, tokens ou existência alheia.</td></tr>
+            </tbody></table></div></div>
+            <p class="doc-paragraph">O mesmo comportamento deve ocorrer por REST e por chamadas de Application/Prisma dentro dos limites de seus contratos. Um erro de RLS inesperado não deve ser reinterpretado como autorização; ele é falha interna genérica e deve ser investigado por logs técnicos sanitizados.</p>
+          </div>
+          <div hidden aria-hidden="true"><pre class="page-text" data-source="22. Threat edge cases. Authorized update 200 and audit. Authorized deactivate 200 archivedAt and audit. Missing cross tenant uniform 404. Archived patch 409, repeated deactivate 200. Invalid UUID empty PATCH 400. Unknown immutable fields 400. Invalid normalized text money precision range future date partial balance date 400. Connected update 409, deactivate allowed. Ownership mutation rejected. RLS absent malformed stale fail closed. Unsafe role readiness failure. Audit failure rollback 500. Concurrent lock. Response logs audit data minimization."></pre></div>
+        </section>
+
+        <section class="paper" id="pagina-9" data-page="9">
+          <div class="page-kicker"><span>Qualidade</span><span>Aceitação e rastreabilidade</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">23. Matriz de aceitação e verificação</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Requisito</th><th>Verificação futura</th><th>Evidência mínima</th></tr></thead><tbody>
+              <tr><th>Domain/Application</th><td>Vitest para lifecycle, PATCH, connected, archived, par saldo/data, duplicidade e erros tipados.</td><td>Unit tests sem NestJS, Prisma ou HTTP.</td></tr>
+              <tr><th>Prisma/PostgreSQL</th><td>Integração com dois tenants, update, deactivate, lock, constraints e audit row.</td><td>Banco local migrado com role de teste.</td></tr>
+              <tr><th>RLS independente</th><td>SELECT/INSERT próprios, cross-tenant, sem contexto, contexto inválido, UPDATE/DELETE e role NOBYPASSRLS.</td><td>SQL executado como cfi_test; relrowsecurity/forcerowsecurity/policies/grants confirmados.</td></tr>
+              <tr><th>REST/Supertest</th><td>200, 400, 401, 403, 404 uniforme, 409, 500, headers e minimização.</td><td>Casos authorized/cross-tenant e body completo.</td></tr>
+              <tr><th>OpenAPI</th><td>Geração reproduz rotas, security, schemas, headers, respostas e codes.</td><td>openapi.json comparado ao contrato.</td></tr>
+              <tr><th>Audit</th><td>Conteúdo mínimo, FK, enums, atomicidade, falha de insert, least privilege e ausência de API de leitura.</td><td>Rows verificadas pela role de teste, runtime sem SELECT.</td></tr>
+              <tr><th>Qualidade</th><td>format, lint, typecheck, build, migration validation e testes relevantes.</td><td>Comandos do backend registrados com resultado real.</td></tr>
+            </tbody></table></div></div>
+            <h2 class="doc-heading">24. Critério de aceite documental</h2>
+            <p class="doc-paragraph">A documentação desta atividade somente é considerada concluída quando cada decisão HTTP, lifecycle, autorização, auditoria, transação, RLS, erro e disclosure estiver explicitamente resolvida, o plano de implementação apontar arquivos e comandos verificáveis, o Sprint 1 apontar os dois documentos e não houver alteração fora dos três HTML aprovados.</p>
+            <h2 class="doc-heading">25. Referências</h2>
+            <ul class="doc-list">
+              <li><a href="especificacao-autenticacao-contas.html">Especificação de Autenticação e Contas 1.0</a></li>
+              <li><a href="plano-implementacao-manutencao-isolamento-contas.html">Plano de Implementação de Manutenção e Isolamento</a></li>
+              <li><a href="modelo-dados-identity-accounts.html">Modelo de Dados de Identity e Accounts 1.0</a></li>
+              <li><a href="adr-rls-postgresql.html">ADR-001 — RLS PostgreSQL</a></li>
+              <li><a href="prd.html">PRD 1.4</a></li>
+              <li><a href="arquitetura.html">Arquitetura 1.5</a></li>
+              <li><a href="Plano_Divisao_Atividades_Sprint_1.html">Plano da Sprint 1</a></li>
+              <li><a href="https://www.rfc-editor.org/rfc/rfc9457.html">RFC 9457 — Problem Details for HTTP APIs</a></li>
+            </ul>
+          </div>
+          <div hidden aria-hidden="true"><pre class="page-text" data-source="23. Acceptance. Unit Vitest domain application. Prisma PostgreSQL integration. Independent RLS non bypass role. REST Supertest authorized cross tenant status headers disclosure. OpenAPI generation contract. Audit content atomicity least privilege minimization. format lint typecheck build migrations tests. 24. Acceptance documental requires every HTTP lifecycle authorization audit transaction RLS error disclosure decision resolved, plan exact files commands, Sprint links, only three HTML. 25. References S1-04 S1-05, model, ADR, PRD, architecture, Sprint, RFC 9457."></pre></div>
+        </section>
+      </article>
+    </div>
+  </main>
+  <footer class="site-footer">Documentação acadêmica · UCB · 2026 · Samuel Mota, Thiago Marques e Miguel Candido</footer>
+  <script src="assets/app.js"></script>
+</body>
+</html>

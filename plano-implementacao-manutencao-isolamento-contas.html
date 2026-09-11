@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Plano normativo de implementação backend para manutenção de contas e isolamento por usuário na Sprint 1">
+  <title>Plano de Implementação de Manutenção e Isolamento · Sprint 1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&amp;family=Outfit:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body style="--accent: #ec4899">
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="2"/><path d="M16 13h4"/><path d="M2 10h20"/></svg></span><span>Centralizador Financeiro</span></a>
+    <nav class="doc-nav" aria-label="Documentos"><a href="index.html">Início</a><a href="visao.html">Visão</a><a href="prd.html">PRD</a><a href="arquitetura.html">Arquitetura</a><a href="Plano_Divisao_Atividades_Sprint_1.html" aria-current="page">Sprint 1</a></nav>
+  </header>
+  <main id="conteudo">
+    <section class="hero">
+      <p class="eyebrow">Plano aprovado · Dev 1 · S1-06/S1-07</p>
+      <h1>Implementação de Manutenção e Isolamento</h1>
+      <p class="lead">Sequência reviewável para transformar o contrato de contas em backend NestJS, Prisma, PostgreSQL, REST, OpenAPI e testes de isolamento.</p>
+      <div class="meta-row"><span class="meta-chip">Versão 1.0</span><span class="meta-chip">11 set 2026</span><span class="meta-chip">Status: aprovado</span></div>
+    </section>
+    <div class="reader">
+      <aside class="sidebar" aria-label="Navegação por seções"><p class="sidebar-title">Neste documento</p><label class="search"><span class="skip-link">Buscar</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="doc-search" type="search" placeholder="Buscar no texto…" autocomplete="off"></label><nav class="page-nav" aria-label="Seções do documento"></nav><p class="result-note">Plano integral</p></aside>
+      <article class="pages" aria-label="Conteúdo integral">
+        <section class="paper" id="pagina-1" data-page="1">
+          <div class="page-kicker"><span>Plano</span><span>Pré-condições e baseline</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">1. Finalidade e limite de autorização</h2>
+            <p class="doc-paragraph"><strong>Status: aprovado em 11/09/2026.</strong> Este plano traduz a <a href="especificacao-manutencao-isolamento-contas.html">Especificação de Manutenção e Isolamento de Contas 1.0</a> em fases backend ordenadas. Ele não implementa o backend, não autoriza operação destrutiva, não autoriza SQL em banco compartilhado e não autoriza deploy.</p>
+            <h2 class="doc-heading">2. Pré-condições verificadas</h2>
+            <ul class="doc-list">
+              <li>Backend NestJS 11, TypeScript, Prisma 7, PostgreSQL, Zod, Vitest e Supertest estão declarados em <code>package.json</code>.</li>
+              <li>O prefixo <code>/api/v1</code>, Swagger/OpenAPI, Auth0 Guard, Identity resolver, módulos Accounts/Identity e Problem Details para S1-04/S1-05 existem.</li>
+              <li>O modelo Account possui origem manual/connected, moeda BRL, saldo decimal, <code>archivedAt</code>, índices de tenant e migration de fundação/RLS.</li>
+              <li><code>PrismaTenantTransaction</code> valida contexto e define <code>app.current_tenant_id</code> localmente antes do callback; RLS atual está aplicado às quatro tabelas de Identity/Accounts.</li>
+              <li>O backend atual ainda não possui use cases de update/deactivate, tabela/modelo de auditoria, request id, migration de audit ou rotas PATCH/deactivate.</li>
+              <li>O repositório backend está limpo na branch <code>main</code>, com os commits de fundação e autenticação/contas anteriores. Testes de integração dependem de PostgreSQL local.</li>
+            </ul>
+            <h2 class="doc-heading">3. Dependências de execução</h2>
+            <p class="doc-paragraph">A ordem mínima é F0 baseline → F1 domínio/Application e unidade de trabalho → F2 schema/migration/audit/RLS → F3 adapters e REST/OpenAPI → F4 testes e verificação. F3 não deve ser integrado antes de F2 e F4 não deve declarar sucesso sem banco migrado e role <code>cfi_test</code> sem BYPASSRLS.</p>
+          </div>
+          <div hidden aria-hidden="true"><pre class="page-text" data-source="1. Plano aprovado em 11 set 2026 para Dev 1 S1-06 S1-07. Traduz especificação, não implementa backend, não autoriza operação destrutiva, SQL compartilhado ou deploy. 2. Baseline NestJS 11 TypeScript Prisma 7 PostgreSQL Zod Vitest Supertest, api v1, Swagger, Auth0, Identity, Accounts, archivedAt, PrismaTenantTransaction, RLS quatro tabelas. Ausentes update deactivate audit_records request id migration rotas PATCH deactivate. 3. Ordem F0 baseline, F1 domain application unit of work, F2 schema migration audit RLS, F3 adapters REST OpenAPI, F4 tests."></pre></div>
+        </section>
+
+        <section class="paper" id="pagina-2" data-page="2">
+          <div class="page-kicker"><span>Fase 0</span><span>Inventário de arquivos</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">4. Arquivos existentes a modificar</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Arquivo</th><th>Alteração planejada</th></tr></thead><tbody>
+              <tr><th><code>prisma/schema.prisma</code></th><td>Enums e model <code>AuditRecord</code>, relações e índices.</td></tr>
+              <tr><th><code>src/modules/accounts/domain/account.ts</code></th><td>Regras de update, estado e representação final sem dependência externa.</td></tr>
+              <tr><th><code>src/modules/accounts/domain/account.errors.ts</code></th><td>Erros tipados de arquivada, connected read-only e estado inválido.</td></tr>
+              <tr><th><code>src/modules/accounts/application/ports/accounts.repository.port.ts</code></th><td>Ports para lookup bloqueado, update, deactivate e unidade tenant-aware.</td></tr>
+              <tr><th><code>src/modules/accounts/application/use-cases/create-manual-account.ts</code></th><td>Compatibilizar o port/unidade de trabalho sem alterar contrato S1-05.</td></tr>
+              <tr><th><code>src/modules/accounts/application/use-cases/list-accounts.ts</code></th><td>Preservar listagem ativa e filtro tenant-aware no novo port.</td></tr>
+              <tr><th><code>src/modules/accounts/adapters/outbound/prisma-accounts.repository.ts</code></th><td>Lookup com ownership, lock, update/deactivate, Decimal e timestamps.</td></tr>
+              <tr><th><code>src/modules/accounts/adapters/inbound/accounts.controller.ts</code></th><td>Rotas PATCH e POST deactivate, headers e schemas Swagger.</td></tr>
+              <tr><th><code>src/modules/accounts/adapters/inbound/account-input.schema.ts</code></th><td>Schema PATCH estrito, pair saldo/data, campos imutáveis e body vazio.</td></tr>
+              <tr><th><code>src/modules/accounts/adapters/inbound/account-problem-details.filter.ts</code></th><td>Mapeamento 404/409/500 e minimização de detalhes.</td></tr>
+              <tr><th><code>src/modules/accounts/adapters/inbound/account-openapi.schema.ts</code></th><td>Schemas, headers e responses de manutenção.</td></tr>
+              <tr><th><code>src/modules/accounts/accounts.module.ts</code></th><td>Registrar use cases, unidade de trabalho e Audit writer.</td></tr>
+              <tr><th><code>src/infrastructure/database/prisma-tenant-transaction.ts</code></th><td>Expor contexto transacional para Account e Audit no mesmo <code>tx</code>.</td></tr>
+              <tr><th><code>src/infrastructure/database/database-security-check.service.ts</code></th><td>Incluir <code>audit_records</code> no preflight de ownership/role segura.</td></tr>
+              <tr><th><code>src/app.module.ts</code></th><td>Registrar unidade de trabalho/request-id middleware conforme a fronteira aprovada.</td></tr>
+              <tr><th><code>src/main.ts</code></th><td>Registrar middleware de request id e preservar prefixo/OpenAPI.</td></tr>
+              <tr><th><code>scripts/generate-openapi.ts</code></th><td>Adicionar providers dos novos use cases e manter geração sem executar casos.</td></tr>
+              <tr><th><code>scripts/database/verify-rls.sql</code></th><td>Verificar quinta tabela, policies, grants e operações da matriz.</td></tr>
+              <tr><th><code>test/integration/rls.integration.spec.ts</code></th><td>Expandir casos para audit_records e operações sem contexto.</td></tr>
+              <tr><th><code>test/integration/prisma-accounts.repository.integration.spec.ts</code></th><td>Adicionar manutenção, lock, estados e audit atomicamente.</td></tr>
+              <tr><th><code>test/e2e/accounts.e2e.spec.ts</code></th><td>Adicionar PATCH/deactivate, cross-tenant, headers, erros e disclosure.</td></tr>
+              <tr><th><code>src/modules/accounts/domain/account.spec.ts</code></th><td>Adicionar lifecycle, connected e validações de update.</td></tr>
+            </tbody></table></div></div>
+            <h2 class="doc-heading">5. Arquivos novos a criar</h2>
+            <ul class="doc-list">
+              <li><code>prisma/migrations/202609110001_account_maintenance_audit_rls/migration.sql</code></li>
+              <li><code>src/modules/audit/audit.module.ts</code>, <code>src/modules/audit/application/ports/audit-writer.port.ts</code>, <code>src/modules/audit/application/audit-record.ts</code> e <code>src/modules/audit/adapters/outbound/prisma-audit-writer.ts</code></li>
+              <li><code>src/shared/application/ports/tenant-unit-of-work.port.ts</code> e <code>src/infrastructure/database/prisma-tenant-unit-of-work.ts</code></li>
+              <li><code>src/shared/application/request-id.ts</code> e <code>src/shared/adapters/inbound/request-id.middleware.ts</code></li>
+              <li><code>src/modules/accounts/application/use-cases/update-account.ts</code> e <code>deactivate-account.ts</code>, com seus respectivos <code>.spec.ts</code></li>
+              <li><code>test/integration/audit-records.integration.spec.ts</code> e <code>test/integration/account-maintenance.integration.spec.ts</code></li>
+            </ul>
+            <p class="doc-paragraph">Arquivos de geração como <code>src/generated/prisma</code> permanecem derivados. Não serão criados novos pacotes, bibliotecas ou módulos de cliente web/mobile.</p>
+          </div>
+          <div hidden aria-hidden="true"><pre class="page-text" data-source="4. Existing files modify schema Prisma, Account domain errors, Accounts repository port, create/list compatibility, Prisma accounts adapter, controller, input schema, Problem Details, OpenAPI schema, Accounts module, tenant transaction, security check, app module, main, OpenAPI generator, verify RLS, unit integration e2e tests. 5. New files migration 202609110001_account_maintenance_audit_rls, Audit module writer record Prisma adapter, tenant unit of work port and adapter, request id, update deactivate use cases and specs, audit integration and account maintenance integration. No new dependencies or clients."></pre></div>
+        </section>
+
+        <section class="paper" id="pagina-3" data-page="3">
+          <div class="page-kicker"><span>Fase 1</span><span>Domain e Application</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">6. Modelo de aplicação</h2>
+            <ol class="doc-list">
+              <li>Adicionar ao Domain uma operação de update que receba campos já tipados/normalizados, preserve <code>tenantId</code>, origem, currency, providers, external id e timestamps, e recuse conta arquivada.</li>
+              <li>Manter <code>Money</code>, <code>BalanceReferenceDate</code>, normalização e tipos de conta como invariantes independentes de Zod.</li>
+              <li>Criar <code>UpdateAccount</code> e <code>DeactivateAccount</code>; ambos recebem <code>TenantContext</code> e request id explícitos e não importam HTTP, NestJS, Prisma ou logger.</li>
+              <li>Calcular no Application a representação final, verificar origem, executar duplicidade somente quando campos de identidade mudarem e construir metadata segura.</li>
+              <li>Usar uma unidade de trabalho tenant-aware para entregar Account repository e Audit writer sobre o mesmo transaction client.</li>
+            </ol>
+            <h2 class="doc-heading">7. Justificativa da unidade de trabalho</h2>
+            <p class="doc-paragraph">O port existente encapsula uma transação para Accounts, mas não expõe uma forma de escrever em Audit atomicamente sem acoplar Application a Prisma ou abrir uma segunda transação. A menor extensão compatível é um port de unidade tenant-aware que compõe ports de Accounts e Audit dentro do callback transacional. Isso resolve a invariável “mutação aceita implica auditoria aceita”, preserva Hexagonal/Clean e não introduz outbox, evento, fila ou mecanismo de consistência eventual.</p>
+            <h2 class="doc-heading">8. Contrato do Audit writer</h2>
+            <p class="doc-paragraph">O writer recebe somente um comando validado contendo tenant, actor, action, resource type/id, outcome, request id e metadata permitida. O adapter realiza INSERT parametrizado sem retornar ou consultar registros para o runtime. Erros de constraint, privilege ou conexão sobem tipados até o boundary transacional; o mapper HTTP devolve somente <code>INTERNAL_ERROR</code>.</p>
+            <h2 class="doc-heading">9. Request id</h2>
+            <p class="doc-paragraph">Criar middleware inbound que valide UUID canônico no header <code>X-Request-Id</code>, gere UUIDv4 quando ausente ou inválido, anexe o valor à request e ao response e forneça o valor aos casos de uso. A entrada nunca participa da autorização nem é escrita sem validação. O mecanismo não altera o formato Problem Details.</p>
+          </div>
+          <div hidden aria-hidden="true"><pre class="page-text" data-source="6. Fase 1 Domain update, Money, date, normalization, immutable ownership, UpdateAccount, DeactivateAccount, TenantContext and request id explicit, no framework. Application calculates final state, connected origin, duplicate, safe metadata. 7. Tenant unit of work is smallest extension for same transaction account mutation plus audit, preserving Clean Hexagonal without outbox. 8. Audit writer typed command, parameterized INSERT, runtime no read, failures rollback and INTERNAL_ERROR. 9. Request id middleware validates UUID, generates if absent invalid, request response and use case propagation, never authorization or unsafe logging."></pre></div>
+        </section>
+
+        <section class="paper" id="pagina-4" data-page="4">
+          <div class="page-kicker"><span>Fase 2</span><span>Prisma, schema e migration</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">10. Schema Prisma e migration forward-only</h2>
+            <p class="doc-paragraph">Atualizar <code>prisma/schema.prisma</code> com os três enums e o model <code>AuditRecord</code> descritos na especificação. A migration será criada com <code>prisma migrate dev --create-only</code>, revisada manualmente e receberá SQL customizado para owner, grants, checks, RLS e policies. Nenhuma migration já aplicada será editada.</p>
+            <h2 class="doc-heading">11. SQL obrigatório da migration</h2>
+            <ul class="doc-list">
+              <li>Criar enums <code>audit_action</code>, <code>audit_resource_type</code> e <code>audit_outcome</code>, tabela <code>public.audit_records</code>, PK, FKs RESTRICT, default UUID, <code>timestamptz(3)</code>, JSONB default e checks de metadata.</li>
+              <li>Criar índices <code>audit_records_tenant_created_at_id_idx</code>, <code>audit_records_tenant_resource_created_at_idx</code> e <code>audit_records_request_id_idx</code>.</li>
+              <li>Definir owner <code>cfi_owner</code>, revogar privilégios de PUBLIC, conceder INSERT ao runtime e SELECT/INSERT somente ao test.</li>
+              <li>Habilitar e forçar RLS; criar policy de INSERT runtime/test e SELECT test; não criar UPDATE/DELETE policy nem grants.</li>
+              <li>Incluir <code>audit_records</code> nas consultas de readiness que impedem runtime owner/superuser/BYPASSRLS.</li>
+            </ul>
+            <h2 class="doc-heading">12. Adapter Prisma</h2>
+            <p class="doc-paragraph">Estender o adapter de Accounts com consultas por <code>id</code> e <code>tenantId</code>, lock de linha dentro do callback transacional, exclusão de arquivadas para PATCH e retorno uniforme de ausência. Update deve enviar somente campos permitidos; deactivate deve executar update condicional de <code>archivedAt</code>. O Audit adapter usa o mesmo <code>tx</code> e não realiza I/O externo.</p>
+            <p class="doc-paragraph">O mapeamento Prisma/Domain preserva Decimal como string canônica e datas UTC. SQLSTATE de ausência não deve ser usado para distinguir cross-tenant; violação inesperada de RLS, FK ou check recebe erro interno tipado.</p>
+          </div>
+          <div hidden aria-hidden="true"><pre class="page-text" data-source="10. Prisma schema AuditRecord enums model migration create-only forward-only. 11. SQL enums audit_action resource_type outcome, audit_records PK UUID, tenant actor resource FKs RESTRICT, timestamptz 3, JSONB checks, indexes tenant created resource request, owner cfi_owner, PUBLIC revoked, runtime INSERT only, test SELECT INSERT, ENABLE FORCE RLS, policies INSERT and test SELECT, no update delete grants, readiness includes audit table. 12. Prisma adapter lookup id tenant lock, archived behavior, allowed fields, deactivate archivedAt, same tx audit writer, Decimal string dates UTC, SQLSTATE non-disclosure."></pre></div>
+        </section>
+
+        <section class="paper" id="pagina-5" data-page="5">
+          <div class="page-kicker"><span>Fase 3</span><span>RLS e verificação SQL</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">13. Policies e roles</h2>
+            <p class="doc-paragraph">Reutilizar <code>app_private.current_tenant_id()</code> e o padrão do ADR. O contexto é sempre definido com <code>set_config(..., true)</code> dentro da interactive transaction. Role runtime permanece <code>NOSUPERUSER</code>, <code>NOBYPASSRLS</code>, sem ownership e sem herança administrativa. A função de provisionamento continua sendo o único caminho privilegiado de bootstrap de Identity.</p>
+            <h2 class="doc-heading">14. Verificação independente</h2>
+            <p class="doc-paragraph">Atualizar <code>scripts/database/verify-rls.sql</code> para verificar cinco tabelas com RLS/force, políticas esperadas, owner, grants e atributos dos papéis. Acrescentar blocos transacionais que, como <code>cfi_test</code>, confirmem:</p>
+            <ul class="doc-list">
+              <li>tenant A lê seus accounts/audits e tenant B não lê as linhas de A;</li>
+              <li>INSERT com tenant alheio falha; INSERT sem contexto ou contexto inválido falha;</li>
+              <li>UPDATE/DELETE em audit_records são negados por privilégio/policy;</li>
+              <li>UPDATE de accounts não consegue trocar <code>tenant_id</code>;</li>
+              <li>pool reuse não herda contexto de uma transação anterior.</li>
+            </ul>
+            <h2 class="doc-heading">15. Atomicidade e recuperação</h2>
+            <p class="doc-paragraph">A alteração de Account e INSERT de Audit são uma unidade curta. Se a migration falhar em ambiente ainda não migrado, corrigir a migration antes de aplicar; se já aplicada, criar nova forward migration. Se uma aplicação parcialmente migrada detectar ausência de audit, readiness/health deve impedir tráfego de manutenção até o estado esperado. Não usar rollback destrutivo nem <code>db push</code>.</p>
+          </div>
+          <div hidden aria-hidden="true"><pre class="page-text" data-source="13. RLS reuse current_tenant_id, set_config local transaction, runtime NOSUPERUSER NOBYPASSRLS not owner. Identity provisioner only bootstrap. 14. verify-rls five tables RLS force policies owner grants role attributes. cfi_test own and cross tenant select audit, insert foreign no context invalid fails, audit update delete denied, account tenant mutation blocked, pool reuse no inheritance. 15. Account and audit one short transaction. Migration forward correction, readiness blocks partial migration, no destructive rollback or db push."></pre></div>
+        </section>
+
+        <section class="paper" id="pagina-6" data-page="6">
+          <div class="page-kicker"><span>Fase 4</span><span>REST, erros e OpenAPI</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">16. Controller e schemas inbound</h2>
+            <ol class="doc-list">
+              <li>Adicionar decorators PATCH/POST, path parameter schema UUID, request body estrito, bearer security e responses 200/400/401/403/404/409/500.</li>
+              <li>Aplicar o mesmo <code>Auth0JwtGuard</code> e <code>CurrentTenantContext</code> já usados em Accounts.</li>
+              <li>Passar somente contexto, account id validado, input normalizado e request id ao Application.</li>
+              <li>Não aceitar tenant, user, origin, provider, external id, currency ou timestamps como fonte do cliente.</li>
+            </ol>
+            <h2 class="doc-heading">17. Mapper de Problem Details</h2>
+            <p class="doc-paragraph">Estender <code>AccountProblemDetailsFilter</code> para mapear erros de domínio/Application de archived, connected read-only, not found, duplicate e audit/internal. A resposta cross-tenant deve ser byte-a-byte equivalente à resposta missing salvo o request id. O logger técnico recebe nome/código controlado e stack sanitizado, nunca body, token, SQL, nome ou dinheiro.</p>
+            <h2 class="doc-heading">18. Geração do contrato</h2>
+            <p class="doc-paragraph">Registrar os novos use cases no módulo usado por <code>scripts/generate-openapi.ts</code> sem executar banco, Auth0 ou casos de uso. Gerar <code>openapi/openapi.json</code>, revisar rotas, métodos, headers, schemas e Problem Details e comparar com a especificação. O artefato gerado é atualização prevista do backend, não parte desta tarefa documental.</p>
+            <pre style="white-space:pre-wrap;overflow:auto"><code>PATCH /api/v1/accounts/{accountId}
+POST  /api/v1/accounts/{accountId}/deactivate
+
+Authorization: Bearer &lt;access-token&gt;
+X-Request-Id: &lt;UUID opcional&gt;</code></pre>
+          </div>
+          <div hidden aria-hidden="true"><pre class="page-text" data-source="16. Controller PATCH and POST deactivate, path UUID, strict body, bearer security, responses 200 400 401 403 404 409 500, same Auth0JwtGuard and TenantContext, only validated context id input request id, no ownership fields. 17. Problem Details maps archived connected read-only not found duplicate audit internal, cross tenant response identical missing except request id, sanitized logs. 18. OpenAPI generator providers no execution, openapi json review routes methods headers schemas errors. Routes PATCH /api/v1/accounts/{accountId}, POST /api/v1/accounts/{accountId}/deactivate, Authorization and X-Request-Id."></pre></div>
+        </section>
+
+        <section class="paper" id="pagina-7" data-page="7">
+          <div class="page-kicker"><span>Fase 5</span><span>Testes focados</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">19. Testes unitários</h2>
+            <ul class="doc-list">
+              <li><code>src/modules/accounts/domain/account.spec.ts</code>: estado ativo/arquivado, campos mutáveis, connected, normalização, dinheiro e datas.</li>
+              <li><code>src/modules/accounts/application/use-cases/update-account.spec.ts</code>: update autorizado, body final, duplicate confirmation, archived, connected e errors.</li>
+              <li><code>src/modules/accounts/application/use-cases/deactivate-account.spec.ts</code>: transição, repetição idempotente, metadata e falha do writer.</li>
+              <li>Testes do Audit writer: chaves permitidas, campos proibidos, request id e propagação de falha.</li>
+            </ul>
+            <h2 class="doc-heading">20. Integração Prisma/PostgreSQL</h2>
+            <ul class="doc-list">
+              <li>Dois tenants, contas manual/connected, ativa/arquivada e leitura de audit por role de teste.</li>
+              <li>Update e deactivate retornam representação correta e uma única linha de audit com tenant/actor/resource coerentes.</li>
+              <li>Falha forçada de insert de audit não deixa alteração de Account.</li>
+              <li>Concorrência de update/deactivate confirma serialização e ausência de estado intermediário.</li>
+            </ul>
+            <h2 class="doc-heading">21. RLS, REST e contrato</h2>
+            <ul class="doc-list">
+              <li><code>test/integration/rls.integration.spec.ts</code> e <code>audit-records.integration.spec.ts</code> executam como role NOBYPASSRLS e verificam SELECT/INSERT/UPDATE/DELETE, contexto ausente/malformed/stale, grants e force.</li>
+              <li><code>test/e2e/accounts.e2e.spec.ts</code> cobre update/deactivate próprio, missing/cross-tenant uniforme, archived, connected, UUID, PATCH vazio, unknown/immutable, pair balance/date, duplicate, request id e ausência de vazamentos.</li>
+              <li>OpenAPI generation/contract check confirma segurança, schemas, status e headers.</li>
+            </ul>
+          </div>
+          <div hidden aria-hidden="true"><pre class="page-text" data-source="19. Unit tests domain account lifecycle fields connected money dates; update use case duplicate archived errors; deactivate idempotent metadata audit failure; Audit writer safe keys request id failure. 20. Integration two tenants accounts states audit rows, atomicity failure, concurrency serialization. 21. RLS non bypass role tests select insert update delete context absent malformed stale grants force. REST Supertest own missing cross tenant archived connected invalid UUID empty PATCH unknown immutable balance date duplicate request id disclosure. OpenAPI contract."></pre></div>
+        </section>
+
+        <section class="paper" id="pagina-8" data-page="8">
+          <div class="page-kicker"><span>Execução</span><span>Comandos e riscos</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">22. Ordem executável</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Ordem</th><th>Entrega</th><th>Bloqueio</th></tr></thead><tbody>
+              <tr><th>F0</th><td>Confirmar branch limpa, env local e baseline; não tocar banco compartilhado.</td><td>Sem baseline não iniciar.</td></tr>
+              <tr><th>F1</th><td>Domain, use cases, ports, Audit e unidade de trabalho.</td><td>Sem dependência de framework em Domain/Application.</td></tr>
+              <tr><th>F2</th><td>Prisma, migration, grants, RLS, Audit adapter e preflight.</td><td>Aplicar somente banco local autorizado.</td></tr>
+              <tr><th>F3</th><td>Adapter Accounts, request id, controller, mapper e OpenAPI.</td><td>Depende de schema/RLS migrados.</td></tr>
+              <tr><th>F4</th><td>Unit, integration, RLS, REST, contract, lint/type/build.</td><td>Não declarar pronto com gaps ou testes ignorados.</td></tr>
+            </tbody></table></div></div>
+            <h2 class="doc-heading">23. Comandos descobertos no backend</h2>
+            <pre style="white-space:pre-wrap;overflow:auto"><code>npm run prisma:validate
+npm run prisma:generate
+npm run db:migrate:dev
+npm run db:migrate:deploy
+npm run openapi:generate
+npm run db:verify-rls
+npm run format:check
+npm run lint
+npm run typecheck
+npm run build
+npm run test:unit
+npm run test:integration
+npm run test:e2e
+npm test</code></pre>
+            <p class="doc-paragraph">Integração exige PostgreSQL local inicializado. <code>db:migrate:deploy</code>, <code>db:verify-rls</code> e qualquer SQL administrativo exigem destino explicitamente local/autorizado; nunca Neon ou banco compartilhado.</p>
+            <h2 class="doc-heading">24. Riscos e correção</h2>
+            <ul class="doc-list">
+              <li>Auditoria falha: rollback transacional; investigar privilégio/schema antes de retry.</li>
+              <li>Migration parcialmente aplicada: não editar histórico; fazer forward-correction ou restore controlado.</li>
+              <li>Privilégio runtime inseguro: readiness falha; corrigir role/grant, não elevar aplicação.</li>
+              <li>Lock aumenta espera: medir somente após comportamento correto; não remover ownership para performance.</li>
+              <li>Contrato OpenAPI divergente: parar integração dos clientes e corrigir contrato/geração antes de merge.</li>
+            </ul>
+          </div>
+          <div hidden aria-hidden="true"><pre class="page-text" data-source="22. Order F0 baseline, F1 domain application ports audit unit of work, F2 Prisma migration grants RLS adapter preflight, F3 Accounts adapter request id controller errors OpenAPI, F4 all tests quality. 23. Commands prisma validate generate migrate dev deploy openapi generate db verify RLS format check lint typecheck build test unit integration e2e npm test. Integration local PostgreSQL only. 24. Risks audit failure rollback, migration forward correction, unsafe role readiness, lock measure not weaken security, OpenAPI divergence stops integration."></pre></div>
+        </section>
+
+        <section class="paper" id="pagina-9" data-page="9">
+          <div class="page-kicker"><span>Traceability</span><span>Aceite e limites</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">25. Rastreabilidade S1-06/S1-07</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Critério</th><th>Código planejado</th><th>Teste/evidência</th></tr></thead><tbody>
+              <tr><th>S1-06 editar conta</th><td>Account update, PATCH, Prisma adapter, OpenAPI.</td><td>Unit, integration, Supertest e contract check.</td></tr>
+              <tr><th>S1-06 desativar/excluir</th><td>Deactivate use case, <code>archived_at</code>, sem DELETE físico.</td><td>Lifecycle, idempotência, FK, audit e REST tests.</td></tr>
+              <tr><th>S1-06 propriedade</th><td>TenantContext, predicates <code>id + tenantId</code>, lock, RLS.</td><td>Own/cross-tenant/missing matrix.</td></tr>
+              <tr><th>S1-06 auditoria</th><td>Audit module, schema, same transaction, least privilege.</td><td>Content, atomicity, failure and no-read tests.</td></tr>
+              <tr><th>S1-07 Identity</th><td>Guard, resolver function boundary, no client tenant/user, existing four-table policies.</td><td>Auth/identity integration and RLS verification.</td></tr>
+              <tr><th>S1-07 Accounts</th><td>Application filters plus account/audit RLS and safe roles.</td><td>Independent NOBYPASSRLS SQL and REST tests.</td></tr>
+              <tr><th>S1-07 disclosure</th><td>Uniform 404, sanitized logs, minimized audit metadata.</td><td>Response/body/log/metadata assertions.</td></tr>
+            </tbody></table></div></div>
+            <h2 class="doc-heading">26. Critério de conclusão</h2>
+            <p class="doc-paragraph">A implementação futura somente poderá ser considerada concluída quando o contrato normativo estiver refletido no código, migration e OpenAPI, todos os testes e comandos relevantes executarem com resultado registrado, RLS for comprovado por role sem bypass, e o diff backend permanecer limitado ao plano aprovado. Qualquer mudança material de escopo, rota, schema, role, dependência, persistência ou operação compartilhada exige nova aprovação.</p>
+            <h2 class="doc-heading">27. Declaração de não autorização</h2>
+            <p class="doc-paragraph"><strong>Este documento é um plano.</strong> Ele não autoriza implementação backend, criação/aplicação de migration, execução de SQL destrutivo, escrita em banco compartilhado, alteração de roles/grants em ambiente remoto, deploy, ou modificação de clientes. Esses atos exigem autorização operacional própria e evidência de ambiente seguro.</p>
+            <h2 class="doc-heading">28. Referências</h2>
+            <ul class="doc-list">
+              <li><a href="especificacao-manutencao-isolamento-contas.html">Especificação de Manutenção e Isolamento de Contas 1.0</a></li>
+              <li><a href="plano-implementacao-autenticacao-contas.html">Plano de Implementação de Autenticação e Contas 1.0</a></li>
+              <li><a href="Plano_Divisao_Atividades_Sprint_1.html">Plano da Sprint 1</a></li>
+              <li><a href="adr-rls-postgresql.html">ADR-001 — RLS PostgreSQL</a></li>
+              <li><a href="modelo-dados-identity-accounts.html">Modelo de Dados de Identity e Accounts 1.0</a></li>
+              <li><a href="arquitetura.html">Arquitetura 1.5</a></li>
+              <li><a href="prd.html">PRD 1.4</a></li>
+            </ul>
+          </div>
+          <div hidden aria-hidden="true"><pre class="page-text" data-source="25. Traceability S1-06 update, deactivate soft no DELETE, ownership, audit; S1-07 Identity guard resolver policies, Accounts filters RLS roles, disclosure uniform 404 logs metadata. 26. Completion code migration OpenAPI tests commands RLS role diff and reapproval for material changes. 27. Plan does not authorize backend implementation, migration, destructive SQL, shared database, remote roles grants, deploy or clients. 28. References specification plan S1-04 S1-05 ADR model architecture PRD Sprint."></pre></div>
+        </section>
+      </article>
+    </div>
+  </main>
+  <footer class="site-footer">Documentação acadêmica · UCB · 2026 · Samuel Mota, Thiago Marques e Miguel Candido</footer>
+  <script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Plano de divisão de atividades da Sprint 2 do Centralizador Financeiro Inteligente">
+  <title>Sprint 2 · Coinciente</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"><img src="assets/coinciente-symbol.svg" alt=""></span><span class="brand-name"><em>Coin</em>ciente</span></a>
+    <nav class="doc-nav" aria-label="Documentos"><a href="index.html">Início</a><a href="visao.html">Visão</a><a href="prd.html">PRD</a><a href="arquitetura.html">Arquitetura</a><a href="Plano_Divisao_Atividades_Sprint_1.html">Sprint 1</a><a href="Plano_Divisao_Atividades_Sprint_2.html" aria-current="page">Sprint 2</a><a href="style-guide.html">Style Guide</a></nav>
+  </header>
+
+  <main id="conteudo">
+    <section class="hero">
+      <p class="eyebrow">Plano aprovado · 3 desenvolvedores</p>
+      <h1>Plano de Divisão de Atividades — Sprint 2</h1>
+      <p class="lead">Movimentações manuais, categorização e regras pessoais em uma fatia vertical verificável do Centralizador Financeiro Inteligente.</p>
+      <div class="meta-row"><span class="meta-chip">11–25 set 2026</span><span class="meta-chip">9 atividades</span><span class="meta-chip">Estimativas P/M/G</span></div>
+    </section>
+
+    <div class="reader">
+      <aside class="sidebar" aria-label="Navegação por seções">
+        <p class="sidebar-title">Neste documento</p>
+        <label class="search"><span class="skip-link">Buscar</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="sprint-search" type="search" placeholder="Buscar no texto…" autocomplete="off"></label>
+        <nav class="page-nav"><a href="#pagina-1" aria-label="Ir para a seção 1">1</a><a href="#pagina-2" aria-label="Ir para a seção 2">2</a><a href="#pagina-3" aria-label="Ir para a seção 3">3</a><a href="#pagina-4" aria-label="Ir para a seção 4">4</a><a href="#pagina-5" aria-label="Ir para a seção 5">5</a><a href="#pagina-6" aria-label="Ir para a seção 6">6</a><a href="#pagina-7" aria-label="Ir para a seção 7">7</a><a href="#pagina-8" aria-label="Ir para a seção 8">8</a></nav>
+        <p class="result-note">8 seções</p>
+      </aside>
+
+      <article class="pages" aria-label="Plano integral da Sprint 2">
+        <section class="paper" id="pagina-1" data-page="1">
+          <div class="page-kicker"><span>Sprint 2</span><span>Objetivo e escopo</span></div>
+          <div class="sprint-content">
+            <h2 class="doc-heading">Objetivo da Sprint</h2>
+            <p class="doc-paragraph">Permitir que uma pessoa autenticada registre receitas, despesas e transferências contábeis entre suas próprias contas, categorize transações e configure regras pessoais de categorização, nos clientes web e mobile, com persistência, idempotência, isolamento entre tenants, auditoria aplicável e contrato OpenAPI verificável.</p>
+            <div class="doc-data-block"><div class="doc-data-label">Parâmetros aprovados</div><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Parâmetro</th><th>Definição</th></tr></thead><tbody>
+              <tr><th>Período</th><td>11 a 25 de setembro de 2026.</td></tr>
+              <tr><th>Equipe</th><td>Developer 1, Developer 2 e Developer 3.</td></tr>
+              <tr><th>Escopo</th><td>HU-003, HU-005 e HU-006 do PRD 1.4.</td></tr>
+              <tr><th>Estimativas</th><td>P: localizada; M: moderada; G: transversal ou com maior incerteza. São medidas relativas, não prazos garantidos.</td></tr>
+              <tr><th>Baseline</th><td>Sprint 1 considerada concluída.</td></tr>
+            </tbody></table></div></div>
+            <h2 class="doc-heading">Escopo e exclusões</h2>
+            <p class="doc-paragraph">A Sprint inclui o módulo Transactions, suas estruturas de dados, REST/OpenAPI, experiências independentes web e mobile, isolamento, idempotência, auditoria afetada, testes e evidências. Permanecem fora do escopo OFX, PDF, Pluggy, sincronização, dashboard, investimentos, patrimônio, projeções, pagamentos, Pix, movimentação real de fundos e qualquer nova dependência não aprovada.</p>
+            <p class="doc-paragraph"><strong>Fontes:</strong> PRD 1.4 — HU-003, HU-005, HU-006, RN-001 a RN-005 e RNF-002/RNF-003/RNF-009; Arquitetura 1.6 — módulos, API, dados, processos e testes; Plano da Sprint 1 — padrão de execução colaborativa.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-2" data-page="2">
+          <div class="page-kicker"><span>Sprint 2</span><span>Responsabilidades</span></div>
+          <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
+            <h2 class="doc-heading">Estrutura de responsabilidades</h2>
+            <div class="doc-data-block"><div class="doc-data-label">Padrão preservado da Sprint 1</div><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Papel</th><th>Responsabilidade principal</th></tr></thead><tbody>
+              <tr><th>Developer 1</th><td>Backend, domínio, aplicação, persistência, REST/OpenAPI, autorização, idempotência, auditoria e RLS.</td></tr>
+              <tr><th>Developer 2</th><td>Experiências independentes web e mobile, clientes tipados, formulários, validação e estados da interface.</td></tr>
+              <tr><th>Developer 3</th><td>Critérios de aceite, testes, contrato, isolamento, integração, documentação e evidências.</td></tr>
+            </tbody></table></div></div>
+            <p class="doc-paragraph">A responsabilidade principal não representa propriedade exclusiva. Atividades verticais são concluídas com colaboração cruzada, revisão por outro integrante e evidência reproduzível.</p>
+            <h2 class="doc-heading">Prioridade e definição de pronto</h2>
+            <p class="doc-paragraph">Todos os itens têm prioridade de produto <strong>Must</strong>, conforme o PRD. A ordenação S2-01 a S2-09 é determinada por dependências técnicas. Uma atividade somente está pronta quando implementação, testes relevantes, revisão, contrato ou documentação afetada, integração e evidência estiverem concluídos sem segredo ou dado financeiro real.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-3" data-page="3">
+          <div class="page-kicker"><span>Sprint 2</span><span>Baseline e fundação</span></div>
+          <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
+            <h2 class="doc-heading">S2-01 — Fechar baseline e contratos de Transactions</h2>
+            <p class="doc-paragraph"><strong>Descrição:</strong> aprovar modelo, lifecycle mínimo, representação de transferências, categorias, condições de regras, precedência, idempotência, rotas e erros antes da implementação.</p>
+            <p class="doc-paragraph"><strong>Fonte:</strong> PRD HU-003/HU-005/HU-006; Arquitetura, módulo Transactions e visão da API; padrão S1-01. <strong>Prioridade:</strong> Must, posição 1. <strong>Estimativa:</strong> M. <strong>Responsáveis:</strong> todos, com condução técnica do Developer 1 e consolidação do Developer 3. <strong>Dependência:</strong> Sprint 1 concluída. <strong>Janela:</strong> 11/09.</p>
+            <ul class="doc-list">
+              <li>Modelo e contratos não contradizem PRD ou Arquitetura.</li>
+              <li>Transferências continuam estritamente contábeis.</li>
+              <li>Decisões pendentes são registradas explicitamente.</li>
+              <li>Nenhuma rota, regra ou estrutura necessária a S2-02 até S2-06 permanece implícita.</li>
+            </ul>
+            <h2 class="doc-heading">S2-02 — Modelar Transactions e persistência tenant-aware</h2>
+            <p class="doc-paragraph"><strong>Descrição:</strong> definir domínio, casos de uso, ports, estruturas <code>transactions</code>, <code>categories</code> e <code>category_rules</code>, migrations, constraints, índices e políticas RLS.</p>
+            <p class="doc-paragraph"><strong>Fonte:</strong> Arquitetura, Visão de Dados; PRD RN-001 a RN-005, RNF-002 e RNF-003. <strong>Prioridade:</strong> Must, posição 2. <strong>Estimativa:</strong> G. <strong>Responsável principal:</strong> Developer 1; Developer 3 revisa e Developer 2 alinha o contrato. <strong>Dependência:</strong> S2-01. <strong>Janela:</strong> 14–15/09.</p>
+            <ul class="doc-list">
+              <li>As estruturas pertencem ao módulo Transactions e preservam suas fronteiras.</li>
+              <li>Todo registro contém <code>tenant_id</code> direto ou propriedade obrigatória verificável.</li>
+              <li>Domain e Application não dependem de NestJS, Prisma, Zod ou HTTP.</li>
+              <li>Migrations e RLS são reproduzíveis e falham de modo fechado.</li>
+              <li>OpenAPI e modelos dos clientes podem ser derivados sem compartilhar código-fonte.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-4" data-page="4">
+          <div class="page-kicker"><span>Sprint 2</span><span>Movimentações</span></div>
+          <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
+            <h2 class="doc-heading">S2-03 — Implementar movimentações no backend</h2>
+            <p class="doc-paragraph"><strong>Descrição:</strong> implementar casos de uso e endpoints REST para registrar receitas, despesas e transferências contábeis.</p>
+            <p class="doc-paragraph"><strong>Fonte:</strong> PRD HU-003 e RN-005; Arquitetura, processos síncronos e API REST. <strong>Prioridade:</strong> Must, posição 3. <strong>Estimativa:</strong> G. <strong>Responsável principal:</strong> Developer 1; Developer 2 integra antecipadamente e Developer 3 valida. <strong>Dependência:</strong> S2-02. <strong>Janela:</strong> 16–18/09.</p>
+            <ul class="doc-list">
+              <li>Conta, valor, data e tipo são obrigatórios e validados.</li>
+              <li>Receita e despesa pertencem ao tenant autenticado.</li>
+              <li>Transferência gera saída e entrada consistentes entre contas do mesmo tenant.</li>
+              <li>Repetição da mesma operação não cria duplicidade.</li>
+              <li>Nenhuma operação inicia movimentação real de fundos.</li>
+              <li>Respostas e erros estão documentados no OpenAPI.</li>
+            </ul>
+            <h2 class="doc-heading">S2-04 — Implementar movimentações nos clientes</h2>
+            <p class="doc-paragraph"><strong>Descrição:</strong> criar os fluxos web e mobile independentes para registrar receitas, despesas e transferências.</p>
+            <p class="doc-paragraph"><strong>Fonte:</strong> PRD HU-003 e RNF-009; Arquitetura, independência dos clientes e OpenAPI; Style Guide. <strong>Prioridade:</strong> Must, posição 4. <strong>Estimativa:</strong> G. <strong>Responsável principal:</strong> Developer 2; Developer 1 apoia o contrato e Developer 3 valida. <strong>Dependências:</strong> S2-01 e contrato estável de S2-03. <strong>Janela:</strong> 16–18/09.</p>
+            <ul class="doc-list">
+              <li>Web e mobile consomem seus próprios clientes tipados.</li>
+              <li>Formulários validam os campos definidos pelo contrato.</li>
+              <li>Carregamento, sucesso, vazio e erro são explícitos.</li>
+              <li>Transferência é apresentada como registro contábil, nunca como operação bancária.</li>
+              <li>Os clientes não aceitam nem mantêm dados pertencentes a outro tenant.</li>
+              <li>A interface segue o Style Guide sem compartilhar componentes entre repositórios.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-5" data-page="5">
+          <div class="page-kicker"><span>Sprint 2</span><span>Categorização</span></div>
+          <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
+            <h2 class="doc-heading">S2-05 — Implementar categorização e correção manual</h2>
+            <p class="doc-paragraph"><strong>Descrição:</strong> permitir atribuição de categoria, indicação de resultado incerto e correção pelo usuário.</p>
+            <p class="doc-paragraph"><strong>Fonte:</strong> PRD HU-005; Arquitetura, estruturas <code>categories</code> e <code>transactions</code>. <strong>Prioridade:</strong> Must, posição 5. <strong>Estimativa:</strong> G. <strong>Responsáveis:</strong> Developer 1 no backend, Developer 2 nos clientes e Developer 3 no aceite. <strong>Dependências:</strong> S2-02, S2-03 e S2-04. <strong>Janela:</strong> 21–22/09.</p>
+            <ul class="doc-list">
+              <li>Transação pode receber categoria permitida para o mesmo tenant.</li>
+              <li>Resultado incerto ou não reconhecido permanece explícito.</li>
+              <li>O usuário pode corrigir a categoria.</li>
+              <li>A correção é persistida e refletida nos dois clientes.</li>
+              <li>Nenhuma precisão mínima é declarada sem dataset e evidência executada.</li>
+              <li>Tentativas cross-tenant são negadas sem revelar dados alheios.</li>
+            </ul>
+            <h2 class="doc-heading">S2-06 — Implementar regras pessoais de categorização</h2>
+            <p class="doc-paragraph"><strong>Descrição:</strong> permitir criar, editar, ativar, desativar e remover regras pessoais, com precedência determinística.</p>
+            <p class="doc-paragraph"><strong>Fonte:</strong> PRD HU-006; Arquitetura, estrutura <code>category_rules</code>. <strong>Prioridade:</strong> Must, posição 6. <strong>Estimativa:</strong> G. <strong>Responsáveis:</strong> Developer 1 no domínio/API, Developer 2 nos clientes e Developer 3 nos conflitos. <strong>Dependência:</strong> S2-05. <strong>Janela:</strong> 22–23/09.</p>
+            <ul class="doc-list">
+              <li>Regra, condição e categoria pertencem ao mesmo tenant.</li>
+              <li>Regras pessoais prevalecem sobre regras gerais, caso estas existam no baseline aprovado.</li>
+              <li>Conflitos seguem precedência determinística e informada.</li>
+              <li>Regras podem ser criadas, editadas, ativadas, desativadas e removidas.</li>
+              <li>Mudanças afetam somente o tenant autenticado.</li>
+              <li>Os clientes apresentam estados e falhas consistentes com o contrato.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-6" data-page="6">
+          <div class="page-kicker"><span>Sprint 2</span><span>Segurança e qualidade</span></div>
+          <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
+            <h2 class="doc-heading">S2-07 — Consolidar idempotência, isolamento e auditoria</h2>
+            <p class="doc-paragraph"><strong>Descrição:</strong> validar transversalmente ownership, RLS, repetição segura e auditoria das ações introduzidas.</p>
+            <p class="doc-paragraph"><strong>Fonte:</strong> PRD HU-003, HU-015, RN-001 a RN-004 e RN-015; Arquitetura, segurança, RLS e Audit. <strong>Prioridade:</strong> Must, posição 7. <strong>Estimativa:</strong> M. <strong>Implementação:</strong> Developer 1; <strong>validação:</strong> Developer 3; <strong>integração:</strong> Developer 2. <strong>Dependências:</strong> acompanha S2-02 a S2-06. <strong>Janela:</strong> 14–23/09.</p>
+            <ul class="doc-list">
+              <li>Leitura e mutação cross-tenant são negadas pela aplicação e pelo banco.</li>
+              <li>Repetição de comandos idempotentes não duplica movimentações.</li>
+              <li>Auditoria afetada registra ator, tenant, ação, recurso, instante, resultado e correlação.</li>
+              <li>Tokens, segredos e payload financeiro desnecessário não aparecem em logs ou auditoria.</li>
+              <li>Falha da auditoria pertencente à operação não produz sucesso parcial.</li>
+            </ul>
+            <h2 class="doc-heading">S2-08 — Automatizar testes e validar contratos</h2>
+            <p class="doc-paragraph"><strong>Descrição:</strong> consolidar testes unitários, integração, REST, RLS, contrato e fluxos críticos web/mobile.</p>
+            <p class="doc-paragraph"><strong>Fonte:</strong> PRD, estratégia de testes; Arquitetura, Visão de Testes; padrão S1-08. <strong>Prioridade:</strong> Must, posição 8. <strong>Estimativa:</strong> G. <strong>Responsável principal:</strong> Developer 3, com participação obrigatória dos Developers 1 e 2. <strong>Dependências:</strong> inicia após S2-01 e fecha após S2-07. <strong>Janela:</strong> 14–24/09.</p>
+            <ul class="doc-list">
+              <li>Domínio e casos de uso possuem testes focados.</li>
+              <li>Persistência, constraints e RLS são testados com PostgreSQL autorizado.</li>
+              <li>Endpoints críticos são verificados por Supertest.</li>
+              <li>OpenAPI e clientes tipados permanecem compatíveis.</li>
+              <li>Casos cross-tenant, idempotência, transferências e conflitos de regras são reproduzíveis.</li>
+              <li>Fluxos essenciais dos clientes usam somente abordagens de teste já aprovadas.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-7" data-page="7">
+          <div class="page-kicker"><span>Sprint 2</span><span>Consolidação</span></div>
+          <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
+            <h2 class="doc-heading">S2-09 — Integrar, demonstrar e revisar</h2>
+            <p class="doc-paragraph"><strong>Descrição:</strong> consolidar backend, web, mobile, contrato, testes, documentação e demonstração.</p>
+            <p class="doc-paragraph"><strong>Fonte:</strong> padrão S1-09; Arquitetura, pipelines independentes e implantação acadêmica. <strong>Prioridade:</strong> Must, posição 9. <strong>Estimativa:</strong> M. <strong>Responsáveis:</strong> todos. <strong>Dependências:</strong> S2-01 a S2-08. <strong>Janela:</strong> 25/09.</p>
+            <ul class="doc-list">
+              <li>O fluxo completo é demonstrável em web e mobile.</li>
+              <li>Receita, despesa, transferência, categorização e regra pessoal funcionam de ponta a ponta.</li>
+              <li>Lint, testes, verificações de tipo e builds relevantes passam.</li>
+              <li>OpenAPI, migrations e instruções afetadas estão atualizados.</li>
+              <li>Evidências não expõem segredos ou dados financeiros reais.</li>
+              <li>O resultado utiliza exclusivamente dados fictícios.</li>
+            </ul>
+            <h2 class="doc-heading">Matriz consolidada</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>ID</th><th>Developer 1</th><th>Developer 2</th><th>Developer 3</th></tr></thead><tbody>
+              <tr><th>S2-01</th><td>Modelo, regras e API</td><td>Fluxos e contrato dos clientes</td><td>Critérios e decisões</td></tr>
+              <tr><th>S2-02</th><td>Principal: domínio e persistência</td><td>Alinhamento dos modelos</td><td>Migrations, RLS e testes</td></tr>
+              <tr><th>S2-03</th><td>Principal: API e casos de uso</td><td>Integração antecipada</td><td>REST, contrato e QA</td></tr>
+              <tr><th>S2-04</th><td>Apoio de contrato</td><td>Principal: web e mobile</td><td>Validação dos fluxos</td></tr>
+              <tr><th>S2-05</th><td>Backend e persistência</td><td>Interfaces e estados</td><td>Casos incertos e cross-tenant</td></tr>
+              <tr><th>S2-06</th><td>Domínio, API e precedência</td><td>Gestão de regras nos clientes</td><td>Conflitos e rastreabilidade</td></tr>
+              <tr><th>S2-07</th><td>Idempotência, RLS e auditoria</td><td>Isolamento de estado</td><td>Principal na verificação</td></tr>
+              <tr><th>S2-08</th><td>Testes backend</td><td>Testes dos clientes</td><td>Principal e consolidação</td></tr>
+              <tr><th>S2-09</th><td>Integração técnica</td><td>Experiência e demonstração</td><td>Qualidade e evidências</td></tr>
+            </tbody></table></div></div>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-8" data-page="8">
+          <div class="page-kicker"><span>Sprint 2</span><span>Execução e riscos</span></div>
+          <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
+            <h2 class="doc-heading">Cronograma de execução</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Data</th><th>Atividades</th><th>Marco</th></tr></thead><tbody>
+              <tr><th>11/09</th><td>S2-01</td><td>Baseline e contratos fechados.</td></tr>
+              <tr><th>14–15/09</th><td>S2-02; início de S2-07 e S2-08</td><td>Modelo, migrations e fundação testável.</td></tr>
+              <tr><th>16–18/09</th><td>S2-03 e S2-04 em paralelo</td><td>Movimentações integradas entre backend e clientes.</td></tr>
+              <tr><th>21–22/09</th><td>S2-05</td><td>Categorização e correção manual integradas.</td></tr>
+              <tr><th>22–23/09</th><td>S2-06; fechamento de S2-07</td><td>Regras pessoais, isolamento e auditoria consolidados.</td></tr>
+              <tr><th>24/09</th><td>S2-08</td><td>Suítes, contrato e evidências consolidados.</td></tr>
+              <tr><th>25/09</th><td>S2-09</td><td>Revisão, demonstração e fechamento.</td></tr>
+            </tbody></table></div></div>
+            <h2 class="doc-heading">Dependências e ordem</h2>
+            <p class="doc-paragraph"><strong>Fluxo principal:</strong> S2-01 → S2-02 → S2-03 → S2-05 → S2-06 → S2-07 → S2-08 → S2-09.</p>
+            <p class="doc-paragraph"><strong>Paralelismo:</strong> S2-04 começa após S2-01 e estabiliza com o contrato de S2-03; S2-07 acompanha S2-02 a S2-06; S2-08 acompanha toda a implementação e fecha depois de S2-07.</p>
+            <h2 class="doc-heading">Riscos e mitigação</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Risco</th><th>Mitigação</th></tr></thead><tbody>
+              <tr><th>Modelo e lifecycle ainda não normatizados</th><td>S2-01 bloqueia implementação até fechar campos, estados, rotas e erros.</td></tr>
+              <tr><th>Transferência parcial</th><td>Persistir saída e entrada de forma atômica e testar rollback.</td></tr>
+              <tr><th>Duplicidade</th><td>Contrato idempotente e casos explícitos de repetição.</td></tr>
+              <tr><th>Condições de regras excessivamente genéricas</th><td>Aprovar somente condições necessárias à HU-006.</td></tr>
+              <tr><th>Acesso cross-tenant</th><td>Autorização, filtros, transação tenant-aware, RLS e testes independentes.</td></tr>
+              <tr><th>Divergência entre clientes e API</th><td>OpenAPI no backend, clientes gerados separadamente e testes de contrato.</td></tr>
+              <tr><th>Capacidade do período</th><td>Paralelismo por camadas e corte rigoroso de OFX, Pluggy e Analytics.</td></tr>
+              <tr><th>Precisão não demonstrada</th><td>Expor incerteza e não declarar precisão sem dataset e evidência.</td></tr>
+            </tbody></table></div></div>
+            <h2 class="doc-heading">Decisões obrigatórias em S2-01</h2>
+            <p class="doc-paragraph">Antes do desenvolvimento, a equipe registra campos e estados mínimos da transação; representação e atomicidade da transferência; chave e janela de idempotência; fonte e lifecycle das categorias; condições e desempate das regras; endpoints, paginação, códigos HTTP e Problem Details; e conteúdo mínimo da auditoria. O plano não presume essas decisões.</p>
+            <h2 class="doc-heading">Validação e evidências</h2>
+            <ul class="doc-list">
+              <li>Executar testes unitários, integração Prisma/PostgreSQL, REST, RLS, contrato e fluxos críticos.</li>
+              <li>Executar lint, verificações de tipo e builds relevantes nos três repositórios.</li>
+              <li>Demonstrar os fluxos somente com dados fictícios.</li>
+              <li>Registrar comandos, resultados, limitações ambientais e evidências da Sprint Review.</li>
+              <li>Revisar ausência de segredos, tokens e payload financeiro desnecessário em código, clientes, logs e artefatos.</li>
+            </ul>
+          </div>
+        </section>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">Documentação acadêmica · UCB · 2026 · Samuel Mota, Thiago Marques e Miguel Candido</footer>
+  <script src="assets/app.js"></script>
+  <script>
+    const sprintSearch = document.querySelector('#sprint-search');
+    const sprintSections = [...document.querySelectorAll('.paper')];
+    const sprintResultNote = document.querySelector('.result-note');
+    sprintSearch?.addEventListener('input', event => {
+      const query = event.target.value.trim().toLocaleLowerCase('pt-BR');
+      let count = 0;
+      sprintSections.forEach(section => {
+        const matched = !query || section.textContent.toLocaleLowerCase('pt-BR').includes(query);
+        section.hidden = !matched;
+        if (matched) count += 1;
+      });
+      sprintResultNote.textContent = query ? `${count} ${count === 1 ? 'seção encontrada' : 'seções encontradas'}` : `${document.querySelectorAll('.toc a').length} seções`;
+    });
+  </script>
+</body>
+</html>

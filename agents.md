@@ -376,3 +376,6 @@ Do not:
 * reproduce large diffs;
 * output unchanged code;
 * include long explanations unless specifically requested.
+
+### Commit 
+Make a commit suggestion for implemented work 

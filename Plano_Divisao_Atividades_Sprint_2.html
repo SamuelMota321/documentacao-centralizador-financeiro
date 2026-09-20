@@ -25,6 +25,21 @@
       <div class="meta-row"><span class="meta-chip">11–25 set 2026</span><span class="meta-chip">9 atividades</span><span class="meta-chip">Estimativas P/M/G</span></div>
     </section>
 
+    <section class="document-grid" aria-label="Documentos normativos da Sprint 2">
+      <a class="doc-card" href="especificacao-transactions.html" style="--card-accent:#8b5cf6">
+        <span class="doc-number">ESPECIFICAÇÃO NORMATIVA</span>
+        <h2>Baseline e Contratos de Transactions</h2>
+        <p>Campos, lifecycle, transferências, categorias, regras, idempotência, REST, OpenAPI, auditoria e isolamento.</p>
+        <span class="card-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
+      </a>
+      <a class="doc-card" href="plano-implementacao-transactions.html" style="--card-accent:#ec4899">
+        <span class="doc-number">PLANO TÉCNICO</span>
+        <h2>Implementação de Transactions</h2>
+        <p>Mapa de arquivos, fases S2-02 a S2-06, limites, riscos e validações após a aprovação de S2-01.</p>
+        <span class="card-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
+      </a>
+    </section>
+
     <div class="reader">
       <aside class="sidebar" aria-label="Navegação por seções">
         <p class="sidebar-title">Neste documento</p>
@@ -71,13 +86,13 @@
           <div class="page-kicker"><span>Sprint 2</span><span>Baseline e fundação</span></div>
           <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
             <h2 class="doc-heading">S2-01 — Fechar baseline e contratos de Transactions</h2>
-            <p class="doc-paragraph"><strong>Descrição:</strong> aprovar modelo, lifecycle mínimo, representação de transferências, categorias, condições de regras, precedência, idempotência, rotas e erros antes da implementação.</p>
+            <p class="doc-paragraph"><strong>Descrição:</strong> baseline e contratos aprovados para modelo, lifecycle mínimo, representação de transferências, categorias, condições de regras, precedência, idempotência, rotas e erros. O registro está em <a href="especificacao-transactions.html">Especificação de Transactions</a> e <a href="plano-implementacao-transactions.html">Plano de Implementação de Transactions</a>.</p>
             <p class="doc-paragraph"><strong>Fonte:</strong> PRD HU-003/HU-005/HU-006; Arquitetura, módulo Transactions e visão da API; padrão S1-01. <strong>Prioridade:</strong> Must, posição 1. <strong>Estimativa:</strong> M. <strong>Responsáveis:</strong> todos, com condução técnica do Developer 1 e consolidação do Developer 3. <strong>Dependência:</strong> Sprint 1 concluída. <strong>Janela:</strong> 11/09.</p>
             <ul class="doc-list">
               <li>Modelo e contratos não contradizem PRD ou Arquitetura.</li>
               <li>Transferências continuam estritamente contábeis.</li>
-              <li>Decisões pendentes são registradas explicitamente.</li>
-              <li>Nenhuma rota, regra ou estrutura necessária a S2-02 até S2-06 permanece implícita.</li>
+              <li>As propostas de S2-01 foram aprovadas e registradas na especificação normativa.</li>
+              <li>Nenhuma rota, regra ou estrutura necessária a S2-02 até S2-06 permanece implícita; cada fase mantém seu limite de implementação.</li>
             </ul>
             <h2 class="doc-heading">S2-02 — Modelar Transactions e persistência tenant-aware</h2>
             <p class="doc-paragraph"><strong>Descrição:</strong> definir domínio, casos de uso, ports, estruturas <code>transactions</code>, <code>categories</code> e <code>category_rules</code>, migrations, constraints, índices e políticas RLS.</p>

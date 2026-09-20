@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Baseline normativo e contrato técnico do módulo Transactions na Sprint 2">
+  <title>Especificação de Transactions · Sprint 2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"><img src="assets/coinciente-symbol.svg" alt=""></span><span class="brand-name"><em>Coin</em>ciente</span></a>
+    <nav class="doc-nav" aria-label="Documentos"><a href="index.html">Início</a><a href="visao.html">Visão</a><a href="prd.html">PRD</a><a href="arquitetura.html">Arquitetura</a><a href="Plano_Divisao_Atividades_Sprint_1.html">Sprint 1</a><a href="Plano_Divisao_Atividades_Sprint_2.html">Sprint 2</a><a href="style-guide.html">Style Guide</a></nav>
+  </header>
+  <main id="conteudo">
+    <section class="hero">
+      <p class="eyebrow">Especificação normativa · Dev 1 · S2-01</p>
+      <h1>Baseline e Contratos de Transactions</h1>
+      <p class="lead">Contrato técnico para movimentações manuais, transferências contábeis, categorias, regras pessoais, idempotência, auditoria e isolamento por tenant.</p>
+      <div class="meta-row"><span class="meta-chip">Versão 1.1</span><span class="meta-chip">20 set 2026</span><span class="meta-chip">Status: baseline e propostas aprovados</span></div>
+    </section>
+    <div class="reader">
+      <aside class="sidebar" aria-label="Navegação por seções"><p class="sidebar-title">Neste documento</p><label class="search"><span class="skip-link">Buscar</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3-2.1 2.1"/></svg><input id="doc-search" type="search" placeholder="Buscar no texto…" autocomplete="off"></label><nav class="page-nav" aria-label="Seções do documento"></nav><p class="result-note">Especificação integral</p></aside>
+      <article class="pages" aria-label="Conteúdo integral">
+        <section class="paper" id="pagina-1" data-page="1">
+          <div class="page-kicker"><span>S2-01</span><span>Autoridade e escopo</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">1. Status, autoridade e finalidade</h2>
+            <p class="doc-paragraph"><strong>Status: baseline e propostas aprovados em 20/09/2026.</strong> A aprovação explícita registrada nesta tarefa promove as propostas técnicas desta especificação a decisões normativas para S2-02 a S2-06. A aprovação autoriza a fundação de S2-02; não autoriza endpoints, OpenAPI gerado, idempotência em runtime, auditoria de Transactions ou regras automáticas antes das respectivas fases.</p>
+            <p class="doc-paragraph">A hierarquia de fontes é: requisito atual aprovado; esta especificação; contratos formais; testes existentes; implementação atual; material informal. A aprovação documental, isoladamente, não implementa o módulo nem autoriza alteração de OpenAPI gerado, instalação de dependência ou operação em banco compartilhado; a implementação atual de S2-02 decorre da autorização explícita desta tarefa.</p>
+            <h2 class="doc-heading">2. Escopo e exclusões</h2>
+            <p class="doc-paragraph">O escopo cobre receitas, despesas, transferências contábeis, categorização, regras pessoais, REST/OpenAPI, idempotência, tenant boundary, RLS e auditoria das ações relacionadas. Ficam fora OFX, Pluggy, dashboards, investimentos, patrimônio, projeções, pagamentos, Pix, transferências reais, movimentação de fundos, clientes web/mobile e qualquer dependência nova.</p>
+            <ul class="doc-list">
+              <li>O módulo Transactions é proprietário de <code>transactions</code>, <code>categories</code>, <code>category_rules</code> e do registro de idempotência aprovado.</li>
+              <li>Domain e Application permanecem livres de NestJS, Prisma, Zod, HTTP, PostgreSQL e infraestrutura.</li>
+              <li>Transferência é sempre representação contábil; nenhuma rota aciona instituição financeira ou provedor de pagamentos.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-2" data-page="2">
+          <div class="page-kicker"><span>Rastreabilidade</span><span>Fontes e decisões</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">3. Matriz de rastreabilidade</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>ID</th><th>Decisão</th><th>Fonte</th><th>Estado</th></tr></thead><tbody>
+              <tr><th>TX-01</th><td>Campos, tipos e lifecycle.</td><td>PRD HU-003; S2-01.</td><td>Aprovado nesta tarefa.</td></tr>
+              <tr><th>TX-02</th><td>Valor positivo e tipo determinando sinal.</td><td>Money existente; sem regra explícita.</td><td>Aprovado nesta tarefa.</td></tr>
+              <tr><th>TX-03</th><td>Dois lançamentos relacionados e atômicos.</td><td>PRD HU-003/RN-005; Plano S2.</td><td>Contrato técnico fechado.</td></tr>
+              <tr><th>CAT-01</th><td>Fonte e lifecycle de categoria.</td><td>PRD HU-005/HU-006; Visão.</td><td>Aprovado nesta tarefa.</td></tr>
+              <tr><th>RULE-01</th><td>Condições, operadores e precedência.</td><td>PRD HU-006; S2-06.</td><td>Aprovado nesta tarefa.</td></tr>
+              <tr><th>IDEM-01</th><td>Header, escopo, hash e janela.</td><td>PRD HU-003; S2-07.</td><td>Aprovado nesta tarefa.</td></tr>
+              <tr><th>API-01</th><td>Rotas, shapes, paginação e códigos HTTP.</td><td>Arquitetura REST; Accounts existente; S2-01.</td><td>Aprovado nesta tarefa.</td></tr>
+              <tr><th>AUD-01</th><td>Modelo de recurso auditável.</td><td>PRD HU-015; Arquitetura; Audit atual.</td><td>Direção aprovada; implementação em S2-07.</td></tr>
+              <tr><th>OWN-01</th><td>Tenant direto, filtros, contexto e RLS.</td><td>PRD RN-001–004; ADR RLS.</td><td>Fechado.</td></tr>
+              <tr><th>OAS-01</th><td>OpenAPI backend e clientes independentes.</td><td>Arquitetura, Visão e backend atual.</td><td>Fechado.</td></tr>
+            </tbody></table></div></div>
+            <p class="doc-paragraph">As decisões marcadas como aprovadas nesta matriz foram autorizadas explicitamente nesta tarefa. A fonte da aprovação é o registro de aprovação do usuário em 20/09/2026; os requisitos e contratos de origem permanecem indicados para rastreabilidade.</p>
+            <h2 class="doc-heading">4. Contratos já fechados</h2>
+            <ul class="doc-list">
+              <li>API sob <code>/api/v1</code>, bearer Auth0 e <code>security: [{ auth0: [] }]</code>.</li>
+              <li>Validação Zod somente nos adapters inbound; entidades e casos de uso não importam Zod.</li>
+              <li>Problem Details com <code>type</code>, <code>title</code>, <code>status</code>, <code>code</code> e <code>detail</code>.</li>
+              <li><code>X-Request-Id</code> é correlação UUID e não substitui <code>Idempotency-Key</code>.</li>
+              <li>Paginação segue <code>page</code>, <code>pageSize</code>, <code>items</code> e <code>total</code>, padrão 20 e máximo 100.</li>
+              <li>Valores monetários são strings decimais exatas em BRL; nunca são serializados como <code>number</code>.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-3" data-page="3">
+          <div class="page-kicker"><span>Transactions</span><span>Modelo e lifecycle</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">5. Representação recomendada</h2>
+            <p class="doc-paragraph">A representação abaixo é o baseline aprovado. <code>tenantId</code> é persistido e usado para ownership, mas não é aceito nem retornado pelo cliente.</p>
+            <pre style="white-space:pre-wrap;overflow:auto"><code>TransactionView {
+  id: uuid
+  accountId: uuid
+  type: income | expense | transfer
+  amount: decimal string BRL, positiva, duas casas
+  occurredOn: YYYY-MM-DD
+  description: string | null
+  status: posted | voided
+  transferId: uuid | null
+  transferSide: outgoing | incoming | null
+  categoryId: uuid | null
+  categorizationStatus: unclassified | categorized | uncertain | unrecognized | not_applicable
+  categorizationSource: manual | rule | null
+  createdAt: date-time
+  updatedAt: date-time
+}</code></pre>
+            <h2 class="doc-heading">6. Receitas, despesas e lifecycle</h2>
+            <ul class="doc-list">
+              <li><code>income</code> e <code>expense</code> usam o mesmo recurso; o tipo determina a natureza do lançamento.</li>
+              <li>Recomenda-se valor estritamente maior que <code>0.00</code>, sem arredondamento implícito.</li>
+              <li>A criação manual inicia em <code>posted</code>. <code>voided</code> preserva histórico e não autoriza hard delete.</li>
+              <li>Não há endpoint de void no S2-01; sua inclusão futura exige decisão específica.</li>
+              <li>A data deve ser uma data civil real; datas futuras são aceitas nesta fase.</li>
+              <li>Transações não devem ser apagadas fisicamente pelo contrato comum.</li>
+            </ul>
+            <p class="doc-paragraph"><strong>Decisão registrada:</strong> o valor é estritamente maior que zero, o tipo determina a natureza sem sinal negativo no payload, a criação inicia em <code>posted</code> e o estado <code>voided</code> preserva o histórico. Datas civis futuras são aceitas enquanto não houver regra de produto adicional; não há endpoint de void nesta fase.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-4" data-page="4">
+          <div class="page-kicker"><span>Transferências</span><span>Atomicidade contábil</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">7. Dois lançamentos relacionados</h2>
+            <p class="doc-paragraph">A operação recomendada é <code>POST /api/v1/transfers</code>. Ela cria exatamente dois registros em <code>transactions</code>: um <code>outgoing</code> na conta de origem e um <code>incoming</code> na conta de destino. Ambos têm o mesmo <code>transferId</code>, valor e data.</p>
+            <pre style="white-space:pre-wrap;overflow:auto"><code>{
+  "fromAccountId": "uuid",
+  "toAccountId": "uuid",
+  "amount": "100.00",
+  "occurredOn": "2026-09-20",
+  "description": "Reserva mensal"
+}</code></pre>
+            <ul class="doc-list">
+              <li>As contas devem pertencer ao mesmo tenant, ser distintas e estar ativas.</li>
+              <li>Transfer entries não recebem categoria; sua classificação é <code>not_applicable</code>.</li>
+              <li>Os dois inserts, a chave de idempotência e a auditoria pertencem à mesma transação Prisma.</li>
+              <li>Falha em qualquer etapa causa rollback completo.</li>
+              <li>A transação não contém Auth0, HTTP, Pluggy, QStash ou outra I/O externa.</li>
+              <li>A operação nunca representa Pix, pagamento ou transferência bancária.</li>
+            </ul>
+            <h2 class="doc-heading">8. Atomicidade e persistência</h2>
+            <p class="doc-paragraph">O adapter deve reutilizar <code>PrismaTenantTransaction</code>, definir o GUC local como primeira instrução e passar o mesmo <code>tx</code> para repositórios de Transactions, idempotência e auditoria. Não deve abrir transação aninhada.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-5" data-page="5">
+          <div class="page-kicker"><span>Categorias</span><span>Fonte e lifecycle</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">9. Categorias</h2>
+            <p class="doc-paragraph">Categorias são sempre tenant-owned, com <code>source=user</code>, sem categorias gerais no S2. O modelo contém <code>id</code>, <code>tenantId</code>, <code>name</code>, <code>source</code>, <code>status</code>, <code>archivedAt</code>, <code>createdAt</code> e <code>updatedAt</code>.</p>
+            <ul class="doc-list">
+              <li><code>active</code> pode ser atribuída a novos lançamentos.</li>
+              <li><code>archived</code> permanece visível no histórico, mas não pode ser atribuída novamente.</li>
+              <li>Hard delete não faz parte do contrato.</li>
+              <li>O contrato expõe GET, POST, PATCH e deactivate para que o usuário possa criar e manter suas categorias.</li>
+            </ul>
+            <p class="doc-paragraph"><strong>Decisão registrada:</strong> categorias são criadas e mantidas pelo usuário; não há seed nem fonte geral nesta Sprint.</p>
+            <h2 class="doc-heading">10. Classificação</h2>
+            <p class="doc-paragraph"><code>categoryId</code> é nulo para estados não classificados. Correção manual persiste <code>categorizationSource=manual</code>; regra aplicada persiste <code>categorizationSource=rule</code>. <code>unclassified</code>, <code>uncertain</code> e <code>unrecognized</code> são estados distintos e explícitos; transferências usam <code>not_applicable</code>.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-6" data-page="6">
+          <div class="page-kicker"><span>Regras</span><span>Condições e precedência</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">11. Condições mínimas aprovadas</h2>
+            <p class="doc-paragraph">Para evitar uma linguagem de regras genérica, cada regra possui uma condição no S2:</p>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Campo</th><th>Operadores</th><th>Valor</th></tr></thead><tbody>
+              <tr><th>description</th><td>equals, contains, starts_with, ends_with</td><td>String normalizada.</td></tr>
+              <tr><th>type</th><td>equals</td><td>income ou expense.</td></tr>
+              <tr><th>accountId</th><td>equals</td><td>UUID de conta do mesmo tenant.</td></tr>
+            </tbody></table></div></div>
+            <p class="doc-paragraph">A comparação de descrição deve usar a normalização textual já adotada pelo backend e ser case-insensitive. Condições múltiplas, OR, operadores numéricos, regex e expressões arbitrárias estão fora do baseline aprovado.</p>
+            <h2 class="doc-heading">12. Precedência e lifecycle de regra</h2>
+            <ul class="doc-list">
+              <li>Somente regras pessoais existem no S2; a precedência sobre regras gerais não é ativada.</li>
+              <li>Regra ativa participa da avaliação; inativa não participa; removida não pode ser reativada.</li>
+              <li>Maior <code>priority</code> vence; empate usa <code>createdAt</code> ascendente e depois <code>id</code> ascendente.</li>
+              <li>Correção manual vence uma categorização por regra.</li>
+              <li>Alteração de regra não reprocessa retroativamente transações existentes.</li>
+              <li>A recomendação é aplicar regras na criação de novos lançamentos.</li>
+            </ul>
+            <p class="doc-paragraph"><strong>Decisão registrada:</strong> as condições, operadores, prioridade, estados, desempate, aplicação na criação e precedência manual/regra acima são o contrato aprovado para S2.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-7" data-page="7">
+          <div class="page-kicker"><span>Idempotência</span><span>Replay e concorrência</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">13. Contrato aprovado</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Item</th><th>Regra aprovada</th></tr></thead><tbody>
+              <tr><th>Header</th><td><code>Idempotency-Key</code>, obrigatório em POST de movimentação.</td></tr>
+              <tr><th>Escopo</th><td><code>tenantId + operation + key</code>.</td></tr>
+              <tr><th>Payload</th><td>Hash do request normalizado.</td></tr>
+              <tr><th>Janela</th><td>24 horas.</td></tr>
+              <tr><th>Replay igual</th><td>Retorna a resposta original sem criar novos registros.</td></tr>
+              <tr><th>Payload diferente</th><td><code>409 IDEMPOTENCY_KEY_REUSED</code>.</td></tr>
+              <tr><th>Chave expirada</th><td><code>409 IDEMPOTENCY_KEY_EXPIRED</code>; cliente gera nova chave.</td></tr>
+            </tbody></table></div></div>
+            <p class="doc-paragraph">A persistência deve usar uma tabela própria do módulo com tenant, operação, chave, hash, status, IDs dos recursos criados, criação e expiração. Não deve armazenar payload financeiro integral nem introduzir biblioteca externa.</p>
+            <h2 class="doc-heading">14. Decisão registrada</h2>
+            <p class="doc-paragraph">A repetição segura usa <code>Idempotency-Key</code>, escopo por tenant e operação, hash do payload normalizado, janela de 24 horas e replay da resposta original. Reuso com payload diferente ou chave expirada retorna conflito.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-8" data-page="8">
+          <div class="page-kicker"><span>REST</span><span>OpenAPI e erros</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">15. Rotas aprovadas</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Método</th><th>Rota</th><th>Resposta</th></tr></thead><tbody>
+              <tr><th>POST</th><td><code>/api/v1/transactions</code></td><td>201 TransactionView.</td></tr>
+              <tr><th>GET</th><td><code>/api/v1/transactions</code></td><td>200 paginado.</td></tr>
+              <tr><th>PATCH</th><td><code>/api/v1/transactions/{transactionId}/category</code></td><td>200 TransactionView.</td></tr>
+              <tr><th>POST</th><td><code>/api/v1/transfers</code></td><td>201 TransferView com duas entries.</td></tr>
+              <tr><th>GET/POST/PATCH</th><td><code>/api/v1/categories</code> e <code>/{categoryId}</code></td><td>200/201 CategoryView.</td></tr>
+              <tr><th>POST</th><td><code>/api/v1/categories/{categoryId}/deactivate</code></td><td>200 CategoryView.</td></tr>
+              <tr><th>GET/POST/PATCH</th><td><code>/api/v1/category-rules</code> e <code>/{ruleId}</code></td><td>200/201 CategoryRuleView.</td></tr>
+              <tr><th>POST/DELETE</th><td><code>/api/v1/category-rules/{ruleId}/activate</code>, <code>/deactivate</code>, DELETE</td><td>200/204.</td></tr>
+            </tbody></table></div></div>
+            <p class="doc-paragraph">As listagens usam <code>page</code>, <code>pageSize</code>, <code>items</code> e <code>total</code>. A ordenação aprovada é transações por <code>occurredOn DESC, id DESC</code> e regras por <code>priority DESC, createdAt ASC, id ASC</code>.</p>
+            <h2 class="doc-heading">16. Status e Problem Details</h2>
+            <ul class="doc-list">
+              <li><code>400</code>: JSON, tipos, datas, valores e combinações inválidas.</li>
+              <li><code>401</code>: bearer ausente ou inválido.</li>
+              <li><code>403</code>: contexto de identidade indisponível.</li>
+              <li><code>404</code>: recurso inexistente ou pertencente a outro tenant.</li>
+              <li><code>409</code>: lifecycle, account arquivada, regra ou idempotência em conflito.</li>
+              <li><code>500</code>: erro interno sem detalhes de infraestrutura.</li>
+            </ul>
+            <p class="doc-paragraph">O JSON de erro mantém o contrato existente de <code>application/problem+json</code>, inclusive <code>X-Request-Id</code>. Códigos novos propostos: <code>TRANSACTION_NOT_FOUND</code>, <code>TRANSFER_ACCOUNTS_MUST_DIFFER</code>, <code>CATEGORY_NOT_FOUND</code>, <code>CATEGORY_ARCHIVED</code>, <code>CATEGORY_RULE_NOT_FOUND</code>, <code>CATEGORY_RULE_CONFLICT</code>, <code>IDEMPOTENCY_KEY_REUSED</code> e <code>IDEMPOTENCY_KEY_EXPIRED</code>.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-9" data-page="9">
+          <div class="page-kicker"><span>Segurança</span><span>Ownership e auditoria</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">17. Tenant boundary</h2>
+            <ul class="doc-list">
+              <li><code>transactions</code>, <code>categories</code>, <code>category_rules</code> e idempotência possuem <code>tenant_id</code> direto.</li>
+              <li>Account, category e rule IDs recebidos do cliente são consultados com ownership explícito.</li>
+              <li>Cross-tenant é tratado como recurso não encontrado, sem confirmar existência alheia.</li>
+              <li>Application recebe somente <code>TenantContext { userId, tenantId }</code>.</li>
+              <li>O adapter abre transação tenant-aware, define o GUC local como primeira instrução e usa o mesmo <code>tx</code>.</li>
+              <li>As novas tabelas devem ter <code>ENABLE</code> e <code>FORCE ROW LEVEL SECURITY</code>, owner <code>cfi_owner</code>, runtime sem <code>BYPASSRLS</code> e policies fail-closed.</li>
+            </ul>
+            <h2 class="doc-heading">18. Auditoria mínima</h2>
+            <p class="doc-paragraph">Ações aprovadas: <code>transaction_created</code>, <code>transfer_created</code>, <code>transaction_category_updated</code>, <code>category_created</code>, <code>category_updated</code>, <code>category_archived</code>, <code>category_rule_created</code>, <code>category_rule_updated</code>, <code>category_rule_activated</code>, <code>category_rule_deactivated</code> e <code>category_rule_removed</code>.</p>
+            <p class="doc-paragraph">Cada registro contém ator, tenant, ação, recurso, instante, resultado e request/correlation id. Metadata registra somente mudanças estruturais; nunca valor, descrição completa, token ou segredo.</p>
+            <p class="doc-paragraph"><strong>Decisão registrada:</strong> a auditoria será generalizada para os novos tipos com tenant direto, resource type fechado, ownership no Application e RLS. A alteração será implementada em S2-07 com migration forward-only; S2-02 apenas preserva a fronteira necessária para essa extensão.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-10" data-page="10">
+          <div class="page-kicker"><span>Gate</span><span>Pendências e compatibilidade</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">19. Decisões aprovadas e limites de fase</h2>
+            <ol class="doc-list">
+              <li>As decisões acima estão aprovadas para implementação nas fases correspondentes.</li>
+              <li>S2-02 limita-se à fundação de domínio, persistência e RLS.</li>
+              <li>Endpoints, OpenAPI gerado, idempotência em runtime, auditoria e regras executáveis permanecem nas fases designadas.</li>
+            </ol>
+            <h2 class="doc-heading">20. Compatibilidade OpenAPI</h2>
+            <ul class="doc-list">
+              <li>Novas operações são aditivas sob <code>/api/v1</code>; rotas de Accounts existentes não mudam.</li>
+              <li>JSON usa camelCase; valores financeiros são strings; datas usam <code>date</code> ou <code>date-time</code>.</li>
+              <li>Web e mobile geram seus clientes separadamente a partir do OpenAPI do backend.</li>
+              <li>Não há pacote compartilhado de schemas nem biblioteca geradora aprovada nesta fase.</li>
+              <li><code>openapi/openapi.json</code> só será atualizado quando os controllers aprovados existirem nas fases correspondentes.</li>
+            </ul>
+            <h2 class="doc-heading">21. Gate de continuidade</h2>
+            <p class="doc-paragraph">S2-02 está autorizado pelo registro de aprovação desta tarefa. As fases seguintes só devem iniciar respeitando os limites e a ordem documentados no plano técnico.</p>
+          </div>
+        </section>
+      </article>
+    </div>
+  </main>
+  <footer class="site-footer">Documentação acadêmica · UCB · 2026 · Samuel Mota, Thiago Marques e Miguel Candido</footer>
+  <script src="assets/app.js"></script>
+</body>
+</html>

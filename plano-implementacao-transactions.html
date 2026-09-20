@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Plano técnico para implementar o baseline aprovado do módulo Transactions">
+  <title>Plano de Implementação de Transactions · Sprint 2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"><img src="assets/coinciente-symbol.svg" alt=""></span><span class="brand-name"><em>Coin</em>ciente</span></a>
+    <nav class="doc-nav" aria-label="Documentos"><a href="index.html">Início</a><a href="visao.html">Visão</a><a href="prd.html">PRD</a><a href="arquitetura.html">Arquitetura</a><a href="Plano_Divisao_Atividades_Sprint_1.html">Sprint 1</a><a href="Plano_Divisao_Atividades_Sprint_2.html">Sprint 2</a><a href="style-guide.html">Style Guide</a></nav>
+  </header>
+  <main id="conteudo">
+    <section class="hero">
+      <p class="eyebrow">Plano técnico · Dev 1 · Sprint 2</p>
+      <h1>Implementação de Transactions</h1>
+      <p class="lead">Sequência reviewável para transformar o contrato S2-01 em persistência, movimentações, categorização, regras, isolamento, auditoria e OpenAPI.</p>
+      <div class="meta-row"><span class="meta-chip">Versão 1.1</span><span class="meta-chip">20 set 2026</span><span class="meta-chip">Status: S2-02 autorizado</span></div>
+    </section>
+    <div class="reader">
+      <aside class="sidebar" aria-label="Navegação por seções"><p class="sidebar-title">Neste documento</p><label class="search"><span class="skip-link">Buscar</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3-2.1 2.1"/></svg><input id="doc-search" type="search" placeholder="Buscar no texto…" autocomplete="off"></label><nav class="page-nav" aria-label="Seções do documento"></nav><p class="result-note">Plano integral</p></aside>
+      <article class="pages" aria-label="Conteúdo integral">
+        <section class="paper" id="pagina-1" data-page="1">
+          <div class="page-kicker"><span>Gate</span><span>Pré-condições</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">1. Limite de autorização</h2>
+            <p class="doc-paragraph"><strong>Status: S2-02 autorizado em 20/09/2026.</strong> Este plano descreve a fundação aprovada e mantém os endpoints e demais comportamentos nas fases designadas. A especificação normativa é <a href="especificacao-transactions.html">Especificação de Transactions</a>.</p>
+            <h2 class="doc-heading">2. Pré-condições verificadas</h2>
+            <ul class="doc-list">
+              <li>Backend NestJS 11, TypeScript, Prisma 7, PostgreSQL, Zod, Vitest e Supertest já estão declarados.</li>
+              <li><code>/api/v1</code>, Auth0, TenantContext, PrismaTenantTransaction, Problem Details e OpenAPI de Accounts existem.</li>
+              <li>Money usa centavos <code>bigint</code> no domínio e decimal string na API.</li>
+              <li>RLS usa GUC local à transação, <code>FORCE ROW LEVEL SECURITY</code> e runtime sem BYPASSRLS.</li>
+              <li>Transactions ainda não possui domínio, schema, migration, controller, repository ou teste.</li>
+              <li>O backend está limpo; as renomeações staged existentes no repositório de documentação são preservadas.</li>
+            </ul>
+            <h2 class="doc-heading">3. Condição de avanço</h2>
+            <p class="doc-paragraph">As propostas de S2-01 foram aprovadas nesta tarefa. A implementação desta fase começa somente dentro do limite de domínio, Application, schema, migration e RLS; os fluxos de runtime permanecem nas fases seguintes.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-2" data-page="2">
+          <div class="page-kicker"><span>Arquivos</span><span>Mapa de mudança</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">4. Arquivos de documentação desta fase</h2>
+            <ul class="doc-list">
+              <li><code>especificacao-transactions.html</code>: contrato normativo, rastreabilidade e decisões aprovadas.</li>
+              <li><code>plano-implementacao-transactions.html</code>: sequência de implementação e validação.</li>
+              <li><code>Plano_Divisao_Atividades_Sprint_2.html</code>: links e registro do gate S2-01.</li>
+            </ul>
+            <h2 class="doc-heading">5. Backend previsto para S2-02 a S2-06</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Área</th><th>Arquivos previstos</th><th>Responsabilidade</th></tr></thead><tbody>
+              <tr><th>Persistência</th><td><code>prisma/schema.prisma</code>, nova migration em <code>prisma/migrations/</code></td><td>Enums, tabelas, constraints, índices, grants e RLS.</td></tr>
+              <tr><th>Domínio</th><td><code>src/modules/transactions/domain/</code></td><td>Money, datas, entidades, regras e erros sem infraestrutura.</td></tr>
+              <tr><th>Application</th><td><code>src/modules/transactions/application/</code></td><td>Use cases, views e ports públicos.</td></tr>
+              <tr><th>Adapters</th><td><code>src/modules/transactions/adapters/</code></td><td>Controllers, Zod, Prisma e tradução de falhas.</td></tr>
+              <tr><th>Segurança</th><td><code>database-security-check.service.ts</code>, <code>verify-rls.sql</code>, testes</td><td>Protected tables, roles, policies e isolamento reproduzível.</td></tr>
+              <tr><th>OpenAPI</th><td><code>scripts/generate-openapi.ts</code>, <code>openapi/openapi.json</code></td><td>Materializar o contrato somente quando controllers existirem.</td></tr>
+            </tbody></table></div></div>
+            <p class="doc-paragraph">S2-02 altera somente os arquivos de fundação necessários. A unidade de trabalho de Transactions deve ser um adapter próprio do módulo reutilizando <code>PrismaTenantTransaction</code>, sem ampliar o adapter específico de Accounts com dependências cruzadas.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-3" data-page="3">
+          <div class="page-kicker"><span>S2-02</span><span>Persistência tenant-aware</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">6. Domínio e Application</h2>
+            <ol class="doc-list">
+              <li>Implementar entidades/value objects de Transaction, par de transferência, Category e CategoryRule com invariantes aprovadas.</li>
+              <li>Manter Money, datas, normalização e erros no Domain sem Zod ou tipos Prisma.</li>
+              <li>Definir ports para repositórios tenant-aware e para a unidade transacional do módulo.</li>
+              <li>Manter <code>TenantContext</code> explícito nos casos de uso.</li>
+              <li>Não criar DSL genérica além das condições aprovadas.</li>
+            </ol>
+            <h2 class="doc-heading">7. Schema, constraints e índices</h2>
+            <ul class="doc-list">
+              <li>Criar <code>transactions</code>, <code>categories</code> e <code>category_rules</code>; a tabela de idempotência fica para S2-07.</li>
+              <li>Adicionar FK de conta/categoria somente quando a decisão de ownership permitir e sem atravessar repositórios de módulos.</li>
+              <li>Garantir valores BRL, amount positivo, pares de transferência, estados e datas conforme o contrato aprovado.</li>
+              <li>Indexar tenant, data, account, status, transfer group e priority conforme as consultas reais; a chave idempotente será indexada em S2-07.</li>
+              <li>Usar migration forward-only; nunca editar migration já aplicada nem substituir migration por <code>db push</code>.</li>
+            </ul>
+            <h2 class="doc-heading">8. RLS e grants</h2>
+            <p class="doc-paragraph">Cada tabela protegida deve ter owner <code>cfi_owner</code>, RLS habilitado e forçado, policies por comando, grants mínimos para <code>cfi_runtime</code> e <code>cfi_test</code>, e verificação no readiness/script. Contexto ausente ou inválido deve retornar zero linhas ou rejeitar mutação.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-4" data-page="4">
+          <div class="page-kicker"><span>S2-03</span><span>Movimentações</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">9. Receitas e despesas</h2>
+            <ol class="doc-list">
+              <li>Validar body estrito no adapter inbound e converter para input da Application.</li>
+              <li>Validar account ativa e pertencente ao tenant.</li>
+              <li>Persistir uma Transaction com o estado aprovado.</li>
+              <li>Aplicar idempotência antes de produzir uma nova movimentação.</li>
+              <li>Persistir auditoria na mesma unidade transacional quando exigido pelo contrato.</li>
+            </ol>
+            <h2 class="doc-heading">10. Transferência</h2>
+            <ol class="doc-list">
+              <li>Validar contas de origem/destino, identidade, estado e diferença entre elas.</li>
+              <li>Reservar ou criar o registro idempotente dentro do mesmo <code>tx</code>.</li>
+              <li>Criar as duas entries relacionadas pelo mesmo <code>transferId</code>.</li>
+              <li>Escrever auditoria da operação sem duplicar em replay idêntico.</li>
+              <li>Comitar somente se todos os passos forem concluídos.</li>
+            </ol>
+            <h2 class="doc-heading">11. REST e OpenAPI</h2>
+            <p class="doc-paragraph">Adicionar controllers e schemas conforme a especificação aprovada. Atualizar o gerador e o artefato OpenAPI somente após as rotas existirem, mantendo as operações de Accounts compatíveis.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-5" data-page="5">
+          <div class="page-kicker"><span>S2-05/S2-06</span><span>Categorias e regras</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">12. Categorização</h2>
+            <ul class="doc-list">
+              <li>Listar e validar categorias do mesmo tenant.</li>
+              <li>Rejeitar categoria arquivada ou pertencente a outro tenant sem revelar existência.</li>
+              <li>Persistir correção manual e sua origem.</li>
+              <li>Manter estados uncertain/unrecognized explicitamente quando aprovados.</li>
+            </ul>
+            <h2 class="doc-heading">13. Regras pessoais</h2>
+            <ul class="doc-list">
+              <li>Validar condição, operador, prioridade e categoria no mesmo tenant.</li>
+              <li>Implementar lifecycle active/inactive/removed conforme a decisão aprovada.</li>
+              <li>Aplicar a precedência determinística documentada e expor conflito como Problem Details.</li>
+              <li>Auditar criação, edição, ativação, desativação e remoção sem registrar payload financeiro desnecessário.</li>
+            </ul>
+            <h2 class="doc-heading">14. Limites</h2>
+            <p class="doc-paragraph">Não implementar categorias gerais, regex, expressões arbitrárias, reprocessamento histórico ou precisão mínima de classificação sem decisão e evidência específicas.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-6" data-page="6">
+          <div class="page-kicker"><span>Validação</span><span>Riscos e encerramento</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">15. Validação planejada</h2>
+            <ul class="doc-list">
+              <li>Testes unitários de Money, datas, entidades, lifecycle, condições e precedência.</li>
+              <li>Testes de integração Prisma/PostgreSQL para constraints, índices e mapeamentos.</li>
+              <li>Testes RLS com dois tenants, contexto ausente, contexto inválido e mutation cross-tenant.</li>
+              <li>Testes REST com Supertest para autenticação, Problem Details, idempotência e transfer atomicity.</li>
+              <li>Teste de replay da mesma chave e conflito com payload diferente.</li>
+              <li>Teste de rollback quando a segunda entry ou auditoria falha.</li>
+              <li>Teste de contrato OpenAPI e geração independente de clientes.</li>
+              <li><code>npm run format:check</code>, <code>npm run lint</code>, <code>npm run typecheck</code>, <code>npm run build</code> e suítes Vitest relevantes.</li>
+            </ul>
+            <h2 class="doc-heading">16. Riscos</h2>
+            <ul class="doc-list">
+              <li>Semântica de sinal ou lifecycle errada pode contaminar dashboard e patrimônio.</li>
+              <li>Transferência parcial pode criar inconsistência contábil; atomicidade deve ser testada no banco.</li>
+              <li>Uma DSL ampla aumenta superfície, testes e manutenção sem requisito.</li>
+              <li>Generalizar Audit pode exigir migration sensível e revisão arquitetural.</li>
+              <li>OpenAPI gerado manualmente antes dos controllers criaria duas fontes de verdade.</li>
+            </ul>
+            <h2 class="doc-heading">17. Dependências</h2>
+            <p class="doc-paragraph">Nenhuma dependência nova é proposta. Zod, Prisma, PostgreSQL, <code>@nestjs/swagger</code>, Vitest e Supertest são suficientes. Uma biblioteca genérica de idempotência ou rules engine aumentaria acoplamento e não substituiria as invariantes de tenant, transferência e auditoria.</p>
+            <h2 class="doc-heading">18. Critério de encerramento</h2>
+            <p class="doc-paragraph">S2-02 encerra quando schema, migration, domínio, ports, RLS, testes e validação real estiverem concluídos; limitações ambientais devem ser registradas. As fases seguintes continuam condicionadas ao contrato e à ordem deste plano.</p>
+          </div>
+        </section>
+      </article>
+    </div>
+  </main>
+  <footer class="site-footer">Documentação acadêmica · UCB · 2026 · Samuel Mota, Thiago Marques e Miguel Candido</footer>
+  <script src="assets/app.js"></script>
+</body>
+</html>

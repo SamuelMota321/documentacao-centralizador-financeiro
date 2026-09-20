@@ -41,6 +41,7 @@ For S1-08, ensure focused backend coverage for:
 - Domain rules and application use cases using Vitest as documented.
 - Prisma/PostgreSQL integration.
 - Critical REST behavior using Supertest as documented.
+- Malformed JSON request bodies, including HTTP 400 and the required `application/problem+json` response contract.
 - Authentication and protected-endpoint behavior relevant to Dev 1.
 - Account creation, listing, updating, and deactivation/deletion.
 - Tenant ownership and application-level authorization.
@@ -51,7 +52,9 @@ For S1-09:
 
 - Validate the NestJS service.
 - Validate migrations and approved local/test PostgreSQL execution.
+- Validate migrations from a fresh or isolated PostgreSQL database, including role transitions and migration-history integrity: no incomplete or duplicate `_prisma_migrations` records and no reliance on `migrate resolve` to conceal a failed migration.
 - Validate REST `/api/v1` behavior and OpenAPI consistency.
+- Validate that malformed JSON is rejected with HTTP 400 and the documented Problem Details media type and shape, including parser errors that occur before controller-level filters.
 - Validate Auth0/JWT backend integration without real credentials.
 - Validate authorization and RLS.
 - Run the relevant backend lint, type-check, tests, and build.
@@ -69,6 +72,7 @@ Workflow
    - missing;
    - blocked by another developer or unavailable environment.
 3. Enumerate missing critical cases and propose the smallest test or production changes required.
+   The mandatory edge cases include malformed JSON parser errors, migration execution against a fresh or isolated PostgreSQL database, role-reset behavior, and the absence of incomplete or duplicate `_prisma_migrations` records.
 4. Present a plan with the problem, solution, rationale, exact affected files, exact code or diff, risks, commands, environment requirements, and expected evidence.
 5. Wait for:
    `planejamento aprovado, pode implementar`
@@ -85,6 +89,7 @@ Constraints
 - Do not include real Auth0 credentials, database credentials, tokens, or financial data.
 - Do not bypass authentication, tenancy, authorization, RLS, migrations, or integration behavior in order to pass tests.
 - Do not perform destructive database operations outside an isolated authorized test environment.
+- When validating migrations, use a fresh or isolated test database and preserve evidence of the migration status and `_prisma_migrations` contents; do not treat a manually resolved migration as proof that the migration itself succeeds.
 - Preserve unrelated user changes.
 - If evidence is insufficient, report that limitation instead of inferring success.
 - Keep changes limited to Dev 1 responsibilities and directly affected documentation.
@@ -96,9 +101,11 @@ During planning, propose exact paths for focused tests, test support, required p
 Acceptance criteria
 
 - Reproducible backend coverage exists for domain/use-case behavior, Prisma/PostgreSQL integration, critical REST behavior, authentication, account lifecycle, tenant isolation, and RLS.
+- Malformed JSON requests have reproducible coverage proving HTTP 400, `application/problem+json`, and the documented Problem Details body, including errors raised before controller-level filters.
 - Cross-tenant access is denied for reads and mutations.
 - NestJS service, migrations, PostgreSQL integration, REST API, authorization, and RLS have explicit evidence.
-- Relevant lint, type-check, test, and build commands pass, or genuine external blockers are reported with evidence.
+- Migration evidence comes from a fresh or isolated PostgreSQL database and confirms successful role handling, no incomplete or duplicate `_prisma_migrations` records, and no hidden failure resolved manually.
+- Relevant lint, type-check, test, build, `npm run format:check`, and `git diff --check` commands pass, or genuine external blockers are reported with evidence.
 - OpenAPI, configuration, and directly affected instructions are current.
 - No secrets or real financial data appear in source, fixtures, configuration examples, artifacts, or logs.
 - The technical handoff clearly separates Dev 1 completion from remaining Dev 2 and Dev 3 work.

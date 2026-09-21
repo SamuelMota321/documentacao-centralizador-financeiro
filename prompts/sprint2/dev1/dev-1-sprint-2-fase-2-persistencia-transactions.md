@@ -111,3 +111,43 @@ Acceptance criteria
 | Authorization checkpoint | Exact phrase required before edits | template plus repository instruction |
 
 Source legend: user-stated means supplied by the user or approved plan; approved default means a repository-grounded default selected for this prompt; template means a standard skill clause.
+
+## Execution handoff — audit after S2-02 implementation
+
+This prompt is versioned at:
+
+`C:\Users\samue\Documents\GitHub\CFI\documentacao-centralicador-financeiro\prompts\sprint2\dev1\dev-1-sprint-2-fase-2-persistencia-transactions.md`
+
+The following status was updated after the implementation and audit performed on 2026-09-21. The final backend commit audited is `b61b205` (`feat(s2-02): complete transactions persistence adapter`), superseding the partial baseline in `698787e`. This record is a handoff for the next Codex task; it does not authorize new implementation by itself.
+
+### Confirmed as implemented
+
+- Transactions domain entities, value objects, invariants, and typed errors.
+- Application repository and unit-of-work ports.
+- Prisma models and a forward-only migration for `transactions`, `categories`, and `category_rules`.
+- Enums, foreign keys, constraints, indexes, direct tenant ownership, grants, `FORCE ROW LEVEL SECURITY`, and tenant policies.
+- Focused domain tests and PostgreSQL/RLS integration tests, including ownership and cross-tenant denial.
+- Domain/Application import boundary without NestJS, Prisma, Zod, HTTP, PostgreSQL, or infrastructure imports.
+- Transactions outbound Prisma adapter with explicit Prisma/domain mappings and tenant-scoped repositories.
+- Tenant context propagation through the approved `PrismaTenantTransaction` mechanism.
+- Application authorization boundaries for tenant ownership, account ownership port, category lifecycle, and tenant-scoped reads.
+- Transactions OpenAPI component schemas and generated contract foundations without movement routes.
+- No movement endpoints, categorization flows, web changes, mobile changes, or new dependencies were introduced by S2-02.
+
+Validation evidence recorded in the audit:
+
+- `npm test`: 29 files and 112 tests passed.
+- Integration tests: 5 files and 19 tests passed.
+- `prisma validate`, `prisma generate`, typecheck, lint, and build passed.
+- OpenAPI generation and contract tests passed.
+- Local migration and RLS verification passed for own-tenant access, cross-tenant denial, absent context, and invalid context.
+- Scoped formatting passed; the global formatting check still reports 29 pre-existing files outside this phase.
+
+### S2-02 closure and next-phase boundary
+
+- S2-02 is complete and satisfies its approved foundation scope.
+- S2-03 is the next Dev 1 phase: backend use cases and REST endpoints for manual income, expense, and accounting transfer registration.
+- Movement idempotency, transfer atomicity, REST Problem Details, and movement OpenAPI paths belong to S2-03.
+- Categorization and personal rules remain outside S2-02 and are scheduled for later phases.
+
+The next task may start S2-03 after its own plan and authorization gate. It must preserve the completed migration, RLS, persistence adapter, and contract foundations. Any material expansion of the approved scope requires a new plan and the exact authorization phrase from the repository instructions.

@@ -20,7 +20,7 @@
       <p class="eyebrow">Plano técnico · Dev 1 · Sprint 2</p>
       <h1>Implementação de Transactions</h1>
       <p class="lead">Sequência reviewável para transformar o contrato S2-01 em persistência, movimentações, categorização, regras, isolamento, auditoria e OpenAPI.</p>
-      <div class="meta-row"><span class="meta-chip">Versão 1.1</span><span class="meta-chip">20 set 2026</span><span class="meta-chip">Status: S2-02 autorizado</span></div>
+      <div class="meta-row"><span class="meta-chip">Versão 1.3</span><span class="meta-chip">21 set 2026</span><span class="meta-chip">Status: S2-02 concluído e auditado</span></div>
     </section>
     <div class="reader">
       <aside class="sidebar" aria-label="Navegação por seções"><p class="sidebar-title">Neste documento</p><label class="search"><span class="skip-link">Buscar</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3-2.1 2.1"/></svg><input id="doc-search" type="search" placeholder="Buscar no texto…" autocomplete="off"></label><nav class="page-nav" aria-label="Seções do documento"></nav><p class="result-note">Plano integral</p></aside>
@@ -29,7 +29,7 @@
           <div class="page-kicker"><span>Gate</span><span>Pré-condições</span></div>
           <div class="normative-content">
             <h2 class="doc-heading">1. Limite de autorização</h2>
-            <p class="doc-paragraph"><strong>Status: S2-02 autorizado em 20/09/2026.</strong> Este plano descreve a fundação aprovada e mantém os endpoints e demais comportamentos nas fases designadas. A especificação normativa é <a href="especificacao-transactions.html">Especificação de Transactions</a>.</p>
+            <p class="doc-paragraph"><strong>Status: S2-02 concluído e auditado em 20/09/2026.</strong> Este plano registra a fundação implementada e mantém os endpoints e demais comportamentos nas fases designadas. A especificação normativa é <a href="especificacao-transactions.html">Especificação de Transactions</a>.</p>
             <h2 class="doc-heading">2. Pré-condições verificadas</h2>
             <ul class="doc-list">
               <li>Backend NestJS 11, TypeScript, Prisma 7, PostgreSQL, Zod, Vitest e Supertest já estão declarados.</li>
@@ -41,6 +41,8 @@
             </ul>
             <h2 class="doc-heading">3. Condição de avanço</h2>
             <p class="doc-paragraph">As propostas de S2-01 foram aprovadas nesta tarefa. A implementação desta fase começa somente dentro do limite de domínio, Application, schema, migration e RLS; os fluxos de runtime permanecem nas fases seguintes.</p>
+            <h2 class="doc-heading">Registro de execução e handoff</h2>
+            <p class="doc-paragraph">A auditoria de S2-02 foi registrada no <a href="prompts/sprint2/dev1/dev-1-sprint-2-fase-2-persistencia-transactions.md">prompt versionado da fase 2</a>. O commit final auditado é <code>b61b205</code>. Schema, migration, domínio, ports, adapter Prisma, mapeamento Prisma/domínio, propagação do tenant context, autorização em Application, fundamentos OpenAPI e testes estão concluídos. Endpoints de movimentação e fluxos de categorização permanecem nas fases designadas.</p>
           </div>
         </section>
 
@@ -52,6 +54,7 @@
               <li><code>especificacao-transactions.html</code>: contrato normativo, rastreabilidade e decisões aprovadas.</li>
               <li><code>plano-implementacao-transactions.html</code>: sequência de implementação e validação.</li>
               <li><code>Plano_Divisao_Atividades_Sprint_2.html</code>: links e registro do gate S2-01.</li>
+              <li><code>prompts/sprint2/dev1/dev-1-sprint-2-fase-2-persistencia-transactions.md</code>: prompt executável e handoff da auditoria de S2-02.</li>
             </ul>
             <h2 class="doc-heading">5. Backend previsto para S2-02 a S2-06</h2>
             <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Área</th><th>Arquivos previstos</th><th>Responsabilidade</th></tr></thead><tbody>

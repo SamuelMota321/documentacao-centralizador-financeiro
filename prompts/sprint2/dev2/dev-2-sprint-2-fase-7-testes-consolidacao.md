@@ -43,12 +43,12 @@ Part A — S2-08 client verification
 
 The Sprint 2 plan requires: "OpenAPI and typed clients remain compatible" and "Essential client flows use only test approaches already approved."
 
-1. Test approach gate
-   - Confirm from repository evidence and documentation whether any client test approach was approved during Sprint 1 or Phase 1 of Sprint 2. At the time this prompt was written, neither client had a test runner in package.json and the architecture approved Vitest only for the backend.
-   - If an approach is approved: use it, reusing existing utilities and mocks.
-   - If none is approved: do not install one silently. Present options with trade-offs (for example Vitest for pure logic in each client, React Testing Library, jest-expo for mobile, Playwright for web end-to-end) and a minimal recommendation focused on pure logic first; install only after explicit approval. In parallel, deliver a reproducible scripted/manual verification so Sprint 2 evidence is not blocked.
+1. Test approach
+   - Vitest is the client test approach, adopted in both clients in Sprint 1 Phase 5 (`pnpm test`, `*.test.ts` next to the code, HTTP and platform modules mocked). Extend the existing suites and reuse their helpers.
+   - Screens and the real Auth0 round trip are not covered by Vitest; they are covered by the demonstration script with recorded results.
+   - Adding a component-test or end-to-end library (for example React Testing Library, jest-expo, or Playwright) still requires presenting trade-offs and explicit approval before installation.
 
-2. Coverage targets (automated where approved; otherwise scripted/manual with recorded evidence), per client:
+2. Coverage targets (Vitest where the logic is testable in Node; scripted/manual with recorded evidence for screens), per client:
    - Money normalizer and formatter: valid pt-BR inputs, zero, negative, three decimals, thousands separators, large values, malformed text; no float drift.
    - Civil date helper: leap years, invalid dates, no UTC shift near midnight.
    - Zod input schemas: every constraint mirrored from the OpenAPI, including transfer accounts must differ and the rule grammar.
@@ -78,17 +78,17 @@ Workflow
 
 1. Model-selection assessment (AGENTS.md).
 2. Build a traceability matrix from every Dev 2 responsibility in S2-01 to S2-09 to repository evidence and executable checks, per client, classified as: implemented and verified; implemented but unverified; missing; blocked.
-3. Present a plan per repository: test approach decision (or options if none approved), exact test files and fixtures, verification scripts, README/env updates, demonstration script, commands, environment requirements, and expected evidence.
+3. Present a plan per repository: exact test files and fixtures, verification scripts, README/env updates, demonstration script, commands, environment requirements, and expected evidence.
 4. Wait for: planejamento aprovado, pode implementar
 5. Implement only the approved changes, web and mobile separately.
-6. Run: web pnpm lint, pnpm typecheck, pnpm build, and tests if approved; mobile pnpm typecheck and tests if approved; git diff --check. Execute the demonstration script end to end against a local backend with fictitious data and record the observed results.
+6. Run: web pnpm lint, pnpm typecheck, pnpm test, pnpm build; mobile pnpm typecheck, pnpm test, and an Expo export; git diff --check. Execute the demonstration script end to end against a local backend with fictitious data and record the observed results.
 7. Fix client defects within the approved scope. Do not change valid tests to make them pass.
 8. Append an "Execution handoff" section to this prompt file and suggest one commit message per repository.
 
 Constraints
 
 - Do not modify the backend, backend tests, pipelines owned by Dev 3, or Dev 3's consolidation documents.
-- Do not install a test library without explicit approval.
+- Use the existing Vitest setup; do not install another test library without explicit approval.
 - Do not share code, fixtures, or tests between repositories.
 - Do not bypass authentication or session isolation to make tests pass; mock at the HTTP boundary only.
 - Use fictitious data only; no real Auth0 credentials, tokens, or financial data in tests, fixtures, screenshots, or logs.
@@ -102,7 +102,7 @@ During planning: traceability matrix, test-approach decision or options, and per
 Acceptance criteria
 
 - Every Dev 2 responsibility from S2-01 to S2-09 is traced to evidence or explicitly classified.
-- Money, date, schema, idempotency, and error-mapping logic has reproducible verification in each client (automated if approved; scripted otherwise).
+- Money, date, schema, idempotency, and error-mapping logic has reproducible Vitest coverage in each client; screens have scripted verification with recorded results.
 - Snapshots and typed clients match the final backend OpenAPI, or differences are reported.
 - Each client builds and runs from versioned instructions.
 - The demonstration script covers income, expense, transfer, categorization, uncertain state, rule precedence, rule lifecycle, idempotent retry, and two-user isolation on both clients, with observed results.
@@ -117,7 +117,7 @@ Acceptance criteria
 | File template boilerplate | Header metadata and the paste-the-prompt step come from the skill template | template |
 | Task definition | Dev 2 parts of S2-08 (client tests) and S2-09 (experience and demonstration) | Plano_Divisao_Atividades_Sprint_2.html |
 | Acceptance criteria | Derived from S2-08 and S2-09 in the Sprint 2 plan | Plano_Divisao_Atividades_Sprint_2.html |
-| Test tooling | No client test runner exists; approval required before installation | repository evidence + arquitetura.html test view |
+| Test tooling | Vitest in both clients since Sprint 1 Phase 5; other test libraries require approval | repository evidence |
 | Pattern reference | Dev 2 Sprint 1 Phase 5 verification prompt | prompts/sprint1/dev2/dev-2-sprint-1-fase-5-testes-consolidacao.md |
 | Deadline | Sprint closes 2026-09-25 | Plano_Divisao_Atividades_Sprint_2.html |
 | Authorization checkpoint | Exact phrase required before edits | AGENTS.md |

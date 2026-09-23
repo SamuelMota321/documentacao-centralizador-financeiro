@@ -82,7 +82,7 @@ Workflow
 4. Present a plan per repository with the smallest fixes: exact files, exact diffs, risks, validation commands, and the two-user manual script.
 5. Wait for: planejamento aprovado, pode implementar
 6. Implement web and mobile separately.
-7. Validate: web pnpm lint, pnpm typecheck, pnpm build; mobile pnpm typecheck; git diff --check; run the two-user script and the idempotency simulations against a local backend with fictitious data and record the observed results.
+7. Validate: web pnpm lint, pnpm typecheck, pnpm test, pnpm build; mobile pnpm typecheck, pnpm test; git diff --check; run the two-user script and the idempotency simulations against a local backend with fictitious data and record the observed results.
 8. Append an "Execution handoff" section to this prompt file, including the checklist for Dev 3, and suggest one commit message per repository.
 
 Constraints

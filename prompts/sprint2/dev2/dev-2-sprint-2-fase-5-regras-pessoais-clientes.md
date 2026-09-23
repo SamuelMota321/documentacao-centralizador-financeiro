@@ -95,7 +95,7 @@ Workflow
 4. Present a plan per repository: screens/routes, form state machine, exact files, exact code or diffs, risks, validation commands, and a manual verification script that includes a precedence scenario proven by creating a new movement.
 5. Wait for: planejamento aprovado, pode implementar
 6. Implement web and mobile separately.
-7. Validate: web pnpm lint, pnpm typecheck, pnpm build; mobile pnpm typecheck; git diff --check. Run the manual verification script against a local backend with fictitious data and record which rule was applied in each precedence scenario.
+7. Validate: web pnpm lint, pnpm typecheck, pnpm test, pnpm build; mobile pnpm typecheck, pnpm test; git diff --check. Run the manual verification script against a local backend with fictitious data and record which rule was applied in each precedence scenario.
 8. Append an "Execution handoff" section to this prompt file and suggest one commit message per repository.
 
 Constraints

@@ -89,7 +89,7 @@ Workflow
 4. Present a plan per repository: screens/routes, component tree, state machine per form (idle -> submitting -> success | invalid | conflict | error), key lifetime handling, exact files, exact code or diffs, risks, validation commands, and a manual verification script.
 5. Wait for: planejamento aprovado, pode implementar
 6. Implement web and mobile separately.
-7. Validate: web pnpm lint, pnpm typecheck, pnpm build; mobile pnpm typecheck; git diff --check. Execute the manual verification script against a local backend with fictitious data, including the idempotent replay and the transfer, and record the observed results.
+7. Validate: web pnpm lint, pnpm typecheck, pnpm test, pnpm build; mobile pnpm typecheck, pnpm test; git diff --check. Execute the manual verification script against a local backend with fictitious data, including the idempotent replay and the transfer, and record the observed results.
 8. Append an "Execution handoff" section to this prompt file and suggest one commit message per repository.
 
 Constraints

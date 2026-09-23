@@ -5,7 +5,7 @@
 
 ## How to use
 
-1. Confirm that Sprint 1 is complete for Dev 2 (authentication, account create/list/edit/deactivate, client isolation, and client verification) and that all Sprint 1 client work is committed and pushed in both client repositories.
+1. Sprint 1 was closed for Dev 2 on 2026-09-23 and pushed (web `b9ef81c`, mobile `6a23b89`; handoff in `prompts/sprint1/dev2/dev-2-sprint-1-fase-5-testes-consolidacao.md`). Confirm that both client repositories still match `origin/main`. Mobile manual verification is pending until the Auth0 Native application exists in the backend tenant.
 2. Open a new Codex task with these repositories as workspace roots:
    - `/home/miguel/projetos/documentacao-centralizador-financeiro`
    - `/home/miguel/projetos/web-centralizador-financeiro`
@@ -49,7 +49,7 @@ Before proposing anything:
    - documentacao-centralizador-financeiro/style-guide.html
    - backend-centralizador-financeiro/openapi/openapi.json (authoritative contract)
    - In each client: src/lib/api/CONTRACT.md, src/lib/api/openapi.snapshot.json, src/lib/api/http-client.ts, src/lib/api/errors.ts, src/lib/accounts/*, and the existing account screens/routes and auth/session code.
-3. Verify Sprint 1 closure from repository evidence (committed code, not only documents). If Sprint 1 client work is missing or uncommitted, stop and report it instead of building on it.
+3. Confirm Sprint 1 closure from repository evidence: the Sprint 1 Phase 5 handoff and the pushed commits listed above. If a client repository has diverged from that state, stop and report it instead of building on it. Record the pending mobile Auth0 configuration as an environmental limitation; it does not block implementation.
 
 Task
 
@@ -109,7 +109,7 @@ For each decision, present options, the recommendation, trade-offs, and the depe
 4. Mobile navigation: App.tsx currently switches screens by auth status and local state; there is no navigation library. Sprint 2 adds transactions, transfer, categories, and rules screens. Recommend either extending the existing state-based switching (no dependency) or adopting a navigation library (new dependency, requires approval and a justified modularity gain). Web and mobile must not share navigation or components.
 5. Web route map: propose route names in the existing Portuguese convention (for example /movimentacoes, /movimentacoes/nova, /transferencias/nova, /categorias, /regras) and how they are protected by the existing proxy/auth mechanism.
 6. Screen inventory and state matrix: for every screen, list the loading, empty, success, error, and disabled/submitting states, and the Problem Details codes it must handle.
-7. Client test approach for Sprint 2: neither client currently has a test runner. The architecture approves Vitest only for the backend. Record the gap and state what Phase 7 will need (either an approved test approach or a documented manual/scripted verification), but do not choose a library here without approval.
+7. Client test approach for Sprint 2: Vitest was adopted in both clients in Sprint 1 Phase 5 (`pnpm test`; `*.test.ts` next to the code; `fetch`, Auth0, Next functions, and `expo-secure-store` mocked; no component-test library). Record which new Transactions logic each phase must cover with Vitest (money and date utilities, schemas, Idempotency-Key lifetime, API functions, error mapping, Server Actions, OpenAPI contract). Screens remain covered by manual scripts; adding a component-test or end-to-end library still requires explicit approval.
 8. Transfer presentation: always an accounting record ("Registro contábil entre suas contas"), never "enviar", "Pix", "pagar", or wording suggesting real fund movement (RN-005). Define the labels for outgoing/incoming entries.
 
 Part D — Record the baseline
@@ -128,7 +128,7 @@ Workflow
 4. Present the plan with: problem; proposed decisions (Part C) with options and recommendation; exact affected files; exact diffs for CONTRACT.md in each client and for the handoff section; risks; validation commands.
 5. Wait for: planejamento aprovado, pode implementar
 6. Apply only the approved documentation changes.
-7. Run, in each client, the relevant existing checks (web: pnpm lint and pnpm typecheck; mobile: pnpm typecheck) to confirm nothing was affected, and git diff --check in every changed repository.
+7. Run, in each client, the relevant existing checks (web: pnpm lint, pnpm typecheck, and pnpm test; mobile: pnpm typecheck and pnpm test) to confirm nothing was affected, and git diff --check in every changed repository.
 8. Report actual results and remaining OPEN items.
 
 Constraints
@@ -168,7 +168,8 @@ Acceptance criteria
 | Backend access | Read-only reference for OpenAPI and emitted codes | Sprint 2 responsibility split |
 | Contract facts | Observed in openapi/openapi.json at fa9b62a, to be re-verified | repository evidence |
 | Known divergence | DELETE category rule: OpenAPI 200 vs specification "200/204" | repository evidence |
-| Test tooling | No client test runner exists; architecture approves Vitest only for the backend | repository evidence |
+| Test tooling | Vitest adopted in both clients in Sprint 1 Phase 5; no component-test library | repository evidence |
+| Sprint 1 state | Closed and pushed (web b9ef81c, mobile 6a23b89); mobile manual verification pending Auth0 Native app | repository evidence |
 | Mobile navigation | No navigation library; state-based switching in App.tsx | repository evidence |
 | Dependency policy | No installation in this phase | approved default |
 | Authorization checkpoint | Exact phrase required before edits | AGENTS.md |

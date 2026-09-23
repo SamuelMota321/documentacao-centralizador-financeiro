@@ -42,7 +42,8 @@ Complete Dev 2's contribution to S2-02 ("alinhamento dos modelos") and S2-03 ("i
 Follow the existing per-module pattern already used by accounts in each client (src/lib/accounts/{api,schema,types}.ts on top of src/lib/api/{http-client,errors,config}.ts). Reproduce the pattern; do not introduce a new architectural layer.
 
 1. Contract snapshot
-   - Refresh src/lib/api/openapi.snapshot.json in each client from backend openapi/openapi.json at the current backend commit, and record that commit hash in CONTRACT.md (the current snapshot references backend 17ca76d and is stale).
+   - The snapshot was refreshed to backend `fa9b62a` in Sprint 1 Phase 5. Compare src/lib/api/openapi.snapshot.json in each client with backend openapi/openapi.json at the current backend commit; refresh it and record the new hash in CONTRACT.md only if it changed.
+   - Extend src/lib/api/contract.test.ts in each client with the Transactions, Categories, and Category-rules operations used by the typed client.
    - Confirm that the Accounts operations did not change incompatibly; if they did, stop and report.
 
 2. Types and response schemas (hand-transcribed; no generator library is approved)
@@ -85,6 +86,8 @@ Follow the existing per-module pattern already used by accounts in each client (
 
 9. Update CONTRACT.md in each client: coverage table (operation -> function), snapshot commit, confirmed codes, limitations.
 
+10. Tests (Vitest, existing pattern): add `*.test.ts` next to the new money/date utilities, input and response schemas, Idempotency-Key handling, API functions (with `fetch` stubbed), and error mapping in each client.
+
 Workflow
 
 1. Model-selection assessment (AGENTS.md).
@@ -92,7 +95,7 @@ Workflow
 3. Present a plan per repository: problem, solution, exact files (new and changed), exact code for types, schemas, utilities, http-client diff, API functions, error mapping, risks, and validation commands.
 4. Wait for: planejamento aprovado, pode implementar
 5. Implement web and mobile separately, in separate commits per repository.
-6. Validate: web pnpm lint and pnpm typecheck and pnpm build; mobile pnpm typecheck and, if available, an Expo export or doctor check; git diff --check. Run the S2-03 smoke if the environment allows.
+6. Validate: web pnpm lint, pnpm typecheck, pnpm test, and pnpm build; mobile pnpm typecheck, pnpm test, and an Expo export or doctor check; git diff --check. Run the S2-03 smoke if the environment allows.
 7. Append an "Execution handoff" section to this prompt file with changed files, evidence, and limitations.
 8. Suggest a commit message per repository (Conventional Commits, as in agents.md) without committing unless asked.
 
@@ -130,7 +133,7 @@ Acceptance criteria
 | File template boilerplate | Header metadata and the paste-the-prompt step come from the skill template | template |
 | Task definition | Dev 2 parts of S2-02 (model alignment) and S2-03 (early integration) | Plano_Divisao_Atividades_Sprint_2.html |
 | Pattern reference | Existing src/lib/accounts + src/lib/api pattern in each client | repository evidence |
-| Snapshot staleness | Current snapshot references backend 17ca76d | repository evidence |
+| Snapshot | Already at backend fa9b62a since Sprint 1 Phase 5; refresh only if the backend changed | repository evidence |
 | Generator | No generator library approved; hand transcription | CONTRACT.md + especificacao-transactions.html §20 |
 | Idempotency | Header required on POST /transactions and /transfers; 24h window; REUSED/EXPIRED conflicts | especificacao-transactions.html §13 + OpenAPI |
 | Money and dates | Decimal strings; civil dates | especificacao-transactions.html §4 |

@@ -197,7 +197,7 @@ Reviewed against `style-guide.html` 1.0 and `assets/styles.css`. Adjusted in thi
 
 Conforming: palette tokens, sign plus text for direction (never color alone), brand green only as reinforcement on inflows, tabular numerals, visible keyboard focus (web), no gradients or banking vocabulary, reference date on every row, measured contrast between 4.9:1 and 8.8:1 in light and dark.
 
-Design debt inherited from Sprint 1 (not changed here, for planning):
+Design debt inherited from Sprint 1 — **resolved on 2026-09-24 by the interface improvement stage** (`dev-2-sprint-2-melhoria-interface.md`): accents, mobile brand fonts, mobile dark theme, dark tokens aligned to the guide, 9px control radius, side navigation and brand symbol. Original list:
 
 1. UI strings without accents in both clients ("Movimentacoes", "Descricao", "Nao foi possivel"); conflicts with the guide's voice. Needs a dedicated normalization task.
 2. Mobile does not load Manrope/Newsreader (system font). Requires a new dependency (`expo-font` or `@expo-google-fonts/*`), not approved in Phase 1.

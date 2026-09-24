@@ -123,3 +123,62 @@ Acceptance criteria
 | Authorization checkpoint | Exact phrase required before edits | AGENTS.md |
 
 Source legend: **repository evidence** — verified on 2026-09-23; **template** — standard skill clause.
+
+## Execution handoff — Phase 7 (2026-09-24)
+
+Executed by Dev 2 after explicit approval, on top of the committed Phases 1–6 (web `4249177`, mobile `e28c583`, documentation `fba5f0f`). Backend: `fa9b62a`, which is also `origin/main` of the backend on this date — Dev 1 Phases 5 and 6 did not land, so this is the final Sprint 2 contract.
+
+### Test approach
+
+Vitest only, as adopted in Sprint 1. No component or end-to-end library was added (React Testing Library, jest-expo or Playwright would need new dependencies one day before the sprint closes); recommended for Sprint 3 planning. Screens and the real Auth0 round trip are covered by `roteiro-demonstracao-sprint-2.md`.
+
+### Contract compatibility
+
+- `openapi.snapshot.json` of web and mobile is **identical** to `backend-centralizador-financeiro/openapi/openapi.json` at `fa9b62a` (JSON equality).
+- New contract checks in both clients (`src/lib/api/contract.test.ts`): a fixture per view (TransactionView, TransactionPage, TransferView, CategoryView, CategoryPage, CategoryRuleView, CategoryRulePage) is validated against the snapshot schema by a small in-test validator (type, required, enum, nullable, pattern, format, min/max items, minimum) **and** parsed by the client Zod schema; enum parity between snapshot and client constants (types, statuses, transfer sides, categorization statuses and sources, rule fields, operators and statuses, uncertain statuses); a self-check proves the validator rejects real drift.
+
+### Tests added (each client has its own copy)
+
+- `src/lib/transactions/schema.test.ts`: amount pattern, description normalization, real dates, no `transfer` type or extra fields, transfer accounts must differ (case-insensitive, error on `toAccountId`), categorization PATCH with exactly one form and no return to unclassified.
+- `src/lib/category-rules/schema.test.ts`: full grammar, value normalization, priority 0…2,147,483,647 integers only, partial PATCH rules.
+- `src/lib/money.test.ts`: classic floating-point values (0,07, 0,29, 1,15, 4,35, 16 integer digits) read and formatted exactly.
+- Web `movimentacoes/actions.test.ts`: transfer keeps the key after a network failure and rotates it on `IDEMPOTENCY_KEY_REUSED`/`EXPIRED` (parity with income/expense).
+
+### README
+
+Both READMEs updated for Sprint 2 (scope, verification of the new routes/tabs, current test table, structure, `PRODUCT.md`/`DESIGN.md`, backend uses npm — `pnpm install` there fails with `ERR_PNPM_IGNORED_BUILDS`, pointer to the Sprint 2 demonstration script); Sprint 1 demo strings accented. Web troubleshooting gains the 500 `DomainResolutionError` row (empty Auth0 variables). `.env.example` unchanged: Sprint 2 added no variables.
+
+### Validation (executed)
+
+- Working tree — web: lint ok; typecheck ok; `pnpm test` **458/458** (25 files); build ok; `git diff --check` clean. Mobile: typecheck ok; `pnpm test` **370/370** (21 files); Android export ok (903 modules); `git diff --check` clean.
+- Clean checkout (`git clone` of the committed HEAD, `pnpm install --frozen-lockfile`, `.env` copied from `.env.example`) — web: lint, typecheck, 378/378, build ok; `next dev` answers **500 `DomainResolutionError`** until the Auth0 variables are filled (expected; now documented). Mobile: install, typecheck, 293/293, Android export ok; `npx expo-doctor`: **1 check failed** — patch mismatches `expo` 57.0.22 (expected ~57.0.25) and `expo-auth-session` 57.0.12 (expected ~57.0.13); not changed (dependency update needs approval).
+
+### Traceability — Dev 2 responsibilities
+
+| Task | Dev 2 role | Web | Mobile |
+|---|---|---|---|
+| S2-01 | Client flows and contract | Implemented and verified | Implemented and verified |
+| S2-02 | Model alignment | Implemented and verified (snapshot identical, fixture and enum parity tests) | Implemented and verified |
+| S2-03 | Early integration | Implemented and verified (Phase 3 manual) | Implemented, not manually verified |
+| S2-04 | Principal: web and mobile | Implemented and verified (Phase 3 manual) | Implemented, not manually verified |
+| S2-05 | Interfaces and states | Implemented and verified (Phase 4 manual, partial log corroboration) | Implemented, not manually verified |
+| S2-06 | Rule management | Implemented and verified (Phase 5 manual, precedence proven) | Implemented, not manually verified |
+| S2-07 | State isolation | Implemented; single-user verified; two-user **blocked** | Implemented; **blocked** |
+| S2-08 | Client tests | Implemented and verified (this phase) | Implemented and verified (this phase) |
+| S2-09 | Experience and demonstration | Interface stage done; demo script written; execution pending | Demo script written; **blocked** |
+
+### Handoff summary
+
+**Dev 2 completed and verified:** typed clients and contract compatibility; web flows for movements, transfers, categories, categorization, rules and precedence (manual scripts in Phases 3–5); client test suites (web 458, mobile 370); READMEs; clean-checkout install/test/build of both clients; interface aligned with the Style Guide.
+
+**Implemented but unverified:** every mobile screen on a device (Phases 3–7); two-tenant isolation on both clients (checklist in the Phase 6 handoff); the demonstration script (`roteiro-demonstracao-sprint-2.md`) end to end.
+
+**Blocked by Dev 1:** Phases 5 and 6 of Dev 1 (backend isolation/audit hardening and backend tests) not merged; open contract divergences — duplicate category name returns 500, rule priority has no upper bound, rule accepts archived account, account-not-found code differs between rule create and update, `DELETE /category-rules` 200 vs specification 200/204; an expired-key fixture for the `IDEMPOTENCY_KEY_EXPIRED` scenario.
+
+**Blocked by Dev 3 / environment:** two fictitious Auth0 users for the two-tenant scenarios; the Auth0 Native application for any mobile evidence; pipelines and cross-client end-to-end consolidation (Dev 3). Environmental limitations: no browser automation in this environment (visual checks are manual); `expo-doctor` patch mismatches pending a dependency decision.
+
+### Suggested commit messages
+
+- web: `test(clientes): contrato por fixtures, schemas de entrada e README da Sprint 2`
+- mobile: `test(clientes): contrato por fixtures, schemas de entrada e README da Sprint 2`
+- documentacao: `docs(dev2S2): roteiro de demonstração e handoff da fase 7 do Dev 2`

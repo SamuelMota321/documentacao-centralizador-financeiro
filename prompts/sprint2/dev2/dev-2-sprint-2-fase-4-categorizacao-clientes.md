@@ -142,3 +142,62 @@ Acceptance criteria
 | Authorization checkpoint | Exact phrase required before edits | AGENTS.md |
 
 Source legend: **repository evidence** — verified on 2026-09-23; **approved default** — conservative default consistent with prior prompts; **template** — standard skill clause.
+
+## Execution handoff — Phase 4 (2026-09-24)
+
+Executed by Dev 2 after explicit approval, on top of the uncommitted Phases 1–3 working tree. Backend reference: `fa9b62a` (read-only, unchanged).
+
+### Contract findings for Dev 1
+
+1. **Duplicate category name returns 500.** `categories_tenant_name_key` is a unique index on `(tenant_id, name)`, but no adapter maps the violation; the Transactions problem filter falls back to `INTERNAL_ERROR`. Derived from source reading, not from a live request. The uniqueness is exact (case-sensitive) and includes archived categories, so an archived "Mercado" blocks creating a new "Mercado". Suggested: map to 409 with a dedicated code, and decide whether archived names should stay reserved.
+2. Renaming an archived category returns 400 `INVALID_REQUEST` without `errors[]` (`InvalidCategoryState`); archiving an already archived category returns 200 (idempotent). Marking a transaction as uncertain/unrecognized clears `categoryId`.
+3. The Phase 2 comment "Nomes repetidos sao aceitos" in `lib/categories/types.ts` was wrong and has been corrected in both clients.
+
+### Client decisions
+
+- Both clients check for a duplicate name before create/rename by listing all categories and comparing the normalized name exactly (mirroring the index). If the listing fails for a non-session reason, the request proceeds and a 500 shows a safe message that mentions the likely duplicate.
+- UI strings stay unaccented, consistent with Phases 1–3; accent normalization remains a separate pending task.
+- Category labels: "{nome} · definida por voce" (manual), "{nome} · aplicada por regra" (rule), "{nome} (arquivada)" for archived, "Categoria indisponivel" when unresolved (never a UUID), "Sem categoria", "Categoria incerta", "Nao reconhecida", "Nao se aplica". No text claims accuracy or "inteligencia".
+
+### Web (`web-centralizador-financeiro`)
+
+- `src/proxy.ts`/`proxy.test.ts`: `/categorias` protected. `src/app/app-nav.tsx`: "Categorias" link.
+- `src/lib/session.ts`: `accessTokenOrNull` and `isAuthFailure`, now shared by the movements and categories Server Actions (extracted from the Phase 3 actions).
+- `src/app/categorias/`: `page.tsx` (paginated list, status as text, empty state, notices), `actions.ts` (create, rename, archive with duplicate check; rename/archive redirect with a closed-list notice; revalidates `/categorias` and `/movimentacoes`), `category-form.tsx`, `category-item.tsx` (inline rename; archive confirmation explaining history is kept), `category-names.ts`, `notices.ts`, `reauth-link.tsx`, `loading.tsx`, `error.tsx`, `categorias.module.css`, tests.
+- `src/app/movimentacoes/`: `page.tsx` loads all categories (active and archived) alongside accounts and transactions, with a partial-data notice; rows keyed by `id:updatedAt`; `presentation.ts` (`categorizationLabel` with categories, `canCategorize`); `categorize-control.tsx` (only income/expense `posted`; active categories only; "Aplicar categoria", "Marcar como incerta", "Marcar como nao reconhecida"; link to `/categorias` when none active; truncation notice); `actions.ts` `categorizeTransactionAction` (CATEGORY_ARCHIVED, CATEGORY_NOT_FOUND, TRANSACTION_NOT_FOUND and TRANSACTION_CATEGORIZATION_NOT_ALLOWED explain and revalidate; 401/403 re-login; 400/500 safe message). The row is re-rendered from the server's TransactionView after revalidation.
+
+### Mobile (`mobile-centralizador-financeiro`)
+
+- `SectionTabs.tsx`/`App.tsx`: "Categorias" section.
+- `CategoriesScreen.tsx` (paginated list with "Carregar mais", pull-to-refresh, archive confirmation via `Alert`), `CategoryFormScreen.tsx` (create/rename; full-list duplicate check at submit), `CategorizeScreen.tsx` (active categories only; on success the row is replaced by the returned TransactionView; stale cases return to the list with a notice and reload).
+- `MovementsScreen.tsx`: loads categories, shows the new labels, "Categorizar"/"Corrigir categoria" action outside the grouped accessibility element; `use-foreground-refresh.ts` reloads movements and categories when the app returns to the foreground (cross-client reflection without real-time sync).
+- `category-logic.ts` and `movement-presentation.ts` (`categorizationLabel`, `canCategorize`, `replaceItem`) covered by Vitest.
+
+### Validation (executed)
+
+- Web: `pnpm lint` passed; `pnpm typecheck` passed; `pnpm test` 307/307 (21 files); `pnpm build` passed (`/categorias` dynamic route).
+- Mobile: `pnpm typecheck` passed; `pnpm test` 259/259 (17 files); `npx expo export --platform android` bundled.
+- `git diff --check` clean in both clients.
+- `next dev` smoke: `/` 200; `/categorias` without session 307 → `/auth/login`.
+
+### Manual verification — web (2026-09-24)
+
+Run by Dev 2 in the browser against the local backend (Docker Desktop: API on `localhost:3100`, PostgreSQL on `localhost:55432`) with fictitious data. Dev 2 reported the script as passing. **Log corroboration is partial:** the web server log for this run shows one category created (`createCategoryAction`) and one categorization (`categorizeTransactionAction`), with no server errors; rename, archive, duplicate-name and archived-in-another-tab steps do not appear in it and rest on Dev 2's report only.
+
+| # | Scenario | Result |
+|---|---|---|
+| 1 | Empty categories state; "Criar uma categoria" link in the categorize panel | Reported OK |
+| 2 | Duplicate "Mercado" rejected without request; " mercado " accepted | Reported OK |
+| 3 | Only spaces and 101 characters rejected; 100 characters and accented name accepted | Reported OK |
+| 4 | Categorize, correct, mark uncertain, mark not recognized | Reported OK; one categorization in the log |
+| 5 | Rename shows the new name in movements | Reported OK |
+| 6 | Archived category shows "(arquivada)" and is not offered | Reported OK |
+| 7 | Category archived in another tab while the panel is open | Reported OK |
+| 8 | Transfers show "Nao se aplica" and no action | Reported OK |
+| 9 | Correction on web observed on mobile | **Blocked** — Auth0 Native application missing in tenant `dev-2u6c8lewawdbjx83` |
+
+### Suggested commit messages
+
+- web: `feat(categorias): gerenciar categorias e categorizar movimentacoes com estados explicitos`
+- mobile: `feat(categorias): telas de categorias e categorizacao de movimentacoes`
+- documentacao: `docs(dev2S2): registrar handoff da fase 4 do Dev 2`

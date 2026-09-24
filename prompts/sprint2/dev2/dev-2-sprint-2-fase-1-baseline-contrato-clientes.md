@@ -175,3 +175,43 @@ Acceptance criteria
 | Authorization checkpoint | Exact phrase required before edits | AGENTS.md |
 
 Source legend: **user-stated** — supplied by the user; **repository evidence** — verified in the repositories on 2026-09-23; **approved default** — conservative default consistent with prior prompts; **template** — standard skill clause.
+
+## Execution handoff — Phase 1 (2026-09-23)
+
+Executed together with Phase 2 by Dev 2, after explicit approval. Backend reference: `fa9b62a` (read-only). The full client baseline is recorded in `src/lib/api/CONTRACT.md` of each client ("Transactions (Sprint 2)").
+
+### Answers to the open questions
+
+| # | Question | Answer (backend source) |
+|---|---|---|
+| 1 | GET /accounts returns archived accounts? | No, active only. History shows a neutral "Conta indisponivel". |
+| 2 | GET /categories returns archived categories? | Yes, all categories, `createdAt desc, id desc`. |
+| 3 | GET /category-rules returns removed rules? | Yes, all rules, `priority desc, createdAt asc, id asc`. |
+| 4 | Rules applied on POST /transactions? | Yes: first matching active rule whose category is active; 201 may carry `categorizationSource: "rule"`. |
+| 5 | PATCH category on a transfer entry? | 409 `TRANSACTION_CATEGORIZATION_NOT_ALLOWED`. |
+| 6 | GET /transactions filters? | None; `page`/`pageSize` only. |
+| 7 | GET by id, void, back to unclassified? | None exists. |
+| 8 | Does a 400 consume the Idempotency-Key? | No error consumes it: the key is stored in the same database transaction that creates the movement. Replay returns 201 with the original resource. |
+
+### Approved client decisions
+
+- Idempotency-Key: web generates it server-side when rendering the form (hidden field, `node:crypto`); mobile uses `expo-crypto` `randomUUID()` (Hermes has no `crypto.randomUUID`). Same key for every attempt of the same form; rotate only after success or on `IDEMPOTENCY_KEY_REUSED`/`IDEMPOTENCY_KEY_EXPIRED`; never shared across sessions or between transaction and transfer.
+- Money: string-only normalization of pt-BR input (`1.234,56`, `1234,56`, `1234.56`, `1234`), max 17 integer digits; string-based BRL formatter, no `Intl` dependency.
+- Dates: web `<input type="date">`; mobile text input `DD/MM/AAAA`; today from the local calendar, never `toISOString()`.
+- Navigation: web routes `/movimentacoes`, `/categorias`, `/regras` behind `proxy.ts`; mobile keeps state-based screen switching with a top bar (no navigation library).
+- Transfer wording: accounting record between the user's own accounts; never "enviar", "Pix", or "pagar".
+- Tests: Vitest for all logic; screens covered by manual scripts.
+- Web caching: Next 16 does not cache `fetch` by default and the project does not use `use cache`; no change required.
+
+### Divergences for Dev 1
+
+1. `DELETE /category-rules/{id}` returns 200 with a body; specification §15 lists "200/204". Clients follow the OpenAPI.
+2. `CATEGORY_RULE_CONFLICT` is raised for operations on a removed rule, not for precedence conflicts as the specification suggests.
+3. `TRANSFER_ACCOUNTS_MUST_DIFFER` is a 400.
+4. Creating a rule with a missing account returns `CATEGORY_NOT_FOUND`; updating returns `ACCOUNT_NOT_FOUND`.
+5. The ordering of `GET /categories` (`createdAt desc`) is not in the specification.
+
+### Open items
+
+- Mobile manual verification remains pending until the Auth0 Native application exists in tenant `dev-2u6c8lewawdbjx83`.
+- Dev 1 phases 5 and 6 (S2-07 hardening, S2-08 backend tests) are not merged yet; `contract.test.ts` will flag contract changes when the snapshot is refreshed.

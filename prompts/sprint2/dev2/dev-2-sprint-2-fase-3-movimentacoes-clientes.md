@@ -132,3 +132,81 @@ Acceptance criteria
 | Authorization checkpoint | Exact phrase required before edits | AGENTS.md |
 
 Source legend: **repository evidence** — verified on 2026-09-23; **approved default** — conservative default consistent with prior prompts; **template** — standard skill clause.
+
+## Execution handoff — Phase 3 (2026-09-24)
+
+Executed by Dev 2 after explicit approval, on top of the uncommitted Phase 1–2 working tree (the user chose to commit later). Backend reference: `fa9b62a` (read-only, unchanged).
+
+### Decisions applied
+
+- Idempotency-Key lifetime follows the Phase 1 approved rule, not this prompt's "new key after any field change": the key is kept after every failure (including after the user edits a field) and rotates only after success or on `IDEMPOTENCY_KEY_REUSED`/`IDEMPOTENCY_KEY_EXPIRED`. Rationale: if the server committed before a network drop, an edited resubmission with the same key gets `REUSED` and the user is warned, instead of silently creating a second movement.
+- The backend has no `description` length limit; clients add none. Long text wraps in the list.
+- UI strings follow the unaccented convention of the existing `/contas` flows and `lib/*/messages.ts`.
+
+### Web (`web-centralizador-financeiro`)
+
+- `src/proxy.ts`/`proxy.test.ts`: `/movimentacoes` protected alongside `/contas` (prefix match, not substring).
+- `src/app/app-nav.tsx` + `.module.css`: Contas / Movimentacoes / Sair navigation with `aria-current`; used by `/contas` and `/movimentacoes`.
+- `src/app/movimentacoes/`: `page.tsx` (list via `listTransactions` + accounts via `listAllPages`, `Promise.allSettled` for partial data, `?pagina=` pagination, empty / page-beyond-total / no-accounts / one-account states), `actions.ts` (Server Actions, token server-side, state carries the next Idempotency-Key and the typed values), `movement-form.tsx`, `transfer-form.tsx`, `form-parts.tsx`, `register-panel.tsx` (both forms stay mounted so switching tabs keeps key and input), `movement-row.tsx`, `presentation.ts`, `loading.tsx`, `error.tsx` (retry + re-login), `movimentacoes.module.css`.
+- Double submission: button disabled while pending and queued `useActionState` calls reuse the same hidden key, so a second request is a replay.
+- Today's date is filled on the client after mount (server time zone may differ); fields remount on key rotation.
+
+### Mobile (`mobile-centralizador-financeiro`)
+
+- `App.tsx`: state-based section switch; `SectionTabs.tsx` (tablist) rendered by `AccountsScreen` and `MovementsScreen`.
+- `MovementsScreen.tsx`: loading / error + retry / empty / partial (accounts failed) states, pull-to-refresh, "Carregar mais" with id de-duplication, register actions (no accounts → go to Contas; one account → transfer explained).
+- `MovementFormScreen.tsx`, `TransferFormScreen.tsx`, `movement-form-parts.tsx`: radio-style account/type choices, `decimal-pad` amount, `DD/MM/AAAA` date prefilled with today, key held in state + `useRef` guard against double tap.
+- `movement-input.ts` (field parsing and submit-error classification) and `movement-presentation.ts`, both covered by Vitest.
+
+### Validation (executed)
+
+- Web: `pnpm lint` passed; `pnpm typecheck` passed; `pnpm test` 263/263 (19 files); `pnpm build` passed (`/movimentacoes` dynamic route).
+- Mobile: `pnpm typecheck` passed; `pnpm test` 234/234 (16 files); `npx expo export --platform android` bundled.
+- `git diff --check` clean in both clients.
+- `next dev` smoke: `/` 200; `/movimentacoes` and `/contas` without session 307 → `/auth/login`.
+
+### Manual verification — web (2026-09-24)
+
+Executed by Dev 2 in the browser against the local backend (Docker Desktop: API on `localhost:3100`, PostgreSQL on `localhost:55432`) with fictitious data. Results reported by Dev 2; the web server log corroborates the submissions (success, invalid, and transfer with equal accounts rejected on the destination field) and shows no server errors.
+
+| # | Scenario | Result |
+|---|---|---|
+| 1 | Empty list and "crie primeiro uma conta" state; two accounts created | OK |
+| 2 | Expense and income registered; top of list with sign and BRL formatting | OK |
+| 3 | Transfer: success lists outgoing and incoming; two rows in the list | OK |
+| 4 | Double-click submit creates a single movement | OK |
+| 5 | Backend stopped, submit, backend restarted, resubmit: a single movement | OK |
+| 6 | Invalid amounts (`0,00`, `-10`, `abc`) and equal origin/destination: inline errors, no request | OK |
+| 7 | Account deactivated in another tab before submitting: neutral message, selector refreshed | OK |
+| 8 | More than 20 movements: pagination; `?pagina=999` shows "Esta pagina nao existe" | OK |
+| 9 | Keyboard only: tab order, visible focus, errors announced | OK |
+
+Account balances on `/contas` do not change after movements: expected, the Accounts contract exposes only `initialBalance`; current balances belong to the Dashboard story (PRD) and are out of Sprint 2 scope.
+
+### Known pending item — mobile manual verification
+
+Mobile manual verification was **not executed**. It is blocked until the Auth0 Native application exists in tenant `dev-2u6c8lewawdbjx83`. Mobile coverage for this phase is limited to typecheck, Vitest (logic) and the Android export. Run the same script on a device or emulator once the application exists, and record the results here.
+
+### Style Guide review (2026-09-24)
+
+Reviewed against `style-guide.html` 1.0 and `assets/styles.css`. Adjusted in this phase (approved):
+
+- Amount format now follows the guide's activity list: `+ R$ 6.800,00` / `− R$ 184,90` (U+2212 minus and a space), in both clients.
+- The movements list is a single panel with discreet dividers between rows instead of one card per item ("bordas discretas substituem excesso de cartões"), in both clients.
+- Validation re-run: web lint, typecheck, 263/263 tests, build; mobile typecheck, 234/234 tests, Android export; `git diff --check` clean.
+
+Conforming: palette tokens, sign plus text for direction (never color alone), brand green only as reinforcement on inflows, tabular numerals, visible keyboard focus (web), no gradients or banking vocabulary, reference date on every row, measured contrast between 4.9:1 and 8.8:1 in light and dark.
+
+Design debt inherited from Sprint 1 (not changed here, for planning):
+
+1. UI strings without accents in both clients ("Movimentacoes", "Descricao", "Nao foi possivel"); conflicts with the guide's voice. Needs a dedicated normalization task.
+2. Mobile does not load Manrope/Newsreader (system font). Requires a new dependency (`expo-font` or `@expo-google-fonts/*`), not approved in Phase 1.
+3. Mobile has no dark theme; web has one.
+4. Web dark tokens drift from the guide (background `#07140f` vs `#0c1714`, surface `#10251f` vs `#13231e`); no separate negative token (`#b5473f`) distinct from danger.
+5. Pill buttons (guide: 9px radius), top-link navigation (guide: side navigation with tinted active item) and no brand symbol in the app header; kept for consistency with `/contas`.
+
+### Suggested commit messages
+
+- web: `feat(movimentacoes): registrar receitas, despesas e transferencias contabeis com lista paginada`
+- mobile: `feat(movimentacoes): telas de movimentacoes, receitas, despesas e transferencias contabeis`
+- documentacao: `docs(dev2S2): registrar handoff das fases 1 a 3 do Dev 2`

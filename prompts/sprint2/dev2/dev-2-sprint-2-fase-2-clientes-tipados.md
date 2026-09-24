@@ -141,3 +141,28 @@ Acceptance criteria
 | Authorization checkpoint | Exact phrase required before edits | AGENTS.md |
 
 Source legend: **repository evidence** — verified on 2026-09-23; **approved default** — conservative default consistent with prior prompts; **template** — standard skill clause.
+
+## Execution handoff — Phase 2 (2026-09-23)
+
+Executed together with Phase 1 after explicit approval. No screens, routes, or navigation were changed.
+
+### Implemented (independent copies in each client)
+
+- `src/lib/transactions/{types,schema,api,messages}.ts`: list, create income/expense, create transfer, update categorization. Movement creation requires `idempotencyKey` at the type level; transfer input rejects equal accounts (case-insensitive); response schemas validate every field and the two-entry transfer tuple.
+- `src/lib/categories/{types,schema,api}.ts` and `src/lib/category-rules/{types,schema,api}.ts`: full lifecycle; the rule schema enforces the approved grammar (`type`/`accountId` only `equals`, `type` value income/expense, `accountId` UUID, priority integer >= 0).
+- `src/lib/money.ts`, `src/lib/civil-date.ts` (mobile also `parseBrazilianDate`), `src/lib/idempotency.ts`, `src/lib/api/pagination.ts` (`listAllPages` with truncation flag), `src/lib/api/problem-error.ts`.
+- `http-client.ts`: new `idempotencyKey` option (header `Idempotency-Key`); `errors.ts`: 9 new codes.
+- Web `package.json`: `typecheck` runs `next typegen && tsc --noEmit` (clean-checkout fix approved before this phase).
+- Mobile `package.json`: `expo-crypto ~57.0.3` declared as a direct dependency. It was already installed transitively by `expo-auth-session`; pnpm 12 wrote the importer entry without its `expo` peer, so the lockfile entry was pointed to the existing `57.0.3(expo@57.0.22)` resolution and validated with `pnpm install --frozen-lockfile`.
+- `contract.test.ts` extended to the 14 Transactions operations (bearer, Idempotency-Key header, view fields, request bodies, transfer tuple, DELETE 200).
+
+### Validation
+
+- Web: `pnpm lint` passed; `pnpm typecheck` passed; `pnpm test` 214/214 (17 files); `pnpm build` passed.
+- Mobile: `pnpm typecheck` passed; `pnpm test` 195/195 (14 files); `npx expo export --platform android` bundled (726 modules; the new modules are not imported by screens yet).
+- `git diff --check` clean in both clients.
+
+### Limitations
+
+- The S2-03 early-integration smoke against the running backend was not executed: it requires a real Auth0 access token, which is not handled outside the clients. It moves to the Phase 3 manual script (web first; mobile pending Auth0).
+- Snapshot unchanged (`fa9b62a`); no backend commit after it.

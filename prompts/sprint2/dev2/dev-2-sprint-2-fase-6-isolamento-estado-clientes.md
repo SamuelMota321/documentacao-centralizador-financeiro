@@ -123,3 +123,71 @@ Acceptance criteria
 | Authorization checkpoint | Exact phrase required before edits | AGENTS.md |
 
 Source legend: **approved default** — conservative default consistent with prior prompts; **template** — standard skill clause.
+
+## Execution handoff — Phase 6 (2026-09-24)
+
+Executed by Dev 2 after explicit approval, on top of Phase 5 and the date-format fix (not yet committed at execution time). Backend reference: `fa9b62a` (read-only, unchanged).
+
+### Inventory (repository evidence)
+
+| Item | Web | Mobile |
+|---|---|---|
+| Fetch and hold data | Server Components (`page.tsx` of movimentacoes, contas, categorias, regras) with the token from `auth0.getAccessToken()`; lists live in the rendered payload only | `useState` in each screen (`MovementsScreen`, `AccountsScreen`, `CategoriesScreen`, `RulesScreen`) and form screens |
+| Mutations | Server Actions (`actions.ts` per route), token server-side, `revalidatePath` after API confirmation | Direct typed clients; token from `setTokenProvider` in memory |
+| Cache | No `use cache`/`unstable_cache`/segment config; `fetch` not cached by default and client cache for dynamic pages 0 s (installed Next 16 docs); **production dynamic pages send `Cache-Control: private, no-cache, no-store, max-age=0, must-revalidate`** (observed with `next start`); now `cache: "no-store"` is forced in `http-client.ts` | Nothing persisted: `SecureStore` holds only `{accessToken, expiresAt}` (`session-store.ts`); no AsyncStorage |
+| Logs | No `console`, logger or analytics in `src` | None |
+| Error surfaces | `error.tsx` never renders the error message; actions map Problem Details to closed pt-BR messages; `detail` never shown | Same classification helpers; `detail` never shown |
+| Idempotency-Key | Generated per page render (`newIdempotencyKey`, `node:crypto`), separate keys for movement and transfer, carried in a hidden field, rotated in the action only after success or `IDEMPOTENCY_KEY_REUSED`/`EXPIRED` | `useState(newIdempotencyKey)` per form screen (`expo-crypto`), same rotation rule, `useRef` guard against double tap |
+| Logout / user switch | `/auth/logout` is a full navigation: all browser state (drafts, action states, keys) is discarded | `Root` swaps to `SignInScreen`, unmounting every screen; `tokenProvider` reset to `undefined` |
+
+Backend scopes idempotency records by `(tenant_id, operation, key)`, so keys cannot collide across users or between transaction and transfer.
+
+### Findings
+
+Already correct: every row above; 404 for foreign and nonexistent resources render the same neutral message (backend returns the same code for both); 401 offers a re-login path (web link with `returnTo`, mobile `handleUnauthorized`); 403 `IDENTITY_CONTEXT_UNAVAILABLE` reads "Não foi possível confirmar seu acesso. Entre novamente."; the idempotency lifetime is identical in both movement forms of each client.
+
+Defects fixed:
+
+1. **Mobile — a late 401 from the previous session signed out the new user.** A request of user A still in flight after A logged out and B logged in could call the context's `handleUnauthorized` and clear B's session. Fix: `src/auth/session-epoch.ts` numbers sessions; `AuthContext` advances it on every `applySession`, and each `handleUnauthorized` is bound to the session number it was created in and does nothing once the session changed. Test: `session-epoch.test.ts`.
+2. **Web — hardening:** `http-client.ts` forces `cache: "no-store"` (overrides any caller option); test in `http-client.test.ts`.
+
+Documented limitations (not fixed; would require persisting the key in client storage, out of scope):
+
+- **Web, page refresh mid-submit:** the refreshed page renders a new key; if the first request had already been committed, a new submission creates a second movement.
+- **Mobile, app killed by the OS mid-submit:** same effect, the key lived only in memory.
+- **Mobile, app backgrounded mid-submit:** the form stays mounted and a retry reuses the same key (correct by construction); device verification blocked by the missing Auth0 Native application.
+- **Web, two tabs with different users:** an action from the old tab uses the new user's cookie with the old user's ids; the backend answers 404 and the neutral message is shown (safe).
+
+### Validation (executed)
+
+- Web: lint ok; typecheck ok; `pnpm test` 378/378 (23 files); build ok; `git diff --check` clean; production headers observed as above.
+- Mobile: typecheck ok; `pnpm test` 293/293 (19 files); Android export ok (903 modules); `git diff --check` clean.
+
+### Client isolation checklist for Dev 3 (two fictitious users, two tenants)
+
+Prerequisite: two fictitious Auth0 users (A and B). Not available at execution time, so the two-user rows are **pending** — never mark them passed without running them.
+
+| # | Scenario | Steps | Expected | Observed |
+|---|---|---|---|---|
+| 1 | Logout clears data | A creates an account, a category, a rule and two movements; A logs out; B logs in | B sees empty lists, never A's rows, not even briefly | Pending (web and mobile) |
+| 2 | Back button after logout | After step 1, B's browser: press Back to A's pages | Pages re-render for B or redirect to login; no A data (pages are `no-store`) | Pending |
+| 3 | Foreign resource by id | B categorizes/edits using A's ids (copy an id from A's session via devtools, or replay a request) | Same neutral 404 message as a nonexistent id; no hint that it exists | Pending |
+| 4 | Double submit | Double-click / double tap "Registrar" | One movement | OK on web (Phase 3 manual, 2026-09-24); mobile pending |
+| 5 | Network drop after commit | Stop backend right after submitting (or cut network), restart, resubmit | One movement (same key replayed) | OK on web (Phase 3 manual); mobile pending |
+| 6 | Changed payload, same key | After a failed attempt, change the amount and resubmit | If the first was committed: "Os dados mudaram…" and a new key; otherwise created once | Pending |
+| 7 | Expired key | Requires a key older than 24 h (backend fixture) | "Este envio expirou…", new key, explicit resubmit | Not verifiable without a backend fixture (Dev 1/Dev 3) |
+| 8 | Session expired mid-form | Let the session expire (or delete the session cookie) and submit | Re-login path shown; no token in UI, logs or URL | Pending |
+| 9 | Late response after switch (mobile) | Slow network; start a load as A, log out, log in as B | B stays signed in; no A rows appear | Pending (device blocked) |
+| 10 | Logs and errors | Inspect server logs, browser console and error screens during 1–9 | No token, Authorization header, amounts, descriptions or account names; only documented Problem Details codes | No logging in client code (static evidence); runtime check pending |
+| 11 | Refresh mid-submit (web) | Submit and refresh before the response | Documented limitation: a second submission may duplicate | Documented, not a pass |
+
+### Gaps
+
+- For Dev 1: none new in this phase; open divergences remain as recorded in Phases 1, 4 and 5.
+- For Dev 3: rows 1–3, 6, 8–10 need two fictitious users; mobile rows need the Auth0 Native application; row 7 needs an expired-key fixture.
+
+### Suggested commit messages
+
+- web: `fix(isolamento): forçar no-store nas chamadas autenticadas e documentar o isolamento do cliente`
+- mobile: `fix(sessao): ignorar 401 atrasado de sessão anterior ao trocar de usuário`
+- documentacao: `docs(dev2S2): registrar handoff da fase 6 e checklist de isolamento para o Dev 3`

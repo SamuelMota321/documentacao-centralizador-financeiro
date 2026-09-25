@@ -18,9 +18,9 @@
 |---|---|---|---|
 | W1 | Abrir `http://localhost:3001` e **Entrar** como A | Auth0 e retorno a **Movimentações**; lista vazia com orientação para criar conta | |
 | W2 | Contas → **Nova conta**: "Conta do dia a dia" (corrente, R$ 1.000,00, data de hoje em DD/MM/AAAA) e "Reserva" (poupança) | Duas contas na lista com saldo inicial em BRL e data | |
-| W3 | Movimentações → **Registrar movimentação**: receita "Salário (fictício)" R$ 6.800,00 | Aviso de sucesso; linha com "+ R$ 6.800,00" | |
+| W3 | Movimentações → **Registrar movimentação** (cabeçalho ou atalho da lateral): receita "Salário (fictício)" R$ 6.800,00 | Toast de sucesso; linha com "+ R$ 6.800,00" destacada no grupo "Hoje" | |
 | W4 | Registrar despesa "Mercado do bairro" R$ 184,90 | Linha com "− R$ 184,90" | |
-| W5 | Aba **Transferência entre contas**: da conta do dia a dia para a Reserva, R$ 250,00 | Aviso "Registro contábil criado" citando saída e entrada; duas linhas no histórico ("— saída" e "— entrada"), etiqueta "Não se aplica" | |
+| W5 | Aba **Transferência entre contas**: da conta do dia a dia para a Reserva, R$ 250,00 | Toast "Registro contábil criado" citando saída e entrada; duas linhas no histórico ("— saída" e "— entrada"), etiqueta "Não se aplica" | |
 | W6 | Categorias → criar "Alimentação" e "Feira" | Ambas ativas | |
 | W7 | Na despesa W4, **Categorizar** → Alimentação | Etiqueta "Alimentação · definida por você" | |
 | W8 | Registrar despesa "Padaria" e **Categorizar** → **Marcar como incerta** | Etiqueta "Categoria incerta" | |
@@ -28,8 +28,8 @@
 | W10 | Regra B: descrição **começa com** "mercado bairro" → Feira, prioridade 20 | Lista em ordem: B antes de A | |
 | W11 | Registrar despesa "Mercado Bairro centro" | Etiqueta "Feira · aplicada por regra" (B vence por prioridade) | |
 | W12 | Explicar o aviso de precedência da tela de Regras | Maior prioridade vence; empate vale a mais antiga; escolha manual prevalece; regras não mudam o passado | |
-| W13 | **Desativar** B e registrar outra "Mercado Bairro centro" | Nova linha com "Alimentação · aplicada por regra"; a de W11 continua "Feira" | |
-| W14 | **Remover** B (confirmar) | B aparece como "Removida", sem ações | |
+| W13 | **Mais ações** (⋯) de B → **Desativar** e registrar outra "Mercado Bairro centro" | Nova linha com "Alimentação · aplicada por regra"; a de W11 continua "Feira" | |
+| W14 | **Mais ações** (⋯) de B → **Remover regra** → confirmar no diálogo | B aparece como "Removida", sem ações | |
 | W15 | Conferir W7 | Continua "definida por você" (correção manual não foi reprocessada) | |
 
 ## Parte 2 — Web, reenvio sem duplicar
@@ -44,7 +44,7 @@
 
 | # | Ação | Resultado esperado | Observado |
 |---|---|---|---|
-| I1 | **Sair** | Volta à página de entrada | |
+| I1 | Menu da conta (pé da lateral) → **Sair** | Volta à página de entrada | |
 | I2 | Botão **Voltar** do navegador | Nenhum dado de A; as rotas pedem login | |
 | I3 | **Entrar** como B | Movimentações, Contas, Categorias e Regras vazias; nada de A aparece, nem por um instante | |
 

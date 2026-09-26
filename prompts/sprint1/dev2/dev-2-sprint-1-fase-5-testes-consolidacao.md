@@ -117,3 +117,43 @@ Acceptance criteria
 | Epistemics and safety | Report unavailable evidence; no bypasses; no shared source or test code between clients | template |
 
 Source legend: **user-stated** — verbatim from the user's request or interview answers; **approved default** — labeled option the user explicitly chose; **template** — standard scenario clause covered by final approval; **open** — deliberately left as `[OPEN: question]`.
+
+## Execution handoff — Dev 2 Sprint 1 closure (2026-09-23)
+
+This record summarizes the execution of phases 4 and 5 for Dev 2. It is a handoff for Dev 1 and Dev 3; it does not authorize new implementation by itself. Actual workspace paths: `/home/miguel/projetos/{web,mobile}-centralizador-financeiro`.
+
+### Traceability — Dev 2 responsibilities
+
+| Item | Web | Mobile | Evidence |
+|---|---|---|---|
+| S1-01 baseline | Verified | Verified | Independent repositories, no shared source; `src/lib/api/CONTRACT.md` |
+| S1-02 foundation | Verified | Verified | Clean copy installs with `pnpm install --frozen-lockfile` and `.env.example` |
+| S1-03 contract alignment | Verified | Verified | Snapshot refreshed to backend `fa9b62a`; `contract.test.ts` checks the four account operations |
+| S1-04 Auth0 login, protected area, logout | Verified (manual + `proxy.test.ts`) | Implemented, automated session tests only | Mobile manual run blocked (see limitations) |
+| S1-05 create and list accounts | Verified (manual + tests) | Implemented, unit tests only | Mobile manual run blocked |
+| S1-06 edit and deactivate with confirmation | Verified (manual run by Dev 2 against local backend + `actions.test.ts`) | Implemented, unit tests only | Mobile manual run blocked |
+| S1-07 client isolation and uniform denial | Verified (manual logout/back navigation + tests) | Implemented; `isUnauthorized` and session-store tests | 404 and `ACCOUNT_ARCHIVED` render the same message; backend `detail` never shown |
+| S1-08 client tests | Verified: Vitest, 9 files, 88 tests | Verified: Vitest, 6 files, 62 tests | Test approach: Vitest (approved in this phase); no component-test library |
+| S1-09 build, run, demo script | Verified: lint, typecheck, test, build, clean copy | Verified: typecheck, test, `expo export --platform android`, clean copy | Demo scripts in each client `README.md` ("Demonstração da Sprint 1") |
+
+### Commands and results
+
+- Web (working tree): `pnpm lint` passed; `pnpm typecheck` passed; `pnpm test` 88/88 passed; `pnpm build` passed (`/contas` dynamic); `git diff --check` clean.
+- Web (clean copy, `.env.example`): install, lint, test and build passed; `pnpm typecheck` **failed before the first build** with `TS2304: Cannot find name 'LayoutProps'` (route types are generated only by `next dev`/`next build`). `next typegen && tsc --noEmit` passed in the clean copy. The script change is pending Dev 2 approval.
+- Web runtime: `/contas` without session returns 307 to `/auth/login`; `/auth/login` redirects to the backend Auth0 tenant (`dev-2u6c8lewawdbjx83`) with audience `https://api.centralizador-financeiro`.
+- Mobile (working tree and clean copy): `pnpm typecheck` passed; `pnpm test` 62/62 passed; `npx expo export --platform android` bundled 726 modules without test code.
+- Mobile: `npx expo-doctor` 20/21; the failing check is pre-existing (`expo` 57.0.22, SDK expects ~57.0.24). No dependency upgraded.
+- Backend (read-only for Dev 2): `docker compose up --build --wait` healthy; migrations applied; `/api/v1/health/ready` ok; `/api/v1/accounts` without token 401.
+
+### Limitations and open items
+
+- **Mobile manual verification is on standby.** `.env` points to a different Auth0 tenant (`dev-xmb0tf68mfcmekqw`) than the backend issuer, and client id and API host are placeholders. A Native application in tenant `dev-2u6c8lewawdbjx83` is required before the mobile demo.
+- Screens and the real Auth0 round trip have no automated tests; they are covered by the demo scripts.
+- `@types/node` 20 does not satisfy the Vitest 5 peer range (`^22 || >=24`); runtime is Node 22 and all checks pass.
+- The account list still shows only the first page (20 items).
+- Local Docker on WSL required restoring the Docker Desktop WSL integration; documented in both READMEs.
+
+### Dependencies
+
+- Dev 1: none blocking. Contract divergences for Sprint 2 are tracked in `prompts/sprint2/dev2/dev-2-sprint-2-fase-1-baseline-contrato-clientes.md`.
+- Dev 3: consolidate the web and mobile demo scripts, pipelines (`pnpm test` is now available in both clients), end-to-end and cross-tenant evidence.

@@ -155,14 +155,14 @@
             <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Campo</th><th>Operadores</th><th>Valor</th></tr></thead><tbody>
               <tr><th>description</th><td>equals, contains, starts_with, ends_with</td><td>String normalizada.</td></tr>
               <tr><th>type</th><td>equals</td><td>income ou expense.</td></tr>
-              <tr><th>accountId</th><td>equals</td><td>UUID de conta do mesmo tenant.</td></tr>
+              <tr><th>accountId</th><td>equals</td><td>UUID de conta ativa do mesmo tenant.</td></tr>
             </tbody></table></div></div>
             <p class="doc-paragraph">A comparação de descrição deve usar a normalização textual já adotada pelo backend e ser case-insensitive. Condições múltiplas, OR, operadores numéricos, regex e expressões arbitrárias estão fora do baseline aprovado.</p>
             <h2 class="doc-heading">12. Precedência e lifecycle de regra</h2>
             <ul class="doc-list">
               <li>Somente regras pessoais existem no S2; a precedência sobre regras gerais não é ativada.</li>
               <li>Regra ativa participa da avaliação; inativa não participa; removida não pode ser reativada.</li>
-              <li>Maior <code>priority</code> vence; empate usa <code>createdAt</code> ascendente e depois <code>id</code> ascendente.</li>
+              <li><code>priority</code> é um inteiro entre <code>0</code> e <code>2147483647</code>; maior prioridade vence. Empate usa <code>createdAt</code> ascendente e depois <code>id</code> ascendente.</li>
               <li>Correção manual vence uma categorização por regra.</li>
               <li>Alteração de regra não reprocessa retroativamente transações existentes.</li>
               <li>A recomendação é aplicar regras na criação de novos lançamentos.</li>
@@ -202,7 +202,8 @@
               <tr><th>GET/POST/PATCH</th><td><code>/api/v1/categories</code> e <code>/{categoryId}</code></td><td>200/201 CategoryView.</td></tr>
               <tr><th>POST</th><td><code>/api/v1/categories/{categoryId}/deactivate</code></td><td>200 CategoryView.</td></tr>
               <tr><th>GET/POST/PATCH</th><td><code>/api/v1/category-rules</code> e <code>/{ruleId}</code></td><td>200/201 CategoryRuleView.</td></tr>
-              <tr><th>POST/DELETE</th><td><code>/api/v1/category-rules/{ruleId}/activate</code>, <code>/deactivate</code>, DELETE</td><td>200/204.</td></tr>
+              <tr><th>POST</th><td><code>/api/v1/category-rules/{ruleId}/activate</code>, <code>/deactivate</code></td><td>200 CategoryRuleView.</td></tr>
+              <tr><th>DELETE</th><td><code>/api/v1/category-rules/{ruleId}</code></td><td>200 CategoryRuleView.</td></tr>
             </tbody></table></div></div>
             <p class="doc-paragraph">As listagens usam <code>page</code>, <code>pageSize</code>, <code>items</code> e <code>total</code>. A ordenação aprovada é transações por <code>occurredOn DESC, id DESC</code> e regras por <code>priority DESC, createdAt ASC, id ASC</code>.</p>
             <h2 class="doc-heading">16. Status e Problem Details</h2>
@@ -214,7 +215,7 @@
               <li><code>409</code>: lifecycle, account arquivada, regra ou idempotência em conflito.</li>
               <li><code>500</code>: erro interno sem detalhes de infraestrutura.</li>
             </ul>
-            <p class="doc-paragraph">O JSON de erro mantém o contrato existente de <code>application/problem+json</code>, inclusive <code>X-Request-Id</code>. Códigos novos propostos: <code>TRANSACTION_NOT_FOUND</code>, <code>TRANSFER_ACCOUNTS_MUST_DIFFER</code>, <code>CATEGORY_NOT_FOUND</code>, <code>CATEGORY_ARCHIVED</code>, <code>CATEGORY_RULE_NOT_FOUND</code>, <code>CATEGORY_RULE_CONFLICT</code>, <code>IDEMPOTENCY_KEY_REUSED</code> e <code>IDEMPOTENCY_KEY_EXPIRED</code>.</p>
+            <p class="doc-paragraph">O JSON de erro mantém o contrato existente de <code>application/problem+json</code>, inclusive <code>X-Request-Id</code>. Códigos de regra e categoria incluem <code>CATEGORY_ALREADY_EXISTS</code>, <code>ACCOUNT_NOT_FOUND</code>, <code>ACCOUNT_ARCHIVED</code>, <code>EMPTY_PATCH</code>, <code>CATEGORY_NOT_FOUND</code>, <code>CATEGORY_ARCHIVED</code>, <code>CATEGORY_RULE_NOT_FOUND</code> e <code>CATEGORY_RULE_CONFLICT</code>. Também permanecem <code>TRANSACTION_NOT_FOUND</code>, <code>TRANSFER_ACCOUNTS_MUST_DIFFER</code>, <code>IDEMPOTENCY_KEY_REUSED</code> e <code>IDEMPOTENCY_KEY_EXPIRED</code>.</p>
           </div>
         </section>
 

@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Plano de divisão de atividades da Sprint 3 do Centralizador Financeiro Inteligente">
+  <title>Sprint 3 · Coinciente</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <a class="brand" href="../../../index.html"><span class="brand-mark" aria-hidden="true"><img src="../../../assets/coinciente-symbol.svg" alt=""></span><span class="brand-name"><em>Coin</em>ciente</span></a>
+    <nav class="doc-nav" aria-label="Documentos"><a href="../../../index.html">Início</a><a href="../../produto/visao.html">Visão</a><a href="../../produto/prd.html">PRD</a><a href="../../arquitetura/arquitetura.html">Arquitetura</a><a href="../sprint-01/Plano_Divisao_Atividades_Sprint_1.html">Sprint 1</a><a href="../sprint-02/Plano_Divisao_Atividades_Sprint_2.html">Sprint 2</a><a href="Plano_Divisao_Atividades_Sprint_3.html" aria-current="page">Sprint 3</a><a href="../../design/style-guide.html">Style Guide</a></nav>
+  </header>
+
+  <main id="conteudo">
+    <section class="hero">
+      <p class="eyebrow">Plano de trabalho · 3 desenvolvedores</p>
+      <h1>Plano de Divisão de Atividades — Sprint 3</h1>
+      <p class="lead">Importação de extratos OFX e conexão Open Finance pelo Pluggy, com contratos verificáveis e experiências independentes na web e no mobile.</p>
+      <div class="meta-row"><span class="meta-chip">25 set–9 out 2026</span><span class="meta-chip">8 atividades</span><span class="meta-chip">Estimativas P/M/G</span></div>
+    </section>
+
+    <section class="document-grid" aria-label="Seções principais da Sprint 3">
+      <a class="doc-card" href="#pagina-2" style="--card-accent:#8b5cf6">
+        <span class="doc-number">BASELINE</span>
+        <h2>Estado atual</h2>
+        <p>Branches, HEADs, evidências verificadas e responsabilidades.</p>
+        <span class="card-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
+      </a>
+      <a class="doc-card" href="#pagina-3" style="--card-accent:#ec4899">
+        <span class="doc-number">EXECUÇÃO</span>
+        <h2>Atividades S3-01 a S3-08</h2>
+        <p>Donos, repositórios, dependências, critérios de aceite e evidências.</p>
+        <span class="card-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
+      </a>
+      <a class="doc-card" href="#pagina-9" style="--card-accent:#10b981">
+        <span class="doc-number">CONCLUSÃO</span>
+        <h2>DoD e rastreabilidade</h2>
+        <p>Critérios de encerramento e vínculo entre escopo, tarefas e verificação.</p>
+        <span class="card-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
+      </a>
+    </section>
+
+    <div class="reader">
+      <aside class="sidebar" aria-label="Navegação por seções">
+        <p class="sidebar-title">Neste documento</p>
+        <label class="search"><span class="skip-link">Buscar</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="sprint-search" type="search" placeholder="Buscar no texto…" autocomplete="off"></label>
+        <nav class="page-nav" aria-label="Seções do plano"><a href="#pagina-1" aria-label="Ir para a seção 1">1</a><a href="#pagina-2" aria-label="Ir para a seção 2">2</a><a href="#pagina-3" aria-label="Ir para a seção 3">3</a><a href="#pagina-4" aria-label="Ir para a seção 4">4</a><a href="#pagina-5" aria-label="Ir para a seção 5">5</a><a href="#pagina-6" aria-label="Ir para a seção 6">6</a><a href="#pagina-7" aria-label="Ir para a seção 7">7</a><a href="#pagina-8" aria-label="Ir para a seção 8">8</a><a href="#pagina-9" aria-label="Ir para a seção 9">9</a></nav>
+        <p class="result-note">9 seções</p>
+      </aside>
+
+      <article class="pages" aria-label="Plano integral da Sprint 3">
+        <section class="paper" id="pagina-1" data-page="1">
+          <div class="page-kicker"><span>Sprint 3</span><span>Objetivo e escopo</span></div>
+          <div class="sprint-content">
+            <h2 class="doc-heading">Objetivo da Sprint</h2>
+            <p class="doc-paragraph">Permitir que uma pessoa autenticada importe transações de extratos OFX após prévia e confirmação, e conecte contas pelo Pluggy Sandbox para importar os dados financeiros autorizados. A entrega cobre backend, contrato REST/OpenAPI e experiências web e mobile independentes, preservando isolamento por tenant, consentimento e evidências verificáveis.</p>
+            <div class="doc-data-block"><div class="doc-data-label">Parâmetros aprovados</div><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Parâmetro</th><th>Definição</th></tr></thead><tbody>
+              <tr><th>Período</th><td>25 de setembro a 9 de outubro de 2026.</td></tr>
+              <tr><th>Equipe</th><td>Developer 1, Developer 2 e Developer 3.</td></tr>
+              <tr><th>Escopo aprovado</th><td>Importação OFX (PRD HU-004) e conexão Open Finance pelo Pluggy (PRD HU-007), incluindo somente a importação inicial necessária para completar a conexão.</td></tr>
+              <tr><th>Estimativas</th><td>P: localizada; M: moderada; G: transversal ou com maior incerteza. São tamanhos relativos, não prazos garantidos.</td></tr>
+              <tr><th>Janelas</th><td>Propostas estimadas em dias úteis, sem pressupor capacidade ou trabalho em fins de semana; não são compromissos de entrega.</td></tr>
+              <tr><th>Baseline</th><td>HEADs e status dos quatro repositórios registrados na seção 2 antes da criação deste documento.</td></tr>
+            </tbody></table></div></div>
+            <h2 class="doc-heading">Escopo e exclusões</h2>
+            <p class="doc-paragraph">Inclui validação e prévia OFX, confirmação, deduplicação, resultado da importação e processamento consultável quando necessário; conexão Pluggy Sandbox, registro de consentimento, vínculo da conexão à pessoa autenticada e importação inicial de dados autorizados. PDF não é aceito pelo PRD. A execução diária agendada e os disparos manuais de sincronização da HU-008, investimentos da HU-009, dados reais de produção, dashboard, patrimônio, projeções, pagamentos e qualquer fluxo financeiro real ficam fora do escopo desta Sprint.</p>
+            <p class="doc-paragraph"><strong>Autoridade de escopo:</strong> as exclusões do Plano da Sprint 2 valem somente para a Sprint 2. Nesta Sprint, prevalecem as duas funcionalidades explicitamente aprovadas. HU-008 é uma história separada; qualquer ampliação para sincronização recorrente exige decisão de escopo explícita.</p>
+            <p class="doc-paragraph"><strong>Limite importante:</strong> HU-007 menciona importar os dados disponíveis e interromper coletas após expiração ou revogação. O tipo de dado coberto pela importação inicial e a política de dados locais após desconexão precisam ser confirmados; não se infere importação de investimentos.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-2" data-page="2">
+          <div class="page-kicker"><span>Sprint 3</span><span>Baseline e responsabilidades</span></div>
+          <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
+            <h2 class="doc-heading">Baseline dos repositórios</h2>
+            <p class="doc-paragraph">O comando <code>git status --short --branch</code> retornou <code>## main...origin/main</code> nos quatro repositórios; não havia alterações locais preexistentes. Os HEADs abaixo registram o ponto de comparação. O Git imprimiu aviso de leitura do arquivo global <code>~/.config/git/ignore</code>, mas os comandos terminaram com código 0 e os status foram obtidos.</p>
+            <div class="doc-data-block"><div class="doc-data-label">Estado registrado antes da gravação</div><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Repositório</th><th>Branch/status</th><th>HEAD</th><th>Comportamento verificado e lacunas</th></tr></thead><tbody>
+              <tr><th>documentacao-centralicador-financeiro</th><td><code>main</code>, limpo</td><td><code>e015c8ff1a6aaa8b1eae4d29e323ff5652bc6832</code></td><td>PRD 1.4 contém HU-004, HU-007 e HU-008; Plano S2 exclui OFX/Pluggy apenas para S2. Arquitetura 1.6 define módulos Ingestion e Accounts, mas ainda não existe plano S3.</td></tr>
+              <tr><th>backend-centralizador-financeiro</th><td><code>main</code>, limpo</td><td><code>e95d2afb53fee08794905bb115bb2ac699fc1e8d</code></td><td>Account suporta origem conectada, provedor Pluggy e ID externo; há rotas atuais de contas e transações manuais. Não encontrei modelo de conexão, ImportRun, módulo de ingestão, parser OFX ou adapter Pluggy no código pesquisado. Transaction não contém ID externo.</td></tr>
+              <tr><th>web-centralizador-financeiro</th><td><code>main</code>, limpo</td><td><code>e22852bf0c08febd14530cff0a136c34b229a77d</code></td><td>Há telas e clientes tipados de contas e transações. A busca em <code>src</code> não encontrou Pluggy, OFX ou envio multipart de arquivo; o manifesto não lista SDK Pluggy.</td></tr>
+              <tr><th>mobile-centralizador-financeiro</th><td><code>main</code>, limpo</td><td><code>144691e874e9ee6d7c80959b9ccff3783375cdfa</code></td><td>Há telas e clientes tipados de contas e transações; busca em <code>src</code> e <code>package.json</code> não encontrou OFX, Pluggy ou seletor de documentos. <code>app.json</code> já declara o scheme <code>coinciente</code>.</td></tr>
+            </tbody></table></div></div>
+            <h2 class="doc-heading">Evidências do código e contratos</h2>
+            <ul class="doc-list">
+              <li>Backend: <code>src/modules/accounts/domain/account.ts:15–29</code> modela <code>origin</code>, <code>externalProvider</code> e <code>externalAccountId</code>. <code>prisma/schema.prisma:201–221</code> define unicidade da conta externa por tenant, provedor e ID; <code>:224–248</code> mostra os campos atuais de Transaction, sem ID do provedor.</li>
+              <li>Backend: <code>src/modules/accounts/adapters/inbound/accounts.controller.ts:64–99</code> cria conta manual; <code>src/modules/transactions/adapters/inbound/transactions.controller.ts:112–175</code> lista e registra transações manuais. <code>openapi/openapi.json</code> contém rotas atuais de <code>/api/v1/accounts</code> e <code>/api/v1/transactions</code>, sem rotas de importação ou conexão.</li>
+              <li>Web: <code>src/lib/accounts/api.ts:48–107</code>, <code>src/lib/transactions/api.ts:36–94</code> e telas <code>src/app/(app)/contas/page.tsx</code> e <code>src/app/(app)/movimentacoes/page.tsx</code> evidenciam os clientes e superfícies atuais.</li>
+              <li>Mobile: <code>src/lib/accounts/api.ts:54</code>, <code>src/lib/transactions/api.ts:31–51</code>, telas <code>src/screens/AccountsScreen.tsx</code> e <code>src/screens/MovementsScreen.tsx</code>; dependências de <code>package.json</code> não incluem SDK Pluggy ou seletor de documentos.</li>
+              <li>Arquitetura: versão 1.6 atribui importação OFX e sincronização Pluggy a Ingestion e propriedade de conexões a Accounts; descreve QStash para importações longas e política de jobs sem segredos/payload financeiro. ADR RLS proíbe I/O externa dentro de transação tenant-aware.</li>
+            </ul>
+            <h2 class="doc-heading">Estrutura de responsabilidades</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Papel</th><th>Responsabilidade principal</th><th>Handoff esperado</th></tr></thead><tbody>
+              <tr><th>Developer 1</th><td>Backend, domínio, aplicação, persistência, REST/OpenAPI, autorização, idempotência, auditoria e RLS.</td><td>Publica contratos e APIs do backend; recebe testes de contrato e isolamento de Developer 3.</td></tr>
+              <tr><th>Developer 2</th><td>Experiências web e mobile independentes, clientes tipados, formulários, validação e estados da interface.</td><td>Consome OpenAPI e contrato do backend; entrega fluxos de cada plataforma para integração.</td></tr>
+              <tr><th>Developer 3</th><td>Critérios de aceite, testes, contratos, isolamento, integração, documentação e evidências.</td><td>Consolida rastreabilidade e evidencia a integração com apoio dos Developers 1 e 2.</td></tr>
+            </tbody></table></div></div>
+            <p class="doc-paragraph">A responsabilidade principal não é propriedade exclusiva. Cada atividade requer revisão cruzada e evidência reproduzível. A sequência é estimada; disponibilidade da equipe não foi fornecida.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-3" data-page="3">
+          <div class="page-kicker"><span>Sprint 3</span><span>Contratos e backend OFX</span></div>
+          <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
+            <h2 class="doc-heading">S3-01 — Alinhar contratos e decisões de borda</h2>
+            <p class="doc-paragraph"><strong>Resultado:</strong> critérios e contratos mínimos para as duas funcionalidades mapeados às fontes normativas, com decisões não definidas marcadas como pendentes, sem estabelecer variantes, limites ou políticas por inferência.</p>
+            <p class="doc-paragraph"><strong>Fontes:</strong> PRD HU-004/HU-007, RN-006 a RN-009; Arquitetura 1.6, módulos, API e processos. <strong>Prioridade:</strong> Must. <strong>Estimativa:</strong> M. <strong>Responsável principal:</strong> Developer 3; Developer 1 define contratos backend e Developer 2 confirma necessidades dos dois clientes. <strong>Repositórios:</strong> documentação, backend, web e mobile. <strong>Dependências:</strong> baseline S1/S2; libera S3-02 a S3-07. <strong>Janela proposta:</strong> 25 e 28/09, estimativa.</p>
+            <ul class="doc-list">
+              <li>HU-004 e HU-007 têm cenários observáveis, entradas, resultados, erros e fronteiras de escopo rastreáveis ao PRD.</li>
+              <li>O contrato OpenAPI proposto para prévia, confirmação/estado da importação e conexão inicial é revisado pelos três desenvolvedores; nomes e formatos finais de endpoints permanecem em aberto até aprovação técnica.</li>
+              <li>Variantes OFX, tamanho, limiar assíncrono, retenção, deduplicação, conta destino, dados Pluggy e dependências não definidas aparecem como decisões pendentes com impacto e responsável a confirmar.</li>
+              <li>HU-008 agendamento diário e disparo manual não entram sem aprovação de ampliação de escopo; não há requisito implícito de importação de investimentos.</li>
+              <li><strong>Evidência:</strong> matriz deste plano, contrato OpenAPI revisado, cenários de aceite e registro explícito de decisões ainda bloqueantes.</li>
+            </ul>
+
+            <h2 class="doc-heading">S3-02 — Implementar o fluxo OFX no backend</h2>
+            <p class="doc-paragraph"><strong>Resultado:</strong> fluxo autenticado para receber arquivo, validar e interpretar dados aprovados, apresentar prévia antes da confirmação, evitar duplicidades conforme regra aprovada e informar importados, ignorados e erros. Importações longas terão estado consultável e processamento assíncrono conforme contrato e arquitetura.</p>
+            <p class="doc-paragraph"><strong>Fontes:</strong> PRD HU-004 e RN-006; Arquitetura, representação da importação OFX e uso condicional de QStash/R2; ADR RLS PostgreSQL. <strong>Prioridade:</strong> Must. <strong>Estimativa:</strong> G. <strong>Responsável principal:</strong> Developer 1; Developer 3 especifica cenários, isolamento e evidências; Developer 2 integra antecipadamente ao contrato. <strong>Repositório:</strong> backend. <strong>Dependências:</strong> S3-01, decisões de formato/duplicidade/limites e disponibilidade de QStash/R2 se o caminho assíncrono exigir infraestrutura. <strong>Janela proposta:</strong> 29/09–02/10, estimativa.</p>
+            <ul class="doc-list">
+              <li>Arquivo e conteúdo são validados na borda autenticada; PDF e conteúdo inválido não chegam à persistência.</li>
+              <li>A prévia precede qualquer gravação definitiva; itens duplicados são ignorados ou sinalizados antes da gravação conforme política aprovada.</li>
+              <li>A confirmação repetida não produz duplicidade; a resposta final mostra contagens de importados, ignorados e com erro.</li>
+              <li>Se houver execução assíncrona, o usuário consegue consultar o estado e o resultado; jobs contêm somente IDs/metadados mínimos e nunca credenciais ou payload financeiro desnecessário.</li>
+              <li>Falhas preservam dados já persistidos; toda gravação respeita tenant, ownership, RLS e a fronteira de I/O externa fora da transação tenant-aware.</li>
+              <li><strong>Evidência:</strong> testes unitários do parser e validação com fixtures sintéticas, testes de integração de persistência/deduplicação/RLS, teste de fluxo assíncrono se aplicável, OpenAPI gerado e teste E2E de prévia/confirmar/resultado.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-4" data-page="4">
+          <div class="page-kicker"><span>Sprint 3</span><span>Clientes OFX</span></div>
+          <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
+            <h2 class="doc-heading">S3-03 — Implementar importação OFX na web</h2>
+            <p class="doc-paragraph"><strong>Resultado:</strong> fluxo web para selecionar o arquivo, apresentar prévia, revisar duplicidades, confirmar e consultar resultado, consumindo o contrato tipado aprovado.</p>
+            <p class="doc-paragraph"><strong>Fontes:</strong> PRD HU-004/RNF-009; contrato S3-01 e API S3-02; padrões atuais de telas e clientes web. <strong>Prioridade:</strong> Must. <strong>Estimativa:</strong> M. <strong>Responsável principal:</strong> Developer 2; Developer 3 revisa aceite, acessibilidade e testes. <strong>Repositório:</strong> web. <strong>Dependências:</strong> contrato S3-01; integração real depende do endpoint de S3-02. <strong>Janela proposta:</strong> 30/09–02/10 para fluxo com contrato/mocks e 05–06/10 para integração, estimativa.</p>
+            <ul class="doc-list">
+              <li>Somente formatos e limites decididos são enviados; validações do cliente não substituem validação backend.</li>
+              <li>A tela exibe prévia, itens duplicados/sinalizados e ação explícita de confirmação antes da gravação.</li>
+              <li>Estados de carregamento, sucesso, erro, resultado parcial e consulta de importação longa são compreensíveis e acessíveis.</li>
+              <li><strong>Evidência:</strong> testes do cliente tipado e do formulário, teste E2E de selecionar/prévia/confirmar/resultado com dados sintéticos e revisão dos estados acessíveis.</li>
+            </ul>
+
+            <h2 class="doc-heading">S3-04 — Implementar importação OFX no mobile</h2>
+            <p class="doc-paragraph"><strong>Resultado:</strong> experiência mobile independente para escolher arquivo, rever prévia/duplicidades, confirmar e acompanhar o resultado usando o mesmo contrato OpenAPI, sem compartilhar código de interface com a web.</p>
+            <p class="doc-paragraph"><strong>Fontes:</strong> PRD HU-004/RNF-009; contrato S3-01 e API S3-02; arquitetura de clientes independentes. <strong>Prioridade:</strong> Must. <strong>Estimativa:</strong> G, pela seleção de arquivos e dependência ainda não aprovada. <strong>Responsável principal:</strong> Developer 2; Developer 3 revisa aceite e evidências. <strong>Repositório:</strong> mobile. <strong>Dependências:</strong> S3-01; endpoint S3-02; decisão e aprovação de eventual seletor de documentos. <strong>Janela proposta:</strong> 30/09–02/10 para fluxo com contrato/mocks e 05–06/10 para integração, estimativa.</p>
+            <ul class="doc-list">
+              <li>Seleção e envio usam mecanismo compatível com a plataforma e com as decisões de tipo/tamanho; nenhuma dependência nova é adicionada sem aprovação.</li>
+              <li>Prévia, duplicidades, confirmação e resultado apresentam estados próprios para telas mobile, inclusive erros e resultado parcial.</li>
+              <li>A navegação mantém a sessão autenticada e não deixa a gravação depender somente de validação local.</li>
+              <li><strong>Evidência:</strong> testes do cliente tipado e da lógica de apresentação, validação do fluxo no ambiente mobile e teste de integração com fixtures sintéticas.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-5" data-page="5">
+          <div class="page-kicker"><span>Sprint 3</span><span>Backend Pluggy</span></div>
+          <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
+            <h2 class="doc-heading">S3-05 — Implementar conexão Pluggy e importação inicial</h2>
+            <p class="doc-paragraph"><strong>Resultado:</strong> backend habilita conexão autenticada com Pluggy Sandbox, vincula a referência do Item ao tenant, registra estado/escopo de consentimento sem credenciais bancárias e importa inicialmente os tipos de dados que forem aprovados para HU-007.</p>
+            <p class="doc-paragraph"><strong>Fontes:</strong> PRD HU-007, RN-007 a RN-009 e RNF-004/RNF-008; Arquitetura, módulos Accounts/Ingestion, adapters, processos e jobs; documentação oficial Pluggy de autenticação e revogação. <strong>Prioridade:</strong> Must. <strong>Estimativa:</strong> G. <strong>Responsável principal:</strong> Developer 1; Developer 3 valida consentimento, isolamento, idempotência e rastreabilidade; Developer 2 alinha o contrato dos clientes. <strong>Repositório:</strong> backend. <strong>Dependências:</strong> S3-01; credenciais de aplicação e acesso ao Sandbox Pluggy; aprovação separada de dependências se necessárias. <strong>Janela proposta:</strong> 05–07/10, estimativa.</p>
+            <ul class="doc-list">
+              <li>Credenciais de aplicação e API Key permanecem no backend. O cliente recebe somente o token de conexão limitado previsto no fluxo oficial Pluggy; nenhum segredo aparece em resposta, log ou bundle.</li>
+              <li>O Item criado é associado ao usuário/tenant autenticado; o modelo de persistência respeita a propriedade de Accounts sobre conexões e passa por revisão antes de fixar campos não especificados.</li>
+              <li>Consentimento e escopo ficam registráveis sem credenciais bancárias; expiração, revogação e remoção impedem novas coletas conforme a política aprovada. Retenção/exclusão local após desconexão permanece decisão pendente.</li>
+              <li>Importação inicial é idempotente e isolada por tenant; disponibilidade parcial é apresentada por tipo de dado. Falha externa não apaga dados válidos previamente persistidos.</li>
+              <li>Chamadas Pluggy ocorrem fora da transação tenant-aware; jobs, caso necessários, carregam IDs internos mínimos e não tokens ou payload financeiro.</li>
+              <li><strong>Evidência:</strong> testes unitários com provider fake, testes de integração para vínculo/duplicidade/RLS, teste E2E autenticado e execução no Sandbox autorizado; revisão dos logs e do contrato sem segredos.</li>
+            </ul>
+            <p class="doc-paragraph"><strong>Limite de escopo:</strong> esta tarefa cobre conexão e importação inicial exigida por HU-007. Agendamento diário e disparo manual de sincronização pertencem à HU-008 e não são inferidos como parte desta entrega.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-6" data-page="6">
+          <div class="page-kicker"><span>Sprint 3</span><span>Clientes Pluggy</span></div>
+          <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
+            <h2 class="doc-heading">S3-06 — Integrar conexão Pluggy na web</h2>
+            <p class="doc-paragraph"><strong>Resultado:</strong> pessoa usuária inicia e conclui o fluxo de conexão a partir da web, consome apenas o token de conexão fornecido pelo backend e visualiza estados de sucesso, erro e disponibilidade parcial.</p>
+            <p class="doc-paragraph"><strong>Fontes:</strong> PRD HU-007/RNF-004/RNF-009; contrato S3-01 e backend S3-05; documentação oficial Pluggy lista SDK para React. <strong>Prioridade:</strong> Must. <strong>Estimativa:</strong> M. <strong>Responsável principal:</strong> Developer 2; Developer 3 valida segurança do cliente e estados. <strong>Repositório:</strong> web. <strong>Dependências:</strong> token/contrato S3-05; análise e aprovação de eventual SDK; Sandbox disponível. <strong>Janela proposta:</strong> 06–08/10, estimativa, com integração real após o endpoint de S3-05.</p>
+            <ul class="doc-list">
+              <li>O fluxo abre o componente/SDK aprovado com token do backend; <code>CLIENT_ID</code>, <code>CLIENT_SECRET</code> e API Key não entram no cliente.</li>
+              <li>Retorno de conexão se associa ao backend e ao usuário autenticado; o cliente não decide vínculo de tenant por dado local.</li>
+              <li>Estados de abertura, fechamento, sucesso, erro e dados parciais são comunicados sem expor dados financeiros desnecessários.</li>
+              <li><strong>Evidência:</strong> testes de cliente/API e estados de interface, verificação de bundle sem segredos e fluxo Sandbox no ambiente autorizado.</li>
+            </ul>
+
+            <h2 class="doc-heading">S3-07 — Integrar conexão Pluggy no mobile</h2>
+            <p class="doc-paragraph"><strong>Resultado:</strong> experiência mobile independente para iniciar e completar conexão Pluggy, respeitando o contrato backend e o retorno OAuth/deep link da plataforma.</p>
+            <p class="doc-paragraph"><strong>Fontes:</strong> PRD HU-007/RNF-004/RNF-009; contrato S3-01 e backend S3-05; documentação Pluggy lista SDK React Native e orienta esquema deep link para OAuth. <strong>Prioridade:</strong> Must. <strong>Estimativa:</strong> G, dependente de integração nativa e versão compatível com o aplicativo. <strong>Responsável principal:</strong> Developer 2; Developer 3 valida estados, segurança e evidências. <strong>Repositório:</strong> mobile. <strong>Dependências:</strong> S3-05; validação de compatibilidade/aprovação de SDK; Sandbox. O scheme <code>coinciente</code> já existe em <code>app.json</code>, mas o fluxo precisa ser verificado na plataforma. <strong>Janela proposta:</strong> 06–08/10, estimativa.</p>
+            <ul class="doc-list">
+              <li>O cliente usa token limitado obtido do backend e não recebe credenciais de aplicação.</li>
+              <li>Fluxo de retorno, cancelamento, erro e eventual etapa de autenticação do provedor funciona no ambiente mobile selecionado; compatibilidade de SDK não é presumida.</li>
+              <li>Sucesso associa a conexão pelo backend; estados de disponibilidade parcial permanecem explícitos.</li>
+              <li><strong>Evidência:</strong> testes de cliente e estados, fluxo no dispositivo/simulador com Sandbox autorizado e inspeção da configuração/bundle para ausência de segredos.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-7" data-page="7">
+          <div class="page-kicker"><span>Sprint 3</span><span>Integração e validação</span></div>
+          <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
+            <h2 class="doc-heading">S3-08 — Consolidar contratos, isolamento e evidências</h2>
+            <p class="doc-paragraph"><strong>Resultado:</strong> cobertura de aceite cruzada nos quatro repositórios, clientes coerentes com o OpenAPI, integração demonstrável dos dois fluxos e evidências organizadas para revisão.</p>
+            <p class="doc-paragraph"><strong>Fontes:</strong> PRD HU-004/HU-007, RN-006 a RN-009; Arquitetura 1.6, estratégia de testes e API; Plano S2, definição de pronto e divisão de papéis. <strong>Prioridade:</strong> Must. <strong>Estimativa:</strong> G. <strong>Responsável principal:</strong> Developer 3; Developers 1 e 2 corrigem divergências nos seus repositórios e revisam a integração. <strong>Repositórios:</strong> backend, web, mobile e documentação. <strong>Dependências:</strong> S3-02 a S3-07; ambiente Sandbox e integrações assíncronas se aprovadas. <strong>Janela proposta:</strong> 08–09/10, estimativa.</p>
+            <ul class="doc-list">
+              <li>Contrato OpenAPI publicado pelo backend corresponde aos tipos, snapshots e validações independentes de web e mobile.</li>
+              <li>Testes cobrem OFX válido e inválido, prévia, confirmação, duplicidade, resultado, fluxo assíncrono quando aplicável, conexão/revogação Pluggy, erros do provedor e disponibilidade parcial.</li>
+              <li>Testes provam acesso autorizado e rejeição de acesso cruzado entre tenants nas rotas, estados e persistência adicionados.</li>
+              <li>Testes e demonstrações usam fixtures e dados sintéticos; não há credencial, token ou payload financeiro real em logs, evidências ou repositórios.</li>
+              <li>Documentação de API e configuração necessária fica atualizada nos locais existentes; sem criar documentos de planejamento adicionais para esta tarefa.</li>
+              <li><strong>Evidência:</strong> resultados de testes backend/web/mobile, verificação de contrato e snapshots, evidência de isolamento, roteiro reproduzível de Sandbox/mocks, revisão de logs e checklist S3-01 a S3-08.</li>
+            </ul>
+            <h2 class="doc-heading">Sequência e handoffs</h2>
+            <ol class="doc-list">
+              <li>S3-01 fecha critérios, contrato inicial e pendências; Developer 1 expõe o contrato proposto, Developer 2 confere os dois clientes e Developer 3 fecha rastreabilidade.</li>
+              <li>S3-02 implementa a API OFX; web/mobile podem desenvolver estados sobre o contrato revisado e integram com o backend pronto em S3-03/S3-04.</li>
+              <li>Após o backend OFX, S3-05 entrega conexão e importação inicial Pluggy; Developer 1 publica OpenAPI e os clientes integram em S3-06/S3-07 após os contratos estarem estáveis.</li>
+              <li>S3-08 executa a integração final e reconcilia testes, snapshots, isolamento, documentação e evidências; pendências impeditivas são reportadas como bloqueio, não convertidas em aceite tácito.</li>
+            </ol>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-8" data-page="8">
+          <div class="page-kicker"><span>Sprint 3</span><span>Riscos e decisões pendentes</span></div>
+          <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
+            <h2 class="doc-heading">Riscos, pré-requisitos e decisões</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Tema</th><th>Evidência/impacto</th><th>Tratamento planejado</th></tr></thead><tbody>
+              <tr><th>Variantes OFX, encoding, limites e conta de destino</th><td>HU-004 exige validação de tipo/tamanho/estrutura/conteúdo, mas não fecha variantes, limite, mapeamento de conta ou política de arquivo.</td><td>Developer 3 registra decisão; Developer 1 valida viabilidade. Bloqueia critérios de parser e contrato se não for resolvido.</td></tr>
+              <tr><th>Duplicidade e reimportação OFX</th><td>PRD requer identificar duplicatas antes da gravação; estratégia de identidade e conflito não está definida.</td><td>Definir regra e comportamento de repetição antes de persistir; cobrir com fixtures e idempotência.</td></tr>
+              <tr><th>Processamento assíncrono OFX</th><td>PRD permite importação longa assíncrona; Arquitetura descreve ImportRun, QStash e ciclo de objeto R2. Código atual não apresentou essas integrações.</td><td>Definir limiar, estado, retenção/exclusão do objeto e disponibilidade de QStash/R2. Credenciais/configuração são pré-requisito externo se o caminho for necessário.</td></tr>
+              <tr><th>Modelo de conexão Pluggy</th><td>Arquitetura atribui conexões ao módulo Accounts; o schema atual só inclui identificação externa em Account, não a entidade de conexão.</td><td>Developer 1 propõe o modelo mínimo para Item/tenant/consentimento e audita RLS; a equipe revisa antes de fixar campos ou política de desconexão.</td></tr>
+              <tr><th>Dados Pluggy abrangidos</th><td>HU-007 fala em dados disponíveis e estado parcial por tipo; HU-009 trata investimentos separadamente.</td><td>Confirmar importação inicial dentro de HU-007; não incluir investimentos nem sincronização recorrente por inferência.</td></tr>
+              <tr><th>HU-008 — sincronização recorrente</th><td>PRD/Arquitetura descrevem agenda diária, disparo manual, concorrência e retry como história/fluxo separado.</td><td>Fora do escopo aprovado da Sprint 3. Exige ampliação explícita antes de entrar no plano ou na implementação.</td></tr>
+              <tr><th>Pluggy Sandbox e credenciais</th><td>Teste real de conexão exige cadastro/acesso ao Sandbox e credenciais de aplicação. Documentação Pluggy reserva credenciais de aplicação ao servidor.</td><td>Disponibilizar configuração segura de Sandbox ao backend; nunca incluir credenciais no cliente, HTML, fixture ou log.</td></tr>
+              <tr><th>Novas dependências</th><td>Web/mobile não listam os SDKs; mobile também não lista seletor de documentos. O backend não lista parser OFX ou client Pluggy.</td><td>Compatibilidade e necessidade devem ser analisadas e autorizadas antes de adicionar dependência. A documentação Pluggy lista <code>react-pluggy-connect</code> e <code>react-native-pluggy-connect</code>; isso não aprova seu uso no projeto.</td></tr>
+              <tr><th>Capacidade e sequência</th><td>Não há disponibilidade ou velocidade informadas; vários fluxos atravessam backend e dois clientes em duas semanas.</td><td>Datas são janelas estimadas. Developer 3 sinaliza conflito de capacidade no início; priorização dentro do escopo precisa ser acordada se o caminho crítico atrasar.</td></tr>
+            </tbody></table></div></div>
+            <h2 class="doc-heading">Decisões que não podem ser presumidas</h2>
+            <ul class="doc-list">
+              <li>Quais variantes OFX, codificações, datas, tamanho máximo e tipos de conta serão aceitos.</li>
+              <li>Como associar extrato à conta, detectar conta manual possivelmente duplicada e calcular identidade de transação duplicada.</li>
+              <li>Quando uma importação é longa, quanto tempo guardar arquivo/resultado e como cancelar/expirar um ImportRun.</li>
+              <li>Quais dados a importação inicial Pluggy inclui, como mapear contas e transações ao domínio existente e qual informação parcial será mostrada.</li>
+              <li>Como representar escopo, expiração, revogação e exclusão local da conexão sem guardar credenciais bancárias.</li>
+              <li>Quais SDKs, parser ou seletor de arquivo são compatíveis e podem ser adicionados; qualquer nova dependência segue aprovação independente.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-9" data-page="9">
+          <div class="page-kicker"><span>Sprint 3</span><span>Definição de pronto e rastreabilidade</span></div>
+          <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
+            <h2 class="doc-heading">Definição de pronto da Sprint</h2>
+            <ul class="doc-list">
+              <li>S3-01 a S3-08 concluídas, revisadas por outro desenvolvedor e com dependências/handoffs registrados.</li>
+              <li>Importação OFX percorre selecionar, validar, pré-visualizar, confirmar e apresentar resultado; duplicidades obedecem regra aprovada e PDF é rejeitado.</li>
+              <li>Conexão Pluggy Sandbox respeita consentimento, vínculo ao tenant, importação inicial aprovada, estado parcial e interrupção de novas coletas após desconexão/revogação.</li>
+              <li>Backend mantém OpenAPI como contrato; web e mobile continuam clientes independentes, com snapshots/tipos alinhados.</li>
+              <li>Testes demonstram isolamento, idempotência, tratamento de falha e ausência de segredos/dados financeiros reais em logs e artefatos.</li>
+              <li>Decisões que afetam aceite foram resolvidas e têm evidência; pendências que impedem critérios ficam explicitamente reportadas como bloqueio, sem aceite presumido.</li>
+              <li>Fluxos aceitos são reproduzíveis com dados sintéticos e/ou Sandbox autorizado, e evidências são revisáveis nos quatro repositórios.</li>
+            </ul>
+            <h2 class="doc-heading">Rastreabilidade de funcionalidade para evidência</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Funcionalidade/requisito</th><th>Tarefas</th><th>Repositórios</th><th>Critérios e evidência de conclusão</th></tr></thead><tbody>
+              <tr><th>Importar extrato OFX — HU-004, RN-006</th><td>S3-01, S3-02, S3-03, S3-04, S3-08</td><td>backend, web, mobile, documentação</td><td>Arquivo validado; prévia antes de confirmar; duplicidade antes da gravação; resultado importados/ignorados/erros; processamento consultável quando longo; fixtures, integração, E2E e isolamento.</td></tr>
+              <tr><th>Conectar conta Pluggy Sandbox — HU-007, RN-008/RN-009</th><td>S3-01, S3-05, S3-06, S3-07, S3-08</td><td>backend, web, mobile, documentação</td><td>Consentimento/escopo associado ao tenant sem credenciais bancárias; cliente recebe apenas token limitado; importação inicial aprovada; revogação/remoção interrompe novas coletas; estados parciais e falha externa; testes, revisão de segredo, isolamento e evidência Sandbox.</td></tr>
+              <tr><th>Sincronização Pluggy diária/manual — HU-008</th><td>Sem tarefa nesta Sprint</td><td>Fora do escopo da Sprint 3</td><td>História separada no PRD; somente incluir após aprovação explícita de ampliação do escopo.</td></tr>
+              <tr><th>Investimentos Pluggy — HU-009</th><td>Sem tarefa nesta Sprint</td><td>Fora do escopo da Sprint 3</td><td>Não faz parte das duas funcionalidades aprovadas.</td></tr>
+            </tbody></table></div></div>
+            <h2 class="doc-heading">Referências usadas</h2>
+            <ul class="doc-list">
+              <li><a href="../../produto/prd.html#pagina-4">PRD 1.4, HU-004 — Importar extrato OFX</a>; <a href="../../produto/prd.html#pagina-5">HU-007/HU-008/HU-009 e critérios Pluggy</a>; regras RN-006 a RN-009 e RNF-002 a RNF-009 no próprio PRD.</li>
+              <li><a href="../../arquitetura/arquitetura.html#pagina-4">Arquitetura 1.6 — módulos, Accounts e Ingestion</a>; <a href="../../arquitetura/arquitetura.html#pagina-5">camadas, API REST/OpenAPI e clientes independentes</a>; <a href="../../arquitetura/arquitetura.html#pagina-8">fluxos OFX/Pluggy, QStash, R2 e política de jobs</a>; <a href="../../arquitetura/arquitetura.html#pagina-13">estratégia de testes e evidências</a>.</li>
+              <li><a href="../../arquitetura/modelo-dados-identity-accounts.html">Modelo de Dados Identity/Accounts</a> e <a href="../../arquitetura/adr-rls-postgresql.html">ADR de RLS PostgreSQL</a>; escopos e restrições devem ser lidos com o PRD atual.</li>
+              <li><a href="../sprint-01/Plano_Divisao_Atividades_Sprint_1.html">Plano da Sprint 1</a> — sequência, responsabilidades e integração; <a href="../sprint-02/Plano_Divisao_Atividades_Sprint_2.html">Plano da Sprint 2</a> — estrutura visual, P/M/G e definição de pronto.</li>
+              <li>Backend: <code>src/modules/accounts/domain/account.ts:15–29</code>, <code>prisma/schema.prisma:201–248</code>, controllers de Accounts/Transactions e <code>openapi/openapi.json</code>.</li>
+              <li>Web: <code>src/lib/accounts/api.ts</code>, <code>src/lib/transactions/api.ts</code> e telas <code>src/app/(app)/contas</code> e <code>src/app/(app)/movimentacoes</code>. Mobile: clientes correspondentes em <code>src/lib</code>, telas <code>src/screens/AccountsScreen.tsx</code>/<code>MovementsScreen.tsx</code>, <code>package.json</code> e <code>app.json</code>.</li>
+              <li><a href="https://docs.pluggy.ai/en/docs/connect-widget/authentication">Pluggy — autenticação do Connect Widget</a>; <a href="https://docs.pluggy.ai/pt/docs/connect-widget/environments">Pluggy — ambientes e SDKs disponíveis</a>; <a href="https://docs.pluggy.ai/pt/docs/connect-widget/oauth-support">Pluggy — OAuth e deep links em mobile</a>; <a href="https://docs.pluggy.ai/docs/consent-management-delete-an-item">Pluggy — revogação de consentimento</a>. Consultadas em 26/09/2026; comportamento/compatibilidade deve ser reconfirmado durante implementação.</li>
+            </ul>
+          </div>
+        </section>
+      </article>
+    </div>
+  </main>
+  <footer class="site-footer">Documentação acadêmica · UCB · 2026 · Samuel Mota, Thiago Marques e Miguel Candido</footer>
+  <script src="../../../assets/app.js"></script>
+</body>
+</html>

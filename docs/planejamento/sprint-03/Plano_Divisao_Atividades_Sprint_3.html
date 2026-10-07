@@ -44,6 +44,12 @@
         <p>Critérios de encerramento e vínculo entre escopo, tarefas e verificação.</p>
         <span class="card-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
       </a>
+      <a class="doc-card" href="contrato-backend-s3-01.html" style="--card-accent:#8b5cf6">
+        <span class="doc-number">S3-01 · DEV 1</span>
+        <h2>Contrato backend</h2>
+        <p>Baseline aprovado, fontes, decisões, fronteiras e pendências.</p>
+        <span class="card-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
+      </a>
     </section>
 
     <div class="reader">
@@ -112,10 +118,10 @@
             <p class="doc-paragraph"><strong>Fontes:</strong> PRD HU-004/HU-007, RN-006 a RN-009; Arquitetura 1.6, módulos, API e processos. <strong>Prioridade:</strong> Must. <strong>Estimativa:</strong> M. <strong>Responsável principal:</strong> Developer 3; Developer 1 define contratos backend e Developer 2 confirma necessidades dos dois clientes. <strong>Repositórios:</strong> documentação, backend, web e mobile. <strong>Dependências:</strong> baseline S1/S2; libera S3-02 a S3-07. <strong>Janela proposta:</strong> 25 e 28/09, estimativa.</p>
             <ul class="doc-list">
               <li>HU-004 e HU-007 têm cenários observáveis, entradas, resultados, erros e fronteiras de escopo rastreáveis ao PRD.</li>
-              <li>O contrato OpenAPI proposto para prévia, confirmação/estado da importação e conexão inicial é revisado pelos três desenvolvedores; nomes e formatos finais de endpoints permanecem em aberto até aprovação técnica.</li>
-              <li>Variantes OFX, tamanho, limiar assíncrono, retenção, deduplicação, conta destino, dados Pluggy e dependências não definidas aparecem como decisões pendentes com impacto e responsável a confirmar.</li>
+              <li>O contrato backend proposto para prévia, confirmação/estado da importação OFX e conexão inicial Pluggy está registrado no <a href="contrato-backend-s3-01.html">baseline de contrato backend do Dev 1</a>; handlers e OpenAPI gerado continuam nas atividades de implementação.</li>
+              <li>Decisões aprovadas de OFX, tamanho, deduplicação, conta destino, escopo Pluggy, retenção e consentimento, além das pendências com impacto e responsável, estão registradas no baseline de contrato backend do Dev 1.</li>
               <li>HU-008 agendamento diário e disparo manual não entram sem aprovação de ampliação de escopo; não há requisito implícito de importação de investimentos.</li>
-              <li><strong>Evidência:</strong> matriz deste plano, contrato OpenAPI revisado, cenários de aceite e registro explícito de decisões ainda bloqueantes.</li>
+              <li><strong>Evidência:</strong> matriz deste plano, <a href="contrato-backend-s3-01.html">baseline do contrato backend proposto, com os formatos aprovados</a>, cenários de aceite e registro explícito das pendências ainda bloqueantes.</li>
             </ul>
 
             <h2 class="doc-heading">S3-02 — Implementar o fluxo OFX no backend</h2>

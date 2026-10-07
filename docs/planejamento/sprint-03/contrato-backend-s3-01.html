@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <meta content="Baseline de contrato backend da contribui&ccedil;&atilde;o Dev 1 para S3-01, com rastreabilidade de HU-004 e HU-007." name="description"/>
+  <title>
+   Contrato backend S3-01 &middot; Coinciente
+  </title>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&amp;display=swap" rel="stylesheet"/>
+  <link href="../../../assets/styles.css" rel="stylesheet"/>
+  <style>
+   .contract-section > .doc-heading:first-child { margin-top: 0; }
+    .contract-section + .contract-section { margin-top: 2.2rem; padding-top: .2rem; border-top: 1px solid var(--line); }
+    .contract-section[hidden], .contract-intro[hidden], .toc a[hidden] { display: none !important; }
+    .normative-content { width: 100%; color: var(--theme-foreground); }
+  </style>
+ </head>
+ <body>
+  <a class="skip-link" href="#conteudo">
+   Ir para o conte&uacute;do
+  </a>
+  <header class="topbar">
+   <a class="brand" href="../../../index.html">
+    <span aria-hidden="true" class="brand-mark">
+     <img alt="" src="../../../assets/coinciente-symbol.svg"/>
+    </span>
+    <span class="brand-name">
+     <em>
+      Coin
+     </em>
+     ciente
+    </span>
+   </a>
+   <nav aria-label="Documentos" class="doc-nav">
+    <a href="../../../index.html">
+     In&iacute;cio
+    </a>
+    <a href="../../produto/visao.html">
+     Vis&atilde;o
+    </a>
+    <a href="../../produto/prd.html">
+     PRD
+    </a>
+    <a href="../../arquitetura/arquitetura.html">
+     Arquitetura
+    </a>
+    <a href="../sprint-01/Plano_Divisao_Atividades_Sprint_1.html">
+     Sprint 1
+    </a>
+    <a href="../sprint-02/Plano_Divisao_Atividades_Sprint_2.html">
+     Sprint 2
+    </a>
+    <a aria-current="page" href="Plano_Divisao_Atividades_Sprint_3.html">
+     Sprint 3
+    </a>
+    <a href="../../design/style-guide.html">
+     Style Guide
+    </a>
+   </nav>
+  </header>
+  <main id="conteudo">
+   <section class="hero">
+    <p class="eyebrow">
+     Contrato backend &middot; S3-01 &middot; contribui&ccedil;&atilde;o Dev 1
+    </p>
+    <h1>
+     Sprint 3 S3-01 &mdash; Dev 1 backend contract baseline
+    </h1>
+    <p class="lead">
+     Baseline aprovado para os contratos backend de pr&eacute;via/importa&ccedil;&atilde;o OFX e conex&atilde;o Pluggy inicial, com fronteiras de dom&iacute;nio, fontes, decis&otilde;es e pend&ecirc;ncias rastre&aacute;veis.
+    </p>
+    <div class="meta-row">
+     <span class="meta-chip">
+      HU-004 &middot; OFX
+     </span>
+     <span class="meta-chip">
+      HU-007 &middot; Pluggy
+     </span>
+     <span class="meta-chip">
+      Verificado em 06 out 2026
+     </span>
+     <span class="meta-chip">
+      S3-01 liderada por Developer 3
+     </span>
+    </div>
+   </section>
+   <div class="reader">
+    <aside aria-label="Navega&ccedil;&atilde;o e busca no documento" class="sidebar">
+     <p class="sidebar-title">
+      Neste documento
+     </p>
+     <label class="search">
+      <span class="skip-link">
+       Buscar
+      </span>
+      <svg aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+       <circle cx="11" cy="11" r="8">
+       </circle>
+       <path d="m21 21-4.3-4.3">
+       </path>
+      </svg>
+      <input autocomplete="off" id="contract-search" placeholder="Buscar no texto&hellip;" type="search"/>
+     </label>
+     <p aria-live="polite" class="result-note" role="status">
+      Se&ccedil;&otilde;es do contrato
+     </p>
+     <nav aria-label="Se&ccedil;&otilde;es do documento" class="page-nav">
+     </nav>
+    </aside>
+    <article aria-label="Baseline integral de contrato backend" class="pages">
+     <section class="paper" data-page="1" id="pagina-1">
+      <div class="page-kicker">
+       <span>
+        S3-01 &middot; Dev 1
+       </span>
+       <span>
+        Baseline de contrato backend
+       </span>
+      </div>
+      <div class="normative-content">
+       <div class="contract-intro">
+        <p class="doc-paragraph">
+         Status: Dev 1 backend-contract contribution. S3-01 remains led by Developer 3; this document does not claim the whole activity complete.
+        </p>
+       </div>
+       <section class="contract-section">
+        <h2 class="doc-heading">
+         Scope
+        </h2>
+        <p class="doc-paragraph">
+         This baseline records the approved backend direction for HU-004 (OFX preview, confirmation, status and result) and HU-007 (Pluggy connection and required initial import). It defines proposed API operations, module ownership, tenant/security implications, handoffs and remaining blockers.
+        </p>
+        <p class="doc-paragraph">
+         It excludes HU-008 recurring synchronization, HU-009 investments, OFX parsing, Pluggy integration, changes to web/mobile, database migrations, runtime routes and new dependencies.
+        </p>
+       </section>
+       <section class="contract-section">
+        <h2 class="doc-heading">
+         Repository and prerequisite evidence
+        </h2>
+        <p class="doc-paragraph">
+         Verified on 2026-10-06:
+        </p>
+        <div class="doc-data-block">
+         <div class="doc-table-viewport">
+          <table class="doc-table">
+           <thead>
+            <tr>
+             <th>
+              Repository
+             </th>
+             <th>
+              Current state
+             </th>
+             <th>
+              Evidence and caveat
+             </th>
+            </tr>
+           </thead>
+           <tbody>
+            <tr>
+             <td>
+              Documentation
+             </td>
+             <td>
+              main, clean, HEAD c855ffe9d074b21ef927074a891bc2de0abe3077
+             </td>
+             <td>
+              Sprint plan, PRD, Architecture and PostgreSQL RLS ADR exist at the paths cited below.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              Backend
+             </td>
+             <td>
+              main, HEAD e95d2afb53fee08794905bb115bb2ac699fc1e8d
+             </td>
+             <td>
+              Worktree has a pre-existing deletion of docs/sprint-2-dev1-backend-consolidation.md and a pre-existing modified status for openapi/openapi.json. Both are preserved.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              Sprint 1 / current backend foundation
+             </td>
+             <td>
+              Present in current source
+             </td>
+             <td>
+              Auth0 guard and identity resolution, TenantContext, Accounts and Transactions modules, audit writer, idempotency repository, Prisma schema and RLS migrations are present. This is source inspection, not a fresh full test run.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              Sprint 2
+             </td>
+             <td>
+              Implemented structures are present; complete-green claim is not independently re-established
+             </td>
+             <td>
+              The deleted S2 Dev 1 consolidation report at HEAD records its final checks as green. A later S2 audit identified S2-09 as partial and an F3 discrepancy still lacks reconciliation. Migration 202609260001_s2_category_rule_guards is present and appears to address F1/F2. Developer 3 owns reconciling F3.
+             </td>
+            </tr>
+           </tbody>
+          </table>
+         </div>
+        </div>
+        <p class="doc-paragraph">
+         The current backend already establishes useful patterns: Bearer authentication, Problem Details errors, tenant-owned persistence, explicit idempotency keys for transaction/transfer creation, audit records, RLS and OpenAPI generation from NestJS routes. Current Account supports connected origin/provider/external account identity. Transaction currently has no provider transaction identity. There is no runtime Ingestion module, ImportRun or Pluggy connection route yet.
+        </p>
+       </section>
+       <section class="contract-section">
+        <h2 class="doc-heading">
+         Authority and traceability matrix
+        </h2>
+        <p class="doc-paragraph">
+         Current user decisions in this conversation are authoritative for the product choices below. Formal project sources remain authoritative for architecture and scope.
+        </p>
+        <div class="doc-data-block">
+         <div class="doc-table-viewport">
+          <table class="doc-table">
+           <thead>
+            <tr>
+             <th>
+              Requirement/source
+             </th>
+             <th>
+              Backend contract and boundary
+             </th>
+            </tr>
+           </thead>
+           <tbody>
+            <tr>
+             <td>
+              HU-004 in docs/produto/prd.html; S3-01 and S3-02 in docs/planejamento/sprint-03/Plano_Divisao_Atividades_Sprint_3.html
+             </td>
+             <td>
+              Authenticated file intake creates a preview ImportRun; the client explicitly confirms an active destination account; the result reports imported, ignored and failed items; the run can be queried when processing is long. PDF is rejected.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              RN-006 in the PRD
+             </td>
+             <td>
+              Validate file type/size/structure/content and identify duplicates before definitive persistence. Duplicate OFX records are ignored while new records proceed. FITID/ID is the primary identity, scoped to the destination account. When it is absent, date/amount/description is a non-blocking fallback candidate and the preview warns the user.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              HU-007 and RN-007/RN-008 in the PRD; S3-05 in the Sprint 3 plan
+             </td>
+             <td>
+              Backend-owned Pluggy connection, consent metadata, account and transaction data within the consented scope, and the initial import. No bank credentials are stored. Expiry/revocation/disconnection stops future collection.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              D12/D17 user decisions
+             </td>
+             <td>
+              Start the initial ImportRun after valid consent. Create linked local accounts where no corresponding local account exists. Where a local account corresponds, wait for the user to select the association for all accounts before importing transactions; then continue automatically.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              RN-007/RN-009
+             </td>
+             <td>
+              Deduplicate and protect retries/concurrent work; PostgreSQL remains the financial source of truth. Provider failure does not delete already persisted valid data.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              RNF-002 in the PRD; ADR RLS PostgreSQL
+             </td>
+             <td>
+              Auth0 validates identity, NestJS authorizes, the server derives TenantContext, repositories enforce ownership, and PostgreSQL RLS remains defense in depth. Never accept tenant ownership from request payloads.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              RNF-004 in the PRD; RN-014/RN-015
+             </td>
+             <td>
+              Keep provider credentials and unnecessary financial payloads out of clients, jobs, logs and audit metadata. Audit events and technical logs stay separate.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              RNF-008 in the PRD
+             </td>
+             <td>
+              Persist per-type provider availability and run outcomes so clients can show partial availability or staleness while the last valid data remains available.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              Architecture 1.6 and RN-004/RN-013
+             </td>
+             <td>
+              Accounts owns connections and accounts; Ingestion owns ImportRun, ingestion items and file references; Transactions owns normalized transaction persistence and transaction dedupe. Cross-module work uses public Application interfaces, never another module's repository/table.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              ADR RLS PostgreSQL
+             </td>
+             <td>
+              Tenant-owned new tables require tenant context set transaction-locally, fail-closed behavior, least-privilege runtime roles, ENABLE/FORCE RLS and explicit policies. External Pluggy/R2/QStash I/O is outside tenant-aware database transactions.
+             </td>
+            </tr>
+           </tbody>
+          </table>
+         </div>
+        </div>
+        <p class="doc-paragraph">
+         Authoritative repository sources:
+        </p>
+        <ul class="doc-list">
+         <li>
+          <a href="../../produto/prd.html">
+           ../documentacao-centralicador-financeiro/docs/produto/prd.html
+          </a>
+         </li>
+         <li>
+          <a href="../../arquitetura/arquitetura.html">
+           ../documentacao-centralicador-financeiro/docs/arquitetura/arquitetura.html
+          </a>
+         </li>
+         <li>
+          <a href="../../arquitetura/adr-rls-postgresql.html">
+           ../documentacao-centralicador-financeiro/docs/arquitetura/adr-rls-postgresql.html
+          </a>
+         </li>
+         <li>
+          <a href="Plano_Divisao_Atividades_Sprint_3.html">
+           ../documentacao-centralicador-financeiro/docs/planejamento/sprint-03/Plano_Divisao_Atividades_Sprint_3.html
+          </a>
+         </li>
+         <li>
+          Existing backend contract: openapi/openapi.json; implementation patterns under src/modules/accounts, src/modules/transactions, src/modules/audit and src/modules/identity.
+         </li>
+        </ul>
+       </section>
+       <section class="contract-section">
+        <h2 class="doc-heading">
+         Decision register
+        </h2>
+        <div class="doc-data-block">
+         <div class="doc-table-viewport">
+          <table class="doc-table">
+           <thead>
+            <tr>
+             <th>
+              Decision
+             </th>
+             <th>
+              Recorded direction
+             </th>
+             <th>
+              Authority / evidence
+             </th>
+            </tr>
+           </thead>
+           <tbody>
+            <tr>
+             <td>
+              D1 &mdash; OFX variants and encodings
+             </td>
+             <td>
+              Accept OFX 1.x SGML and OFX 2.x XML using US-ASCII and UTF-8. This is a compatibility recommendation under the user's delegation; it is not a claim about which format is most common in Brazilian bank exports.
+             </td>
+             <td>
+              User delegated selection to the most common option. Official OFX sources document both families; no reliable Brazilian distribution evidence was found. See https://financialdataexchange.org/about-fdx/ofx-work-group/ and https://www.financialdataexchange.org/common/Uploaded%20files/OFX%20files/OFX%202.2.pdf.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              D2 &mdash; upload cap and storage
+             </td>
+             <td>
+              Initial cap: 10 MiB per file. Authenticated backend streams the object to private R2; PostgreSQL retains metadata/reference only.
+             </td>
+             <td>
+              User delegated to best practice; Architecture RN-013 and Cloud Run architecture. The cap is a conservative starting limit, not a measured user-file distribution. Cloud Run request ceiling reference: https://docs.cloud.google.com/run/quotas.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              D3 &mdash; OFX destination
+             </td>
+             <td>
+              User explicitly selects an existing active local account at confirmation.
+             </td>
+             <td>
+              User decision D3; account ownership/active-account patterns in current Accounts and Transactions modules.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              D4 &mdash; OFX identity/fallback
+             </td>
+             <td>
+              FITID/ID per destination account. If missing, date/amount/description fallback warns in preview but does not require row-by-row approval.
+             </td>
+             <td>
+              User decisions D4 and D4-1; RN-006. Risk: false-positive fallback matches can cause a new row to be skipped.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              D5 &mdash; re-import
+             </td>
+             <td>
+              Ignore duplicates and import new records from the same file/run.
+             </td>
+             <td>
+              User decision D5; HU-004/RN-006.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              D6 &mdash; sync/async
+             </td>
+             <td>
+              Base the threshold on measured execution time/load, not a fixed number of registered users. Use QStash for work that exceeds the measured synchronous budget; scale stateless workers and constrain tenant/connection concurrency as load grows.
+             </td>
+             <td>
+              User decision D6-A; Architecture process/QStash guidance. The numeric threshold is intentionally not guessed.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              D7/D11 &mdash; file and run retention
+             </td>
+             <td>
+              Delete source file at terminal ImportRun state; retain run metadata/results for 90 days. Terminal includes success, partial completion and failure.
+             </td>
+             <td>
+              User decisions D7-A and D11-A; Architecture RN-013.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              D8 &mdash; Pluggy scope
+             </td>
+             <td>
+              Import account metadata and available historical transactions only within consent. HU-008 recurring sync and HU-009 investment data are excluded.
+             </td>
+             <td>
+              User decision D8-A; Sprint 3 scope and PRD HU-007/HU-008/HU-009.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              D9 &mdash; consent
+             </td>
+             <td>
+              Persist consent reference, approved scopes and grant/expiry/revocation dates and state; never bank credentials.
+             </td>
+             <td>
+              User decision D9-A; HU-007/RN-008/RNF-004.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              D10 &mdash; disconnect
+             </td>
+             <td>
+              Stop future collection; keep imported local accounts and transactions visible and usable.
+             </td>
+             <td>
+              User decision D10-A; RN-008/RN-009.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              D12 &mdash; account association
+             </td>
+             <td>
+              If a corresponding local account exists, the user explicitly selects it. If none exists, create a linked local account.
+             </td>
+             <td>
+              User decision D12-A/B; Accounts module ownership and external-account identity support. The precise rule for deciding that a local account &ldquo;corresponds&rdquo; remains open below.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              D13/D14 &mdash; Pluggy dedupe and start
+             </td>
+             <td>
+              Use stable provider transaction ID scoped to connection/account. When absent, use date/amount/description fallback with non-blocking preview warning. Start the initial run automatically after consent; wait for all account associations before importing transactions, then resume automatically.
+             </td>
+             <td>
+              User decisions D13-A, D14-A and D17-B; RN-007/RN-008.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              D15/D16 &mdash; audit
+             </td>
+             <td>
+              Audit preview creation, confirmation, successful final result, connection, consent change and disconnect. Do not place raw file or transaction payloads in audit. Keep failed/partial run outcomes in ImportRun and sanitized technical logs; do not create audit records for failures.
+             </td>
+             <td>
+              User decisions D15-A and D16-B; Architecture audit/log separation and RN-015.
+             </td>
+            </tr>
+           </tbody>
+          </table>
+         </div>
+        </div>
+       </section>
+       <section class="contract-section">
+        <h2 class="doc-heading">
+         Approved API contract direction
+        </h2>
+        <p class="doc-paragraph">
+         These operations are the approved S3-01 contract direction. They describe the client/backend interface; this phase does not implement runtime handlers. All protected operations require the existing Auth0 Bearer scheme. Tenant identity is derived from the authenticated context.
+        </p>
+        <h3 class="doc-heading">
+         OFX
+        </h3>
+        <div class="doc-data-block">
+         <div class="doc-table-viewport">
+          <table class="doc-table">
+           <thead>
+            <tr>
+             <th>
+              Method and path
+             </th>
+             <th>
+              Request
+             </th>
+             <th>
+              Success behavior
+             </th>
+            </tr>
+           </thead>
+           <tbody>
+            <tr>
+             <td>
+              POST /api/v1/ingestions/ofx/previews
+             </td>
+             <td>
+              multipart/form-data with one file field named file; maximum 10 MiB
+             </td>
+             <td>
+              201 with a ready preview, or 202 when preview processing is queued. Returns an ImportRun representation.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              POST /api/v1/ingestions/{importRunId}/confirmations
+             </td>
+             <td>
+              JSON with destinationAccountId; requires Idempotency-Key
+             </td>
+             <td>
+              200 when completed inline or 202 when queued. Runs using this endpoint persist only new rows and report ignored duplicates.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              GET /api/v1/ingestions/{importRunId}
+             </td>
+             <td>
+              No body
+             </td>
+             <td>
+              200 with current status and available preview/result.
+             </td>
+            </tr>
+           </tbody>
+          </table>
+         </div>
+        </div>
+        <p class="doc-paragraph">
+         Preview rows expose the normalized date, amount, description, primary external identity when present, duplicate disposition and warnings. The fallback warning is advisory; confirmation remains available. Run results expose imported, ignored and failed counts plus sanitized item errors.
+        </p>
+        <h3 class="doc-heading">
+         Pluggy initial connection/import
+        </h3>
+        <div class="doc-data-block">
+         <div class="doc-table-viewport">
+          <table class="doc-table">
+           <thead>
+            <tr>
+             <th>
+              Method and path
+             </th>
+             <th>
+              Request
+             </th>
+             <th>
+              Success behavior
+             </th>
+            </tr>
+           </thead>
+           <tbody>
+            <tr>
+             <td>
+              POST /api/v1/connections/pluggy/sessions
+             </td>
+             <td>
+              Authenticated request; no provider secret from client
+             </td>
+             <td>
+              201 with a connection session, limited client connect token and expiration.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              POST /api/v1/connections/pluggy/completions
+             </td>
+             <td>
+              JSON references the connection session and provider Item; requires Idempotency-Key
+             </td>
+             <td>
+              202 after the backend verifies the provider reference, stores consent metadata and starts the initial ImportRun.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              GET /api/v1/connections/{connectionId}
+             </td>
+             <td>
+              No body
+             </td>
+             <td>
+              200 with connection/consent state, per-type availability and initial-import state.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              PUT /api/v1/connections/{connectionId}/accounts/{providerAccountId}/mapping
+             </td>
+             <td>
+              JSON with the user's selected accountId
+             </td>
+             <td>
+              200 with the recorded association. The run waits until every required association is resolved, then continues.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              POST /api/v1/connections/{connectionId}/disconnect
+             </td>
+             <td>
+              No body
+             </td>
+             <td>
+              200 with disconnected state. Stops future collection and leaves local data intact.
+             </td>
+            </tr>
+           </tbody>
+          </table>
+         </div>
+        </div>
+        <p class="doc-paragraph">
+         Provider credentials remain server-side. The client token is limited to completing provider authorization. Consent scopes and timestamps are obtained/verified by the backend against the provider; a client cannot assert a tenant, scope or consent state.
+        </p>
+        <h3 class="doc-heading">
+         Shared response and retry behavior
+        </h3>
+        <ul class="doc-list">
+         <li>
+          Responses use application/json. File intake uses multipart/form-data.
+         </li>
+         <li>
+          Errors use the repository's application/problem+json shape with type, title, status, code and detail.
+         </li>
+         <li>
+          Proposed success codes are 201 for newly created preview/session, 202 for accepted asynchronous work, and 200 for reads and completed state changes. Relevant error classes are 400 invalid input, 401 unauthenticated, 403 unauthorized, 404 missing/other-tenant resource, 409 invalid state or idempotency conflict, 413 oversized file, 415 unsupported media type, 422 structurally invalid OFX, and 503 provider unavailable.
+         </li>
+         <li>
+          Mutating POST operations that create a run/session or start work require Idempotency-Key. Follow the current transaction pattern: 1&ndash;255 characters, scoped by tenant and operation; the same key and normalized payload replays the prior resource/result, while a different payload conflicts. PUT mapping is naturally idempotent.
+         </li>
+         <li>
+          ImportRun status values: preview_ready, awaiting_account_mapping, queued, processing, completed, completed_with_errors, failed and expired.
+         </li>
+         <li>
+          Connection status values: pending_authorization, connected, partially_available, expired, revoked and disconnected. Consent values: granted, expired and revoked.
+         </li>
+         <li>
+          ImportRun metadata/results are tenant-owned and retained for 90 days. Raw source objects are deleted when the run reaches a terminal state.
+         </li>
+         <li>
+          A disconnect changes connection state and stops new provider reads; it does not erase accounts or transactions already persisted in PostgreSQL.
+         </li>
+        </ul>
+        <p class="doc-paragraph">
+         The existing OpenAPI remains the generated contract for implemented NestJS routes. This S3-01 document records the approved future operations without publishing unimplemented runtime routes into the generated OpenAPI. S3-02/S3-05 must implement matching handlers and update OpenAPI from the established NestJS route/schema source.
+        </p>
+       </section>
+       <section class="contract-section">
+        <h2 class="doc-heading">
+         Backend ownership and controls
+        </h2>
+        <div class="doc-data-block">
+         <div class="doc-table-viewport">
+          <table class="doc-table">
+           <thead>
+            <tr>
+             <th>
+              Concern
+             </th>
+             <th>
+              Owner and rule
+             </th>
+            </tr>
+           </thead>
+           <tbody>
+            <tr>
+             <td>
+              Connection, provider Item reference, consent and linked accounts
+             </td>
+             <td>
+              Accounts owns persistence. New local accounts are created through its public Application interface; existing accounts are associated only by user selection.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              Upload object, ImportRun, preview, status and orchestration
+             </td>
+             <td>
+              Ingestion owns file reference/run lifecycle. It calls Accounts and Transactions through public Application interfaces.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              Normalized transaction and duplicate identity
+             </td>
+             <td>
+              Transactions owns transaction invariants and persistence. It receives normalized commands and tenant context; Ingestion does not write its tables.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              Authentication/authorization
+             </td>
+             <td>
+              Auth0 validates JWT; NestJS Guard and application policy authorize; tenant comes only from internal identity resolution.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              Idempotency/concurrency
+             </td>
+             <td>
+              Key claims and external identity constraints must be tenant-scoped. Prevent overlapping initial imports for the same connection. Provider IDs are unique within provider connection/account scope.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              RLS and transactions
+             </td>
+             <td>
+              New tenant-owned tables carry tenant ownership and FORCE RLS under the RLS ADR. Set tenant context transaction-locally. Do not call Pluggy, R2 or QStash from inside that transaction.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              Audit/logging
+             </td>
+             <td>
+              D15 events use audit records without source files or financial row payloads. Failed/partial result is stored in the ImportRun; technical logs are sanitized and distinct from business audit.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              Source of truth
+             </td>
+             <td>
+              PostgreSQL contains authoritative connection/run/account/transaction state. R2 stores only source objects for the approved lifetime. External outage cannot delete persisted valid data.
+             </td>
+            </tr>
+           </tbody>
+          </table>
+         </div>
+        </div>
+       </section>
+       <section class="contract-section">
+        <h2 class="doc-heading">
+         Unresolved decisions, risks and blockers
+        </h2>
+        <div class="doc-data-block">
+         <div class="doc-table-viewport">
+          <table class="doc-table">
+           <thead>
+            <tr>
+             <th>
+              Open item
+             </th>
+             <th>
+              Impact and options/tradeoff
+             </th>
+             <th>
+              Owner
+             </th>
+             <th>
+              Blocks
+             </th>
+            </tr>
+           </thead>
+           <tbody>
+            <tr>
+             <td>
+              What qualifies as a &ldquo;corresponding&rdquo; local account for D12? Options: match only an already linked stable provider identity; show candidate accounts by institution/name for explicit selection; or require the user to choose among all eligible active local accounts. Broad candidate matching risks false association; exact identity can miss manually created accounts.
+             </td>
+             <td>
+              Determines when the run waits for mapping versus creates a linked account.
+             </td>
+             <td>
+              Developer 3/product owner; Developer 1 validates implementation.
+             </td>
+             <td>
+              Account-mapping behavior in S3-05; not this baseline document.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              Numeric async threshold under D6
+             </td>
+             <td>
+              Measure preview/import duration and memory under representative synthetic files and concurrency, then set threshold. Until measured, no user-count or latency cutoff is asserted.
+             </td>
+             <td>
+              Developer 1; Developer 3 reviews acceptance.
+             </td>
+             <td>
+              Final S3-02 sync/async configuration; contract supports both response modes.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              Pluggy provider-specific consent and account field mapping
+             </td>
+             <td>
+              Verify exact provider API fields, consent scope identifiers and Item/account identity before real integration; keep the user-approved backend consent model provider-neutral.
+             </td>
+             <td>
+              Developer 1; Developer 3 validates scope.
+             </td>
+             <td>
+              Real Sandbox integration in S3-05.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              Pluggy Sandbox credentials/access
+             </td>
+             <td>
+              Provide authorized Sandbox application credentials and an accessible environment; no access or credentials are assumed here.
+             </td>
+             <td>
+              Project owner / Developer 1.
+             </td>
+             <td>
+              Live provider verification in S3-05; mocks remain possible.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              R2/QStash configuration
+             </td>
+             <td>
+              Confirm private bucket and queue credentials/configuration before exercising file retention or long jobs.
+             </td>
+             <td>
+              Developer 1 / environment owner.
+             </td>
+             <td>
+              Corresponding S3-02 long-job/object path; synchronous/local contract work can proceed.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              Sprint 2 F3 reconciliation
+             </td>
+             <td>
+              Later audit and prior Dev 1 report disagree on S2-09 completion; current source contains the F1/F2 guard migration but does not itself resolve the F3 evidence discrepancy.
+             </td>
+             <td>
+              Developer 3.
+             </td>
+             <td>
+              Blocks claiming the Sprint 1/2 verification baseline fully green; does not block this Dev 1 contract document.
+             </td>
+            </tr>
+            <tr>
+             <td>
+              OFX market prevalence
+             </td>
+             <td>
+              No reliable Brazil-wide evidence for the &ldquo;most common&rdquo; variant/encoding was found. Supporting both listed families avoids selecting one based on unsupported prevalence.
+             </td>
+             <td>
+              Developer 3 may revisit if bank-specific samples change scope.
+             </td>
+             <td>
+              Does not block S3-02 under the approved compatibility direction.
+             </td>
+            </tr>
+           </tbody>
+          </table>
+         </div>
+        </div>
+       </section>
+       <section class="contract-section">
+        <h2 class="doc-heading">
+         Handoffs and scope
+        </h2>
+        <ul class="doc-list">
+         <li>
+          <strong>
+           Developer 1:
+          </strong>
+          this document is the backend contract proposal and architecture trace. No OFX parser or Pluggy integration is implemented here.
+         </li>
+         <li>
+          <strong>
+           Developer 2:
+          </strong>
+          consume the approved operation direction for independent web/mobile clients; client source and client behavior are not changed here.
+         </li>
+         <li>
+          <strong>
+           Developer 3:
+          </strong>
+          remains S3-01 lead; reconcile S2 F3 and own overall cross-repository acceptance/evidence. This document alone does not close S3-01.
+         </li>
+         <li>
+          <strong>
+           Out of scope:
+          </strong>
+          HU-008 recurring sync, HU-009 investments, production credentials/data, UI source and full Sprint 3 completion.
+         </li>
+        </ul>
+        <p class="doc-paragraph">
+         Suggested commit message: docs(sprint-3): add Dev 1 backend contract baseline
+        </p>
+       </section>
+       <section class="contract-section">
+        <h2 class="doc-heading">
+         Validation
+        </h2>
+        <ul class="doc-list">
+         <li>
+          Static source/status inspection completed before the file change.
+         </li>
+         <li>
+          npm run openapi:generate: passed (exit 0). The pre-existing openapi/openapi.json bytes and timestamp were restored after generation.
+         </li>
+         <li>
+          npx vitest run test/contract/openapi.contract.spec.ts: passed; 1 file, 4 tests.
+         </li>
+         <li>
+          git diff --check: passed (exit 0); Git emitted only its existing LF-to-CRLF normalization warning for openapi/openapi.json.
+         </li>
+         <li>
+          Full Sprint 1/Sprint 2 suites were not rerun; the F3 reconciliation caveat remains.
+         </li>
+        </ul>
+       </section>
+      </div>
+     </section>
+    </article>
+   </div>
+  </main>
+  <footer class="site-footer">
+   Documenta&ccedil;&atilde;o acad&ecirc;mica &middot; UCB &middot; 2026 &middot; Samuel Mota, Thiago Marques e Miguel Candido
+  </footer>
+  <script src="../../../assets/app.js">
+  </script>
+  <script>
+   (() => {
+      const search = document.getElementById('contract-search');
+      const note = document.querySelector('.result-note');
+      const intro = document.querySelector('.contract-intro');
+      const sections = [...document.querySelectorAll('.contract-section')];
+      const nav = document.querySelector('.toc');
+      const links = [...(nav?.querySelectorAll('a') ?? [])];
+
+      search.addEventListener('input', () => {
+        const query = search.value.trim().toLocaleLowerCase('pt-BR');
+        let visible = 0;
+        sections.forEach(section => {
+          const matches = !query || section.textContent.toLocaleLowerCase('pt-BR').includes(query);
+          section.hidden = !matches;
+          const heading = section.querySelector('h2.doc-heading');
+          const link = links.find(item => item.hash === '#' + (heading?.id ?? ''));
+          if (link) link.hidden = !matches;
+          if (matches) visible += 1;
+        });
+        const introMatches = !query || intro.textContent.toLocaleLowerCase('pt-BR').includes(query);
+        intro.hidden = !introMatches;
+        note.textContent = query ? visible + (visible === 1 ? ' seção encontrada' : ' seções encontradas') : sections.length + ' seções';
+      });
+    })();
+  </script>
+ </body>
+</html>

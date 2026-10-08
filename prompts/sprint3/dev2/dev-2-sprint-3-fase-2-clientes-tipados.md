@@ -115,3 +115,39 @@ Acceptance criteria
 | Authorization gate | Exact phrase before edits | AGENTS.md |
 
 Source legend: **user-stated** — supplied or chosen by the user; **repository evidence** — verified in the repositories on 2026-10-07; **approved default** — taken from approved project documents; **template** — standard skill clause.
+
+## Execution handoff
+
+Executed on 2026-10-08 after `planejamento aprovado, pode implementar`.
+
+Contract source: Developer 1's S3-01 backend contract (`docs/planejamento/sprint-03/contrato-backend-s3-01.html`, docs `f851384`). Backend `9887206` has the OFX domain and persistence but no controller, so the routes are not in `openapi/openapi.json` and the snapshot was not updated. Routes and states are Approved in that contract; response field names are Proposed, taken from the backend domain (`ImportRunSnapshot`, `IngestionItemState`), with `items` assumed for the rows.
+
+### Status per function (same in both clients, separate code)
+
+| Function | Route | Status |
+|---|---|---|
+| `apiRequest()` with `FormData` | — | Done; JSON calls unchanged |
+| `createOfxPreview()` | `POST /ingestions/ofx/previews` | Route Approved; response Proposed; sends `Idempotency-Key` (question 5 open) |
+| `confirmImport()` | `POST /ingestions/{importRunId}/confirmations` | Route Approved; response Proposed |
+| `getImportRun()` | `GET /ingestions/{importRunId}` | Route Approved; response Proposed |
+| `checkOfxFile()` | — | Empty, PDF and size; web 4 MiB (Vercel), mobile 10 MiB (backend) |
+| `ingestionErrorMessage()` | — | Known codes first, then HTTP status; Problem Details `code` values still OPEN |
+| Pluggy functions | `connections/...` | Not implemented: field names OPEN (question 7) |
+
+### Files
+
+- Web: `src/lib/api/http-client.ts`, `src/lib/api/http-client.test.ts`, `src/lib/transactions/schema.ts` (`AMOUNT` exported), `src/lib/ingestions/` (`types`, `schema`, `api`, `messages`, `file-validation`, `fixtures` and four test files), `src/lib/api/CONTRACT.md`.
+- Mobile: the same set; `src/lib/api/http-client.test.ts` is new. The file goes into `FormData` as `{ uri, name, type }`; `type` is omitted when the picker does not report it.
+- No dependency, screen, route, Server Action, configuration, or backend change. `errors.ts`, `idempotency.ts` and `contract.test.ts` unchanged.
+
+### Validation actually executed
+
+- Web: `pnpm lint` passed; `pnpm typecheck` passed; `pnpm test` 522/522 (499 before plus 23 new); `pnpm build` passed.
+- Mobile: `pnpm typecheck` passed; `pnpm test` 400/400 (376 before plus 24 new); `npx expo export --platform android` passed.
+- `git diff --check` passed in web, mobile and documentation, including the new files.
+
+### What Phases 3 and 4 can rely on
+
+- Phase 3 can build the OFX screens on `createOfxPreview`, `confirmImport`, `getImportRun`, `checkOfxFile`, `ingestionErrorMessage` and the fixtures. Screen design must assume duplicates appear only in the result (question 2), and polling stops at the terminal states `completed`, `completed_with_errors`, `failed` and `expired`. Web needs `serverActions.bodySizeLimit` (above 4 MiB plus multipart overhead) when its Server Action is added. Mobile needs `expo-document-picker` installed.
+- Phase 4 has routes and connection/consent states only; its data layer must be added once Developer 1 names the `sessions` and `completions` fields. The account-mapping step (D12) is a new screen not in the original plan.
+- Open with Developer 1: the seven questions recorded in each client's `CONTRACT.md` "Pendente com o Dev 1".

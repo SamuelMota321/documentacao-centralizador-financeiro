@@ -139,3 +139,54 @@ Acceptance criteria
 | Authorization gate | Exact phrase before edits | AGENTS.md |
 
 Source legend: **user-stated** — supplied or chosen by the user; **repository evidence** — verified in the repositories on 2026-10-07; **approved default** — taken from the approved Sprint 3 plan; **template** — standard skill clause.
+
+## Execution handoff
+
+Decisions approved on 2026-10-07 (`planejamento aprovado, pode implementar`):
+
+- Web: file upload goes through a Server Action (not a Route Handler), with
+  `serverActions.bodySizeLimit` set to the decided size (proposed `"2mb"`) once Dev 1/Dev 3
+  confirm the OFX size limit. Import and connection live under `/contas` (`/contas/importar-ofx`,
+  `/contas/conectar`); no new entry in `NAV_GROUPS` (`src/app/(app)/side-nav.tsx`);
+  `PROTECTED_PREFIXES` already covers both by prefix.
+- Mobile: import and connection open as `FormScreen` from an action in `AccountsScreen`; no new
+  tab in `Section` (`src/ui/screens.tsx`).
+- Both clients: `apiRequest()` in `src/lib/api/http-client.ts` will detect `body instanceof
+  FormData` and send it unmodified (no `JSON.stringify`, no forced `content-type`), preserving
+  existing JSON calls.
+- Approved dependency proposals (none installed in this phase):
+  - Web: `react-pluggy-connect@2.12.0` — `peerDependencies` `react >= 16.10.0` /
+    `react-dom >= 16.10.0`, no upper bound; compatible with React 19.2.8.
+  - Mobile: `expo-document-picker@57.0.3` — versioned alongside the installed Expo SDK 57
+    (`peerDependencies: expo: "*"`), a standard Expo Go module.
+  - Mobile: `react-native-pluggy-connect@1.6.0` — `peerDependencies` `react >= 16.12.0`,
+    `react-native >= 0.63.4`, `react-native-webview >= 11.6.0`; compatible with RN 0.86.3/React
+    19.2.3. Risk: the full OAuth round trip (`oauthRedirectUri` using the existing `coinciente`
+    scheme) is only testable end-to-end with a development build — Expo Go cannot register a
+    custom scheme for the OAuth return. Sandbox connectors without real OAuth (e.g. "Pluggy Bank"
+    with `user-ok`/`password-ok`) remain testable in Expo Go.
+
+Items sent to Developer 1 and Developer 3, still unanswered as of 2026-10-07: OFX maximum size,
+destination account rule, duplicate identity rule and whether a flagged item can be included,
+preview/result shape, closed list of Problem Details error codes, minimum Pluggy contract
+(token/registration/status/removal), Developer 3's synthetic OFX fixtures. See
+`docs/planejamento/sprint-03/s3-01-necessidades-dos-clientes.md`.
+
+Phase 2 boundary: no typed-client, schema, or real `FormData` implementation starts before this
+baseline is recorded. Phase 2 consumes exactly the decisions above; every item still marked OPEN
+stays an explicit mock and must not be silently turned into a final contract.
+
+No runtime code, configuration, dependency, or backend file was changed in this phase. Only
+`src/lib/api/CONTRACT.md` in each client and this prompt file were edited.
+
+### Update 2026-10-08
+
+Developer 1's backend contract (`docs/planejamento/sprint-03/contrato-backend-s3-01.html`, docs
+`f851384`) arrived after this handoff and closes most items listed above as unanswered: routes,
+OFX variants and encodings, 10 MiB backend limit, destination account chosen at confirmation,
+duplicate rule (FITID per account, advisory fallback, duplicates always ignored), import and
+connection states, and disconnect behavior. Backend `9887206` adds the OFX domain and persistence
+but no controller, so none of these routes is in the OpenAPI yet. Each client's `CONTRACT.md`
+"Sprint 3 (planejado)" section was rewritten with this contract and seven questions still open
+with Developer 1, the first being that 10 MiB cannot pass through Vercel's 4.5 MB request limit
+on web.

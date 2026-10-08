@@ -146,9 +146,11 @@
             <p class="doc-paragraph"><strong>Fontes:</strong> PRD HU-004/RNF-009; contrato S3-01 e API S3-02; padrões atuais de telas e clientes web. <strong>Prioridade:</strong> Must. <strong>Estimativa:</strong> M. <strong>Responsável principal:</strong> Developer 2; Developer 3 revisa aceite, acessibilidade e testes. <strong>Repositório:</strong> web. <strong>Dependências:</strong> contrato S3-01; integração real depende do endpoint de S3-02. <strong>Janela proposta:</strong> 30/09–02/10 para fluxo com contrato/mocks e 05–06/10 para integração, estimativa.</p>
             <ul class="doc-list">
               <li>Somente formatos e limites decididos são enviados; validações do cliente não substituem validação backend.</li>
-              <li>A tela exibe prévia, itens duplicados/sinalizados e ação explícita de confirmação antes da gravação.</li>
+              <li>Na web, o arquivo tem limite de 4 MiB. O limite do corpo da Server Action aceita o overhead multipart, mas permanece abaixo de 4,5 MB, teto da Vercel. O backend e o mobile mantêm o limite de 10 MiB.</li>
+              <li>O usuário mapeia a conta de destino após a leitura do arquivo e antes da prévia final; a prévia apresenta duplicatas calculadas para essa conta. A confirmação das transações ocorre em ação separada.</li>
+              <li>A tela representa <code>awaiting_account_mapping</code> e <code>expired</code>, informa o vencimento da prévia em 24 horas e impede confirmar uma prévia vencida.</li>
               <li>Estados de carregamento, sucesso, erro, resultado parcial e consulta de importação longa são compreensíveis e acessíveis.</li>
-              <li><strong>Evidência:</strong> testes do cliente tipado e do formulário, teste E2E de selecionar/prévia/confirmar/resultado com dados sintéticos e revisão dos estados acessíveis.</li>
+              <li><strong>Evidência:</strong> testes do cliente tipado e do formulário; testes de limite web com overhead multipart; teste E2E de seleção, mapeamento, prévia/duplicatas, confirmação e resultado; teste de expiração; revisão dos estados acessíveis.</li>
             </ul>
 
             <h2 class="doc-heading">S3-04 — Implementar importação OFX no mobile</h2>
@@ -156,7 +158,8 @@
             <p class="doc-paragraph"><strong>Fontes:</strong> PRD HU-004/RNF-009; contrato S3-01 e API S3-02; arquitetura de clientes independentes. <strong>Prioridade:</strong> Must. <strong>Estimativa:</strong> G, pela seleção de arquivos e dependência ainda não aprovada. <strong>Responsável principal:</strong> Developer 2; Developer 3 revisa aceite e evidências. <strong>Repositório:</strong> mobile. <strong>Dependências:</strong> S3-01; endpoint S3-02; decisão e aprovação de eventual seletor de documentos. <strong>Janela proposta:</strong> 30/09–02/10 para fluxo com contrato/mocks e 05–06/10 para integração, estimativa.</p>
             <ul class="doc-list">
               <li>Seleção e envio usam mecanismo compatível com a plataforma e com as decisões de tipo/tamanho; nenhuma dependência nova é adicionada sem aprovação.</li>
-              <li>Prévia, duplicidades, confirmação e resultado apresentam estados próprios para telas mobile, inclusive erros e resultado parcial.</li>
+              <li>O mobile e o backend aceitam arquivos de até 10 MiB. O usuário mapeia a conta de destino antes da prévia final; duplicatas são calculadas para essa conta antes da confirmação das transações.</li>
+              <li>Prévia, duplicidades, confirmação e resultado apresentam estados próprios para telas mobile, incluindo <code>awaiting_account_mapping</code>, vencimento da prévia em 24 horas, erro e resultado parcial.</li>
               <li>A navegação mantém a sessão autenticada e não deixa a gravação depender somente de validação local.</li>
               <li><strong>Evidência:</strong> testes do cliente tipado e da lógica de apresentação, validação do fluxo no ambiente mobile e teste de integração com fixtures sintéticas.</li>
             </ul>
@@ -173,6 +176,7 @@
               <li>Credenciais de aplicação e API Key permanecem no backend. O cliente recebe somente o token de conexão limitado previsto no fluxo oficial Pluggy; nenhum segredo aparece em resposta, log ou bundle.</li>
               <li>O Item criado é associado ao usuário/tenant autenticado; o modelo de persistência respeita a propriedade de Accounts sobre conexões e passa por revisão antes de fixar campos não especificados.</li>
               <li>Consentimento e escopo ficam registráveis sem credenciais bancárias; expiração, revogação e remoção impedem novas coletas conforme a política aprovada. Retenção/exclusão local após desconexão permanece decisão pendente.</li>
+              <li>Na importação inicial, o <code>ImportRun</code> representa <code>awaiting_account_mapping</code> até as contas externas serem associadas às contas locais; não persiste transações sem destino mapeado. A transição usa a regra compartilhada com OFX, e a operação/campos ficam para a reconciliação S3-08.</li>
               <li>Importação inicial é idempotente e isolada por tenant; disponibilidade parcial é apresentada por tipo de dado. Falha externa não apaga dados válidos previamente persistidos.</li>
               <li>Chamadas Pluggy ocorrem fora da transação tenant-aware; jobs, caso necessários, carregam IDs internos mínimos e não tokens ou payload financeiro.</li>
               <li><strong>Evidência:</strong> testes unitários com provider fake, testes de integração para vínculo/duplicidade/RLS, teste E2E autenticado e execução no Sandbox autorizado; revisão dos logs e do contrato sem segredos.</li>
@@ -190,8 +194,9 @@
             <ul class="doc-list">
               <li>O fluxo abre o componente/SDK aprovado com token do backend; <code>CLIENT_ID</code>, <code>CLIENT_SECRET</code> e API Key não entram no cliente.</li>
               <li>Retorno de conexão se associa ao backend e ao usuário autenticado; o cliente não decide vínculo de tenant por dado local.</li>
+              <li>Na importação inicial Pluggy, a interface apresenta <code>awaiting_account_mapping</code>, conduz o mapeamento antes da prévia final e informa duplicatas calculadas para as contas escolhidas.</li>
               <li>Estados de abertura, fechamento, sucesso, erro e dados parciais são comunicados sem expor dados financeiros desnecessários.</li>
-              <li><strong>Evidência:</strong> testes de cliente/API e estados de interface, verificação de bundle sem segredos e fluxo Sandbox no ambiente autorizado.</li>
+              <li><strong>Evidência:</strong> testes de cliente/API, mapeamento e estados de interface, verificação de bundle sem segredos e fluxo Sandbox no ambiente autorizado.</li>
             </ul>
 
             <h2 class="doc-heading">S3-07 — Integrar conexão Pluggy no mobile</h2>
@@ -200,8 +205,9 @@
             <ul class="doc-list">
               <li>O cliente usa token limitado obtido do backend e não recebe credenciais de aplicação.</li>
               <li>Fluxo de retorno, cancelamento, erro e eventual etapa de autenticação do provedor funciona no ambiente mobile selecionado; compatibilidade de SDK não é presumida.</li>
+              <li>Na importação inicial Pluggy, a interface apresenta <code>awaiting_account_mapping</code>, conduz o mapeamento antes da prévia final e informa duplicatas calculadas para as contas escolhidas.</li>
               <li>Sucesso associa a conexão pelo backend; estados de disponibilidade parcial permanecem explícitos.</li>
-              <li><strong>Evidência:</strong> testes de cliente e estados, fluxo no dispositivo/simulador com Sandbox autorizado e inspeção da configuração/bundle para ausência de segredos.</li>
+              <li><strong>Evidência:</strong> testes de cliente, mapeamento e estados, fluxo no dispositivo/simulador com Sandbox autorizado e inspeção da configuração/bundle para ausência de segredos.</li>
             </ul>
           </div>
         </section>
@@ -215,6 +221,11 @@
             <ul class="doc-list">
               <li>Contrato OpenAPI publicado pelo backend corresponde aos tipos, snapshots e validações independentes de web e mobile.</li>
               <li>Testes cobrem OFX válido e inválido, prévia, confirmação, duplicidade, resultado, fluxo assíncrono quando aplicável, conexão/revogação Pluggy, erros do provedor e disponibilidade parcial.</li>
+              <li><strong>Correção prioritária do contrato OFX:</strong> Developer 3 coordena as decisões; Developer 1 alinha o backend e OpenAPI; Developer 2 alinha web e mobile. A janela estimada é 08–09/10, com replanejamento explícito se não couber.</li>
+              <li>O limite web fica em 4 MiB, incluindo validação no cliente e configuração da Server Action para overhead multipart abaixo do teto de 4,5 MB da Vercel; mobile e backend mantêm 10 MiB. Testes cobrem o limite e a margem do corpo multipart.</li>
+              <li>O mapeamento de conta acontece antes da prévia final e da confirmação das transações. O estado compartilhado <code>awaiting_account_mapping</code> é representado e exercitado nos fluxos OFX e Pluggy; Developer 3 atualiza a decisão D3 no contrato S3-01 após validação com os responsáveis.</li>
+              <li>A prévia expira 24 horas após sua criação. O contrato expõe <code>expiresAt</code>; confirmação após o vencimento não persiste transações, o run passa a <code>expired</code>, e o objeto de origem é removido fora da transação tenant-aware. Metadados/resultados seguem a retenção aprovada de 90 dias. A limpeza de prévias abandonadas tem mecanismo e evidência definidos nesta atividade.</li>
+              <li>As operações de mapeamento e os campos de request/response são definidos antes da implementação, sem presumir nomes de rota ou payload; os snapshots OpenAPI e os contratos independentes dos clientes são atualizados após a decisão.</li>
               <li>Testes provam acesso autorizado e rejeição de acesso cruzado entre tenants nas rotas, estados e persistência adicionados.</li>
               <li>Testes e demonstrações usam fixtures e dados sintéticos; não há credencial, token ou payload financeiro real em logs, evidências ou repositórios.</li>
               <li>Documentação de API e configuração necessária fica atualizada nos locais existentes; sem criar documentos de planejamento adicionais para esta tarefa.</li>
@@ -235,9 +246,10 @@
           <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
             <h2 class="doc-heading">Riscos, pré-requisitos e decisões</h2>
             <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Tema</th><th>Evidência/impacto</th><th>Tratamento planejado</th></tr></thead><tbody>
-              <tr><th>Variantes OFX, encoding, limites e conta de destino</th><td>HU-004 exige validação de tipo/tamanho/estrutura/conteúdo, mas não fecha variantes, limite, mapeamento de conta ou política de arquivo.</td><td>Developer 3 registra decisão; Developer 1 valida viabilidade. Bloqueia critérios de parser e contrato se não for resolvido.</td></tr>
-              <tr><th>Duplicidade e reimportação OFX</th><td>PRD requer identificar duplicatas antes da gravação; estratégia de identidade e conflito não está definida.</td><td>Definir regra e comportamento de repetição antes de persistir; cobrir com fixtures e idempotência.</td></tr>
-              <tr><th>Processamento assíncrono OFX</th><td>PRD permite importação longa assíncrona; Arquitetura descreve ImportRun, QStash e ciclo de objeto R2. Código atual não apresentou essas integrações.</td><td>Definir limiar, estado, retenção/exclusão do objeto e disponibilidade de QStash/R2. Credenciais/configuração são pré-requisito externo se o caminho for necessário.</td></tr>
+              <tr><th>Limite OFX por plataforma</th><td>D2 fixa 10 MiB no backend; o web encaminha o arquivo pela Vercel, cujo corpo máximo é <a href="https://vercel.com/docs/errors/function_payload_too_large">4,5 MB</a>. O contrato de clientes registrou a incompatibilidade.</td><td>S3-08 registra 4 MiB para web e 10 MiB para mobile/backend; Developer 2 configura e testa o caminho Next/Vercel, Developer 1 mantém o limite backend e Developer 3 confere o contrato.</td></tr>
+              <tr><th>Mapeamento de conta, estado e duplicidade</th><td>D3 diz selecionar destino na confirmação, mas duplicatas dependem da conta e devem aparecer antes da confirmação. A API S3-02 atual já exige destino na criação da prévia; <code>awaiting_account_mapping</code> consta no contrato e não está no domínio atual.</td><td>S3-08 alinha a decisão D3 e especifica o mapeamento prévio às duplicatas nos fluxos OFX e Pluggy, com estado compartilhado e operação descrita no contrato antes de codificar.</td></tr>
+              <tr><th>Validade e limpeza da prévia</th><td>O contrato não tinha prazo de validade nem <code>expiresAt</code>; retenção de metadados por 90 dias não define validade da prévia.</td><td>S3-08 fixa validade de 24 horas a partir da criação, define expiração sem persistir transações e especifica a limpeza do objeto R2 e retenção de metadados/resultados.</td></tr>
+              <tr><th>Processamento assíncrono OFX</th><td>S3-02 entrega o fluxo síncrono; PRD permite importação longa assíncrona e a Arquitetura descreve ImportRun, QStash e ciclo de objeto R2. Ainda falta evidência de limiar medido para ativar processamento assíncrono.</td><td>S3-08 mede/define o limiar e confirma estados e retenção/exclusão do objeto; só ativa fila quando o contrato exigir e a configuração QStash/R2 estiver validada. I/O externo ocorre fora da transação tenant-aware.</td></tr>
               <tr><th>Modelo de conexão Pluggy</th><td>Arquitetura atribui conexões ao módulo Accounts; o schema atual só inclui identificação externa em Account, não a entidade de conexão.</td><td>Developer 1 propõe o modelo mínimo para Item/tenant/consentimento e audita RLS; a equipe revisa antes de fixar campos ou política de desconexão.</td></tr>
               <tr><th>Dados Pluggy abrangidos</th><td>HU-007 fala em dados disponíveis e estado parcial por tipo; HU-009 trata investimentos separadamente.</td><td>Confirmar importação inicial dentro de HU-007; não incluir investimentos nem sincronização recorrente por inferência.</td></tr>
               <tr><th>HU-008 — sincronização recorrente</th><td>PRD/Arquitetura descrevem agenda diária, disparo manual, concorrência e retry como história/fluxo separado.</td><td>Fora do escopo aprovado da Sprint 3. Exige ampliação explícita antes de entrar no plano ou na implementação.</td></tr>
@@ -247,9 +259,9 @@
             </tbody></table></div></div>
             <h2 class="doc-heading">Decisões que não podem ser presumidas</h2>
             <ul class="doc-list">
-              <li>Quais variantes OFX, codificações, datas, tamanho máximo e tipos de conta serão aceitos.</li>
-              <li>Como associar extrato à conta, detectar conta manual possivelmente duplicada e calcular identidade de transação duplicada.</li>
-              <li>Quando uma importação é longa, quanto tempo guardar arquivo/resultado e como cancelar/expirar um ImportRun.</li>
+              <li>Quais campos e operação formalizarão o mapeamento de destino nos fluxos OFX e Pluggy, e as transições de <code>awaiting_account_mapping</code>.</li>
+              <li>Qual mecanismo executará a expiração e limpeza de runs OFX abandonados sem I/O externo dentro da transação tenant-aware.</li>
+              <li>Quando uma importação passa a ser longa e assíncrona; a validade de 24 horas da prévia e a retenção de metadados/resultados por 90 dias são decisões separadas.</li>
               <li>Quais dados a importação inicial Pluggy inclui, como mapear contas e transações ao domínio existente e qual informação parcial será mostrada.</li>
               <li>Como representar escopo, expiração, revogação e exclusão local da conexão sem guardar credenciais bancárias.</li>
               <li>Quais SDKs, parser ou seletor de arquivo são compatíveis e podem ser adicionados; qualquer nova dependência segue aprovação independente.</li>
@@ -263,7 +275,7 @@
             <h2 class="doc-heading">Definição de pronto da Sprint</h2>
             <ul class="doc-list">
               <li>S3-01 a S3-08 concluídas, revisadas por outro desenvolvedor e com dependências/handoffs registrados.</li>
-              <li>Importação OFX percorre selecionar, validar, pré-visualizar, confirmar e apresentar resultado; duplicidades obedecem regra aprovada e PDF é rejeitado.</li>
+              <li>Importação OFX percorre selecionar, validar, mapear destino, pré-visualizar duplicatas, confirmar e apresentar resultado; web aceita até 4 MiB e mobile/backend até 10 MiB; a prévia vence em 24 horas e PDF é rejeitado.</li>
               <li>Conexão Pluggy Sandbox respeita consentimento, vínculo ao tenant, importação inicial aprovada, estado parcial e interrupção de novas coletas após desconexão/revogação.</li>
               <li>Backend mantém OpenAPI como contrato; web e mobile continuam clientes independentes, com snapshots/tipos alinhados.</li>
               <li>Testes demonstram isolamento, idempotência, tratamento de falha e ausência de segredos/dados financeiros reais em logs e artefatos.</li>
@@ -272,7 +284,7 @@
             </ul>
             <h2 class="doc-heading">Rastreabilidade de funcionalidade para evidência</h2>
             <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Funcionalidade/requisito</th><th>Tarefas</th><th>Repositórios</th><th>Critérios e evidência de conclusão</th></tr></thead><tbody>
-              <tr><th>Importar extrato OFX — HU-004, RN-006</th><td>S3-01, S3-02, S3-03, S3-04, S3-08</td><td>backend, web, mobile, documentação</td><td>Arquivo validado; prévia antes de confirmar; duplicidade antes da gravação; resultado importados/ignorados/erros; processamento consultável quando longo; fixtures, integração, E2E e isolamento.</td></tr>
+              <tr><th>Importar extrato OFX — HU-004, RN-006</th><td>S3-01, S3-02, S3-03, S3-04, S3-08</td><td>backend, web, mobile, documentação</td><td>Arquivo validado; limites de 4 MiB web e 10 MiB mobile/backend; mapeamento antes da prévia final; <code>awaiting_account_mapping</code>; duplicatas antes da confirmação; expiração após 24 horas com limpeza do objeto; resultado importados/ignorados/erros; testes de contrato, integração, E2E e isolamento.</td></tr>
               <tr><th>Conectar conta Pluggy Sandbox — HU-007, RN-008/RN-009</th><td>S3-01, S3-05, S3-06, S3-07, S3-08</td><td>backend, web, mobile, documentação</td><td>Consentimento/escopo associado ao tenant sem credenciais bancárias; cliente recebe apenas token limitado; importação inicial aprovada; revogação/remoção interrompe novas coletas; estados parciais e falha externa; testes, revisão de segredo, isolamento e evidência Sandbox.</td></tr>
               <tr><th>Sincronização Pluggy diária/manual — HU-008</th><td>Sem tarefa nesta Sprint</td><td>Fora do escopo da Sprint 3</td><td>História separada no PRD; somente incluir após aprovação explícita de ampliação do escopo.</td></tr>
               <tr><th>Investimentos Pluggy — HU-009</th><td>Sem tarefa nesta Sprint</td><td>Fora do escopo da Sprint 3</td><td>Não faz parte das duas funcionalidades aprovadas.</td></tr>

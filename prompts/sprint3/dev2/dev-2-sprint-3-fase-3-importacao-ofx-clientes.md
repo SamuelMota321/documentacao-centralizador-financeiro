@@ -109,3 +109,38 @@ Acceptance criteria
 | Authorization gate | Exact phrase before edits | AGENTS.md |
 
 Source legend: **user-stated** — supplied or chosen by the user; **repository evidence** — verified in the repositories on 2026-10-07; **approved default** — taken from approved project documents; **template** — standard skill clause.
+
+## Execution handoff
+
+Executed on 2026-10-09 after `planejamento aprovado, pode implementar`, against the OpenAPI at backend `2c416cd` (Phase 2 update of 2026-10-09).
+
+### Screens delivered
+
+Both clients go through: choose the destination account and the file, client-side check (empty, PDF, size), preview with no persistence, explicit confirmation with `Idempotency-Key`, and result. The account goes with the file, so the preview already shows duplicates (`isDuplicate`) for that account; duplicates are always ignored (no option to include them, per the approved rule). Confirmation is disabled, with an explanation, when there is nothing new to import.
+
+- Web (S3-03): link "Importar extrato OFX" in the Contas header (secondary, next to "Nova conta"); route `/contas/importar-ofx` (`page.tsx`, `ofx-import.tsx`, `actions.ts`, `presentation.ts`, `loading.tsx`, `error.tsx`, CSS module with `DESIGN.md` tokens only). `next.config.ts` sets `experimental.serverActions.bodySizeLimit` to `SERVER_ACTION_BODY_LIMIT_BYTES` (4 MiB + 64 KiB). The preview form submits through `startTransition` instead of `action`, so React 19 does not reset the file input and a retry keeps the chosen file. Each step moves focus to its heading.
+- Mobile (S3-04): text button "Importar extrato OFX" in the Contas footer; `OfxImportScreen` (`FormScreen` per step) and `ofx-import-logic.ts`. `expo-document-picker@57.0.3` installed (`type: "*/*"`, filtering by `checkOfxFile`, because Android does not recognize the OFX MIME type). Accounts are loaded with `listAllPages`. The result returns to Contas with a `Notice` in the result's tone. Nothing is stored on the device.
+
+### State matrix (implemented)
+
+Loading accounts, no accounts, invalid/empty/too large/PDF file (client check and 413/415/422 from the backend), submitting, expired or already confirmed preview (409/404 `INVALID_REQUEST` or status `expired`, with "Escolher outro arquivo"), partial result (`completed_with_errors`) and `failed`, `queued`/`processing` with "Verificar de novo" (no automatic polling: the published contract is synchronous), network failure or 503 with retry under the same key, expired session (web: "Entrar novamente" back to the import; mobile: `handleUnauthorized()`), and success (web toast plus result panel; mobile `Notice`).
+
+### Integration status
+
+Pending. The routes exist at `2c416cd`, but without `R2_*` variables the local backend answers the preview with 503. Evidence in this phase: mocked-fetch tests and the OpenAPI contract test. Web route protection was checked against the dev server: `GET /contas/importar-ofx` without a session answers 307 to `/auth/login`.
+
+Re-check when R2 development credentials exist: preview with Developer 1's fixtures (`test/fixtures/ofx/*`, synthetic), duplicate on a second import into the same account, PDF (415), malformed (422), confirmation result, replay of the same confirmation key, and the 4 MiB web limit through the real Server Action.
+
+### Open items
+
+- `expiresAt` (24-hour validity) is not in the OpenAPI, so the preview cannot show when it expires; expiry is only detected by 409 or status `expired`.
+- The S3-08 account-mapping operation and `awaiting_account_mapping` could change the flow to "file first, account later".
+- Created transaction ids are not returned by the confirmation, so Movimentações cannot highlight the imported rows.
+- Item `errorCode` values have no published list; failed rows show a generic pt-BR message.
+- Visual check on a logged-in browser and on a device (Expo Go) still needs the user (Auth0 login, phone).
+
+### Validation actually executed
+
+- Web: `pnpm lint`, `pnpm typecheck` and `pnpm build` passed (route `/contas/importar-ofx` built); `pnpm test` 563/563 (30 new).
+- Mobile: `pnpm typecheck` and `npx expo export --platform android` passed; `pnpm test` 425/425 (13 new).
+- `git diff --check` passed in web, mobile and the changed documentation files, including the new files.

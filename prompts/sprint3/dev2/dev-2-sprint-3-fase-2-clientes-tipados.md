@@ -151,3 +151,22 @@ Contract source: Developer 1's S3-01 backend contract (`docs/planejamento/sprint
 - Phase 3 can build the OFX screens on `createOfxPreview`, `confirmImport`, `getImportRun`, `checkOfxFile`, `ingestionErrorMessage` and the fixtures. Screen design must assume duplicates appear only in the result (question 2), and polling stops at the terminal states `completed`, `completed_with_errors`, `failed` and `expired`. Web needs `serverActions.bodySizeLimit` (above 4 MiB plus multipart overhead) when its Server Action is added. Mobile needs `expo-document-picker` installed.
 - Phase 4 has routes and connection/consent states only; its data layer must be added once Developer 1 names the `sessions` and `completions` fields. The account-mapping step (D12) is a new screen not in the original plan.
 - Open with Developer 1: the seven questions recorded in each client's `CONTRACT.md` "Pendente com o Dev 1".
+
+### Update 2026-10-09 — alignment with the published OpenAPI
+
+Backend `2c416cd` published the three OFX routes in `openapi/openapi.json`. The diff against the clients' snapshot was purely additive (three new paths; no consumed operation changed), so `src/lib/api/openapi.snapshot.json` in both clients is now a copy of the backend file at `2c416cd`, and the OpenAPI is authoritative over the written S3-01 contract.
+
+Changes, independent in each client:
+
+- `createOfxPreview()` now takes `{ file, destinationAccountId }` and sends both in the multipart body. The published route requires the destination account with the file; the previous version would have received 400.
+- `ingestions/types.ts` and `schema.ts` mirror the OpenAPI: `isDuplicate` added to items; `warnings` is an open string list; `destinationAccountId` required; `variant`, `fileSizeBytes`, `terminalAt`, `retentionExpiresAt`, `createdAt` and `updatedAt` added; `awaiting_account_mapping` removed until the backend publishes it. `OFX_WARNINGS` became the single constant `EXTERNAL_ID_MISSING`.
+- `ingestionErrorMessage()` gained the 503 message. The backend answers file and state errors as `INVALID_REQUEST` distinguished by HTTP status, which matches the existing status-based mapping.
+- `contract.test.ts` gained an Ingestions block: bearer, required `Idempotency-Key` on preview and confirmation, multipart and confirmation fields, exact ImportRun and item fields, enum parity, and fixtures validated against the snapshot and the client schemas.
+- Fixtures now follow the OpenAPI shape, including a preview duplicate.
+- `CONTRACT.md` header points to `backend @ 2c416cd`; the Sprint 3 section marks the OFX operations Approved and lists what remains open.
+
+Validation actually executed on 2026-10-09: web `pnpm lint`, `pnpm typecheck` and `pnpm build` passed, `pnpm test` 533/533; mobile `pnpm typecheck` and `npx expo export --platform android` passed, `pnpm test` 412/412; `git diff --check` passed in web, mobile and documentation.
+
+Still open: `expiresAt` (24-hour preview validity, decided in S3-08, not yet in the OpenAPI); the S3-08 account-mapping operation and `awaiting_account_mapping`; the whole Pluggy contract (S3-05); R2 development credentials, without which the local backend answers the preview with 503.
+
+Phase 3 can now build the OFX screens against the published contract: choose the account and the file, show the preview with duplicates (`isDuplicate`) and the `external_id_missing` warning, confirm, and show the result.

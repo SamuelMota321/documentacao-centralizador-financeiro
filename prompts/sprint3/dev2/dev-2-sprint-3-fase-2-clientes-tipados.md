@@ -170,3 +170,7 @@ Validation actually executed on 2026-10-09: web `pnpm lint`, `pnpm typecheck` an
 Still open: `expiresAt` (24-hour preview validity, decided in S3-08, not yet in the OpenAPI); the S3-08 account-mapping operation and `awaiting_account_mapping`; the whole Pluggy contract (S3-05); R2 development credentials, without which the local backend answers the preview with 503.
 
 Phase 3 can now build the OFX screens against the published contract: choose the account and the file, show the preview with duplicates (`isDuplicate`) and the `external_id_missing` warning, confirm, and show the result.
+
+### Update 2026-10-09 — Pluggy contract published
+
+Backend `605cb07` published the S3-05 connection routes (sessions, completions, connection detail, disconnect). This closes "the whole Pluggy contract (S3-05)" listed above as open, except for listing connections, initial import and account mapping, which are not published. The Phase 4 data layer is built on this contract in Phase 4 itself, together with the snapshot update to `605cb07`; see the "Contract update 2026-10-09" section of the Phase 4 prompt.

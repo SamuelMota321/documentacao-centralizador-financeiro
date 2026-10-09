@@ -146,3 +146,15 @@ O plano já diz que citar os pacotes não os aprova. O Developer 2 verifica a co
 5. Lista de códigos de erro (item 7).
 
 Com os itens 1 a 3 decididos, o Developer 2 começa os fluxos web e mobile sobre mocks do contrato proposto, como prevê o plano (S3-03 e S3-04, janela de 30/09 a 02/10).
+
+## 11. Pendente com o Developer 1 após o backend `605cb07` (2026-10-09)
+
+O backend `605cb07` publicou o contrato Pluggy da S3-05 (sessão, conclusão, detalhe da conexão e desconexão). Ficaram três dúvidas. Enquanto o Developer 1 não responde, o Developer 2 segue a Fase 4 com a premissa de cada uma e troca quando houver resposta.
+
+| # | Pergunta | Premissa até a resposta | O que muda se a resposta for outra |
+|---|---|---|---|
+| 1 | Vai existir `GET /api/v1/connections` para listar as conexões do tenant? | Não existe. Os clientes mostram só a conexão do fluxo atual e não guardam ids nem tokens no aparelho para montar uma lista. | A tela "Conexões" passa a listar tudo, com status e remoção. |
+| 2 | A conclusão (`POST /connections/pluggy/completions`) pode ser reenviada com o mesmo `itemId` depois de uma falha de rede, já que não pede `Idempotency-Key`? | Sim, o reenvio do mesmo `itemId` é seguro; a tela oferece "Tentar de novo" com o mesmo `itemId`. | Se não for, a tela consulta a conexão (`GET`) antes de reenviar. |
+| 3 | Quando entram a importação inicial, o mapeamento de contas (D12) e o estado `awaiting_account_mapping`? | Ficam para a S3-08. Depois de conectar, os clientes mostram só o status da conexão. | Entra uma etapa de mapeamento de contas e o acompanhamento da importação inicial. |
+
+Também falta: credenciais do Sandbox Pluggy (`PLUGGY_CLIENT_ID`, `PLUGGY_CLIENT_SECRET`) e do R2 no backend local para testar de ponta a ponta, e a regra do Developer 3 para conta local "correspondente" (D12).

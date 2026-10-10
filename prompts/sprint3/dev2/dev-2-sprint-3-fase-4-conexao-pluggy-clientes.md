@@ -137,3 +137,52 @@ Divergences from the written S3-01 contract. Developer 1 is not reachable now, s
 - Completions takes no `Idempotency-Key` (S3-01 required one). Assumption: resending the same `itemId` after a network failure is safe, so retry resends it.
 
 Still open: Pluggy Sandbox credentials (`PLUGGY_CLIENT_ID`, `PLUGGY_CLIENT_SECRET`) in the local backend; Developer 3's rule for a "corresponding" local account (D12); R2 development credentials for OFX.
+
+## Execution handoff
+
+Executed on 2026-10-09 after `planejamento aprovado, pode implementar`, against the OpenAPI at backend `605cb07` and on the assumptions in section 11 of `docs/planejamento/sprint-03/s3-01-necessidades-dos-clientes.md`.
+
+### Decisions approved in planning
+
+- D1: `react-native-webview@13.16.1` (Expo SDK 57 version, bundled in Expo Go) installed as the peer required by `react-native-pluggy-connect`.
+- D2: mobile OAuth opens in an in-app WebView (`forceOauthInBrowser={false}`). The return through the `coinciente` scheme is blocked on the backend: it creates the connect token without `oauthRedirectUri`, and the React Native SDK has no redirect prop.
+- D3: the optional peer `pluggy-js` (server SDK) is not installed in either client. Widget payloads are typed `unknown`; only `item.id` is read and validated as a UUID.
+
+Evidence gathered in planning: the SDK types of the approved versions (`react-pluggy-connect@2.12.0` → `pluggy-connect-sdk` 2.14.2; `react-native-pluggy-connect@1.6.0` → `pluggy-connect-sdk` 2.9.2) and the backend use case, where `complete()` re-reads the item from Pluggy and reapplies its state, so resending the same `itemId` is safe (assumption 2 confirmed by code).
+
+### Screens delivered
+
+Both clients: explanation of what is authorized (read only, Sandbox, never money movement, payments or Pix, bank password never passes through Coinciente), a new session on every attempt, the widget with `includeSandbox`, `language="pt"`, completion with the widget's `itemId`, and the connection detail (status chip with text, consent products, Open Finance permission count, granted and expiry dates, last update, "Verificar de novo" only while `pending_authorization`, "Conectar de novo" when expired/revoked/disconnected, and removal with confirmation stating that new collection stops). The detail says that importing this connection's transactions is not available yet.
+
+- Web (S3-06): link "Conectar banco (Sandbox)" in the Contas header; route `/contas/conectar` (`page.tsx`, `actions.ts`, `connect-flow.tsx`, `pluggy-widget.tsx`, `widget-payload.ts`, `presentation.ts`, `loading.tsx`, `error.tsx`, CSS module with `DESIGN.md` tokens). Server Actions keep the Auth0 token on the server; the browser receives only the `connectToken`. The widget loads through `next/dynamic` with `ssr: false` in a Client Component. After completion the URL becomes `?conexao=<id>` so a reload shows the same connection; nothing is stored in the browser. Removal uses `ConfirmDialog`; each step moves focus to its heading.
+- Mobile (S3-07): text button "Conectar banco (Sandbox)" in the Contas footer (also with no accounts); `ConnectScreen` and `connect-logic.ts`. The widget takes the full screen; Android back closes it as a cancellation. Removal uses `Alert.alert`; expired session goes through `handleUnauthorized()`. Token, item and connection live only in screen state. Timestamps are formatted by hand as Brasília time (fixed UTC−3) to avoid depending on Hermes time-zone support.
+- Data layer in each client, independently: `src/lib/connections/` (`types.ts`, `schema.ts`, `api.ts`, `messages.ts`, `fixtures.ts`, tests); `PROBLEM_CODES` gained `CONNECTION_NOT_FOUND`, `CONNECTION_CONFLICT`, `INTEGRATION_UNAVAILABLE`; `openapi.snapshot.json` is a copy of the backend file at `605cb07`; `contract.test.ts` gained a Connections block; `CONTRACT.md` Sprint 3 section updated.
+
+### State matrix (implemented)
+
+Explanation, opening (session request), widget open, cancelled (closed without item), provider error (message not shown), invalid widget payload, registering, registration failure with "Tentar de novo" (same `itemId`) or "Começar de novo", provider unavailable (503), connection not found (404) and state conflict (409), pending authorization, connected, partially available (explicit text: only part of the data was released), consent expired or revoked, disconnected, removal in progress and removal failure (inside the dialog on web), expired session (web: "Entrar novamente" back to `/contas/conectar`; mobile: `handleUnauthorized()`). There is no "no connections" state because the backend has no list route.
+
+### Integration status
+
+Pending. The local backend needs `PLUGGY_CLIENT_ID` and `PLUGGY_CLIENT_SECRET` for the Sandbox; the Sandbox was not called. Evidence in this phase: mocked-fetch tests, Server Action tests and the OpenAPI contract test.
+
+Re-check with Sandbox credentials: session and widget opening on web and on a device (Expo Go), the "Pluggy Bank" Sandbox connector, completion and the resulting status, a connector with OAuth on mobile (in-app WebView), cancellation, removal, and a page reload with `?conexao=` on web.
+
+### Secret inspection
+
+- Web: no match for `PLUGGY_CLIENT`, `CLIENT_SECRET`, `clientSecret`, `api.pluggy.ai/auth` or `PLUGGY_WEBHOOK` in `.next/static` (browser bundle). In `.next/server`, the only matches are the Auth0 SDK reading `AUTH0_CLIENT_SECRET`, as before this phase. The widget chunk is present in `.next/static`.
+- Mobile: the Android export has one `clientSecret` string, the property name of `expo-auth-session`'s `TokenRequest`; the same string is in an export built without this phase's changes. No Pluggy credential.
+
+### Open items
+
+- No route to list connections: the full "Conexões" list waits for `GET /api/v1/connections` (section 11, question 1).
+- Initial import, account mapping (D12) and `awaiting_account_mapping` are not in the contract (S3-08).
+- Every opened and cancelled session leaves a `pending_authorization` connection on the backend; report to Developer 1.
+- Mobile OAuth return through `coinciente` needs `oauthRedirectUri` on the backend and a development build.
+- Visual check in a logged-in browser and on a device still needs the user.
+
+### Validation actually executed
+
+- Web: `pnpm lint`, `pnpm typecheck` and `pnpm build` passed (route `/contas/conectar` built); `pnpm test` 608/608 (45 new).
+- Mobile: `pnpm typecheck` and `npx expo export --platform android` passed; `pnpm test` 461/461 (36 new).
+- `git diff --check` passed in web and mobile, including new files.

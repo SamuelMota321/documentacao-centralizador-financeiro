@@ -55,6 +55,44 @@ O solicitante aprovou as recomendações em 2026-10-22. Elas orientam este basel
 - **R2:** não é usado pelo fluxo Pluggy encontrado. A dependência documentada no S3-01 está ligada ao caminho de arquivos/OFX. Não solicitar acesso R2 para este baseline ou HU-008/009 sem justificativa de um caminho aprovado.
 - **Validação local segura:** specs unitários usam provider sintético/mocks e podem rodar sem chamar Pluggy. PostgreSQL/RLS só em banco descartável local com `TEST_DATABASE_URL`; o script de verificação realiza operações de escrita e limpeza.
 
+## Plano técnico de código (condicionado a decisões)
+
+Este plano registra a sequência recomendada para o trabalho de backend. A autorização desta atualização cobre o registro do plano; não autoriza implementar HU-008/HU-009 nem altera o escopo do S4-01. Rotas, payloads, estados, políticas de retry e modelos de persistência que dependem de decisão continuam em aberto.
+
+### 1. Descoberta/listagem de conexões e cobertura do retry HU-007
+
+O schema `FinancialConnection` já admite várias conexões por tenant/proprietário: há índice por tenant, proprietário e status, sem unicidade nesse conjunto. A unicidade existente de `providerItemId` não impede múltiplas conexões. A listagem não deve exigir migration, salvo se o contrato aprovado revelar outro requisito de persistência.
+
+Antes de codificar, Dev 2 valida os dados e estados necessários ao cliente; Dev 1 fecha o contrato backend; Dev 3 registra critérios de aceite. Permanecem por decidir visibilidade por proprietário versus tenant, estados incluídos, filtros, ordenação e paginação. Até decisão explícita, a consulta deve conservar o escopo atual de tenant e proprietário; não ampliar acesso para outros usuários do tenant.
+
+Arquivos/áreas previstos após fechar o contrato:
+
+- `src/modules/accounts/application/ports/connections.repository.port.ts` e `src/modules/accounts/adapters/outbound/prisma-connections.repository.ts`: adicionar consulta de conexões próprias usando o contexto tenant/usuário existente.
+- `src/modules/accounts/application/use-cases/pluggy-connection-lifecycle.ts` e `src/modules/accounts/adapters/inbound/pluggy-connections.controller.ts`: expor a consulta sem fixar rota ou formato antes da validação de contrato.
+- `src/modules/accounts/adapters/inbound/connection-openapi.schema.ts`, `openapi/openapi.json` e `test/contract/openapi.contract.spec.ts`: documentar e verificar o contrato aprovado.
+- `src/modules/accounts/application/use-cases/pluggy-connection-lifecycle.spec.ts`: cobrir listagem isolada por proprietário/tenant e os estados que o contrato vier a incluir.
+- `src/modules/ingestion/application/use-cases/pluggy-initial-import.spec.ts` e teste de repositório aplicável: acrescentar regressão para replay com a mesma `Idempotency-Key` e mesmo `itemId`, sem alterar a semântica existente se ela já cumprir o contrato.
+
+### 2. HU-008 — somente depois de fechar o contrato
+
+Dev 1 deve implementar depois que Dev 3 tiver critérios observáveis, Dev 2 tiver validado o consumo cliente e produto tiver decidido agenda/fuso. Antes disso, registrar: gatilhos manual/agendado; produtos de dados incluídos; estado e consulta da execução; idempotência/deduplicação; concorrência por conexão; limite e classificação de retries; janela/fuso; retenção; identificadores mínimos do job.
+
+Com essas decisões aprovadas, criar persistência própria para execuções recorrentes, com tenant keys e RLS, e implementar os casos de uso, a publicação/processamento assíncronos compatíveis com a infraestrutura QStash, agendamento e contrato HTTP/OpenAPI que forem aprovados. Não reaproveitar `PluggyInitialImportRun`: o modelo atual representa importação inicial e restringe uma execução por conexão. A divisão entre módulo existente e novo módulo deve seguir a decisão de arquitetura, sem antecipar nomes de rotas, tabelas ou estados.
+
+Validar com provider e fila simulados, testes de contrato e isolamento; executar PostgreSQL/RLS apenas contra banco local descartável. A validação ponta a ponta de QStash requer ambiente autorizado e não é necessária para os testes unitários.
+
+### 3. HU-009 — somente depois do mapa de capacidades autorizado
+
+Dev 1 só deve estender `PluggyProvider`/adapter e propor domínio, persistência/RLS e API após Dev 3/produto aprovarem o escopo e a verificação autorizada do Sandbox confirmar os tipos e campos disponíveis. A decisão precisa especificar fonte/referência, ausência, indisponibilidade, defasagem e qualidade sem inferir campos. Dev 2 valida os dados necessários à experiência cliente.
+
+Usar fixtures sintéticas/sanitizadas nos testes; não armazenar ou registrar payload financeiro bruto como evidência. R2 permanece fora do plano enquanto não houver um caminho aprovado que o exija.
+
+### Validação prevista para implementação futura
+
+- Specs focados de lifecycle, importação/idempotência e contrato OpenAPI, por exemplo: `npx vitest run src/modules/accounts/application/use-cases/pluggy-connection-lifecycle.spec.ts src/modules/ingestion/application/use-cases/pluggy-initial-import.spec.ts test/contract/openapi.contract.spec.ts`.
+- `npm run typecheck`, `npm run lint`, geração da OpenAPI quando o contrato mudar e `git diff --check`.
+- `npm run db:verify-rls` e testes de integração somente com `TEST_DATABASE_URL` apontando para PostgreSQL local descartável autorizado. Esse valor não estava configurado na verificação inicial; não usar base compartilhada ou produção.
+
 ## Handoff
 
 ### Developer 3 — S4-01
@@ -67,9 +105,9 @@ Contrato publicado hoje: sessão, conclusão com `Idempotency-Key`, consulta por
 
 ## Validação e arquivos
 
-- Arquivo criado: `docs/planejamento/sprint-04/s4-01-dev1-backend-baseline-e-decisoes.md`.
+- Documento atualizado: `docs/planejamento/sprint-04/s4-01-dev1-backend-baseline-e-decisoes.md`, com a seção de plano técnico condicionado a decisões.
 - Nenhum arquivo de backend, web ou mobile foi alterado; nenhuma dependência, credencial, configuração ou schema foi modificado.
-- `git diff --check` e a verificação de whitespace do novo arquivo foram executados sem apontamentos. Testes backend não foram executados porque a alteração é somente documental. Verificação Sandbox, QStash e PostgreSQL não foi executada.
+- `git diff --check` passou após esta atualização documental. Testes backend não foram executados, pois nenhuma implementação mudou. Verificação Sandbox, QStash e PostgreSQL não foi executada.
 - Os estados locais preexistentes de `agents.md` e `.agents/instructions/` no repositório de documentação foram preservados.
 
-**Sugestão de commit:** `docs: record S4-01 backend baseline and decisions`
+**Sugestão de commit:** `docs: add S4-01 backend implementation plan`

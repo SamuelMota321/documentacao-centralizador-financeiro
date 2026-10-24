@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../assets/styles.css">
+  <link rel="stylesheet" href="../../assets/style-guide-2.css">
 </head>
 <body>
   <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
@@ -20,7 +21,7 @@
   <main id="conteudo">
     <section class="hero guide-hero">
       <div class="guide-monogram"><img src="../../assets/coinciente-symbol.svg" alt=""><span>Coinciente</span></div>
-      <p class="eyebrow">Identidade e direção visual · versão 1.0</p>
+      <p class="eyebrow">Identidade e direção visual · versão 2.0</p>
       <h1>Clareza para cuidar do que é seu.</h1>
       <p class="lead">Um sistema visual seguro, sereno e contemporâneo para tornar a vida financeira compreensível — do primeiro orçamento à visão completa do patrimônio.</p>
       <div class="meta-row"><span class="meta-chip">Segurança institucional</span><span class="meta-chip">Clareza progressiva</span><span class="meta-chip">Tranquilidade</span></div>
@@ -34,7 +35,9 @@
         <a href="#tipografia"><span>04</span><strong>Tipografia</strong></a>
         <a href="#linguagem"><span>05</span><strong>Linguagem visual</strong></a>
         <a href="#voz"><span>06</span><strong>Voz e acesso</strong></a>
-        <a href="#aplicacoes"><span>07</span><strong>Aplicações</strong></a>
+        <a href="#movimento"><span>07</span><strong>Movimento</strong></a>
+        <a href="#proveniencia"><span>08</span><strong>Proveniência</strong></a>
+        <a href="#aplicacoes"><span>09</span><strong>Aplicações</strong></a>
       </nav>
 
       <section class="guide-section" id="essencia">
@@ -73,55 +76,71 @@
 
       <section class="guide-section" id="cores">
         <div class="guide-intro">
-          <div><p class="guide-label">03 · Cores e temas</p><h2>O mesmo caráter sob luzes diferentes.</h2></div>
+          <div><p class="guide-label">03 · Cores e temas</p><h2>Neutros que medem. Verde que sinaliza.</h2></div>
           <div class="guide-copy">
-            <p>Verde expressa progresso consciente; azul-marinho esverdeado sustenta a percepção institucional. O tema escuro não é uma versão preta: ele preserva temperatura, profundidade e hierarquia do tema claro.</p>
-            <p>Cores positivas e negativas comunicam significado somente quando acompanhadas por texto, sinal ou ícone. Verde de marca não deve transformar todo número em recomendação.</p>
+            <p>A interface é desenhada em neutros frios, como um instrumento: fundo, superfície, linha e três níveis de texto. O verde Consciência deixa de ser superfície e passa a ser <strong>sinal</strong> — aparece só em ação primária, foco, item selecionado e no sinal “+” de entradas. Cor rara vira informação; cor em tudo vira ruído.</p>
+            <p>Confiança (#10251F) e Clareza (#55D6A4) permanecem como cores de marca: Confiança em ativos institucionais, Clareza como o verde sinal do tema escuro. Positivo, negativo, atenção e informação só significam algo junto de texto, sinal ou marcador. Todo texto mantém no mínimo 4,5:1 em todas as superfícies; bordas de campo, 3:1.</p>
           </div>
         </div>
-        <div class="swatch-grid" aria-label="Paleta principal">
-          <div class="swatch" style="--swatch:#10251f;--swatch-text:#ffffff"><strong>Confiança</strong><span>#10251F · base institucional</span></div>
-          <div class="swatch" style="--swatch:#087a55;--swatch-text:#ffffff"><strong>Consciência</strong><span>#087A55 · ação e marca</span></div>
-          <div class="swatch" style="--swatch:#55d6a4;--swatch-text:#07140f"><strong>Clareza</strong><span>#55D6A4 · destaque escuro</span></div>
-          <div class="swatch" style="--swatch:#f2f6f4;--swatch-text:#14231e"><strong>Respiro</strong><span>#F2F6F4 · fundo claro</span></div>
+        <div class="sg2-palette">
+          <div class="sg2-light sg2-palette-row" aria-label="Neutros do tema claro">
+            <div class="sg2-chip" style="--chip:#f6f7f7"><i></i><strong>Fundo</strong><span>#F6F7F7</span></div>
+            <div class="sg2-chip" style="--chip:#ffffff"><i></i><strong>Superfície</strong><span>#FFFFFF</span></div>
+            <div class="sg2-chip" style="--chip:#eff1f1"><i></i><strong>Rebaixado</strong><span>#EFF1F1 · lateral, cabeçalhos de dia</span></div>
+            <div class="sg2-chip" style="--chip:#e2e5e5"><i></i><strong>Linha</strong><span>#E2E5E5 · forte #C9CFCE</span></div>
+            <div class="sg2-chip" style="--chip:#0f1413"><i></i><strong>Texto</strong><span>#0F1413 · 18,6:1</span></div>
+            <div class="sg2-chip" style="--chip:#434d4a"><i></i><strong>Texto secundário</strong><span>#434D4A · 8,7:1</span></div>
+            <div class="sg2-chip" style="--chip:#5f6966"><i></i><strong>Texto terciário</strong><span>#5F6966 · ≥ 5,0:1</span></div>
+          </div>
+          <div class="sg2-light sg2-palette-row" aria-label="Cores de sinal e de estado">
+            <div class="sg2-chip" style="--chip:#087a55"><i></i><strong>Consciência · sinal</strong><span>#087A55 · ≥ 4,7:1</span></div>
+            <div class="sg2-chip" style="--chip:#55d6a4"><i></i><strong>Clareza · sinal escuro</strong><span>#55D6A4 · ≥ 9,6:1</span></div>
+            <div class="sg2-chip" style="--chip:#b5473f"><i></i><strong>Negativo</strong><span>#B5473F · escuro #FF9188</span></div>
+            <div class="sg2-chip" style="--chip:#9a5d0f"><i></i><strong>Atenção</strong><span>#9A5D0F · escuro #F3B866</span></div>
+            <div class="sg2-chip" style="--chip:#2b6f89"><i></i><strong>Informação</strong><span>#2B6F89 · escuro #75C4DF</span></div>
+            <div class="sg2-chip" style="--chip:#10251f"><i></i><strong>Confiança</strong><span>#10251F · só marca</span></div>
+          </div>
         </div>
-        <div class="theme-pair">
-          <article class="theme-sample light"><header><strong>Tema claro</strong><span>principal</span></header><div class="sample-card"><small>Patrimônio líquido</small><strong>R$ 184.520,40</strong></div></article>
-          <article class="theme-sample dark"><header><strong>Tema escuro</strong><span>baixa luminosidade</span></header><div class="sample-card"><small>Patrimônio líquido</small><strong>R$ 184.520,40</strong></div></article>
+        <div class="sg2-theme-pair">
+          <article class="sg2-light sg2-theme"><p class="sg2-micro">Tema claro · disponível</p><span class="sg2-figure-value">R$ 12.480,00</span><p class="sg2-meta">4 contas · ref. 10/09/2026 08:40</p><p><span class="sg2-marker" data-tone="signal">Atualizado hoje</span></p></article>
+          <article class="sg2-dark sg2-theme"><p class="sg2-micro">Tema escuro · disponível</p><span class="sg2-figure-value">R$ 12.480,00</span><p class="sg2-meta">4 contas · ref. 10/09/2026 08:40</p><p><span class="sg2-marker" data-tone="signal">Atualizado hoje</span></p></article>
         </div>
       </section>
 
       <section class="guide-section" id="tipografia">
         <div class="guide-intro">
-          <div><p class="guide-label">04 · Tipografia</p><h2>Autoridade editorial com leitura contemporânea.</h2></div>
+          <div><p class="guide-label">04 · Tipografia</p><h2>A marca fala em serifa. Os dados, em colunas.</h2></div>
           <div class="guide-copy">
-            <p><strong>Newsreader</strong> dá personalidade a títulos, patrimônio e mensagens institucionais. Sua construção editorial sugere análise cuidadosa sem imitar bancos tradicionais.</p>
-            <p><strong>Manrope</strong> organiza navegação, conteúdo, tabelas e controles. Números usam alinhamento tabular quando comparados em colunas. Caixa alta fica restrita a rótulos curtos.</p>
+            <p><strong>Newsreader</strong> fica restrita à marca: entrada do produto, títulos institucionais e este guia. Nunca em números, rótulos, botões ou listas.</p>
+            <p><strong>Manrope</strong> carrega toda a interface, inclusive os números grandes. Valores usam algarismos tabulares para alinhar em coluna. Rótulos de coluna e de grupo usam caixa alta pequena com espaçamento, como em um instrumento. Corpo de 14px para densidade sem perder leitura.</p>
           </div>
         </div>
-        <div class="type-specimen">
-          <div class="type-row"><span>Newsreader · 500</span><div class="type-display">Sua vida financeira em perspectiva.</div></div>
-          <div class="type-row"><span>Manrope · 500</span><div class="type-body">Contas, investimentos, bens e passivos reunidos com origem e data de referência sempre acessíveis.</div></div>
-          <div class="type-row"><span>Dados financeiros</span><div class="type-body" style="font-variant-numeric:tabular-nums">R$ 184.520,40 &nbsp; +4,8% &nbsp; 10 set 2026</div></div>
+        <div class="sg2-light sg2-type">
+          <div class="sg2-type-row"><span class="sg2-micro">Marca · Newsreader 400</span><div class="sg2-type-brand">Clareza para cuidar do que é seu.</div></div>
+          <div class="sg2-type-row"><span class="sg2-micro">Número · Manrope 600 · 28–40px</span><div class="sg2-type-figure">R$ 184.520,40</div></div>
+          <div class="sg2-type-row"><span class="sg2-micro">Título · Manrope 600 · 20px</span><div class="sg2-type-title">Movimentações de outubro</div></div>
+          <div class="sg2-type-row"><span class="sg2-micro">Corpo · Manrope 500 · 14px</span><div class="sg2-type-body">Contas, investimentos, bens e passivos reunidos com origem e data de referência sempre acessíveis.</div></div>
+          <div class="sg2-type-row"><span class="sg2-micro">Metadado · 12px tabular</span><div class="sg2-meta">OFX · ref. 23/10/2026 08:40 · Conta do dia a dia</div></div>
+          <div class="sg2-type-row"><span class="sg2-micro">Rótulo · 11px caixa alta</span><div class="sg2-micro">Data · Descrição · Categoria · Valor</div></div>
         </div>
       </section>
 
       <section class="guide-section" id="linguagem">
         <div class="guide-intro">
-          <div><p class="guide-label">05 · Linguagem visual</p><h2>Moderadamente densa. Nunca apressada.</h2></div>
+          <div><p class="guide-label">05 · Linguagem visual</p><h2>Desenhada, não decorada.</h2></div>
           <div class="guide-copy">
-            <p>A interface entrega uma visão financeira ampla sem reproduzir uma planilha. Grupos claros, alinhamentos consistentes e bordas discretas substituem excesso de cartões e sombras.</p>
-            <p>Gráficos explicam tendência e composição. Estados de sincronização, dado ausente ou informação defasada permanecem visíveis e próximos do conteúdo afetado.</p>
+            <p>A estrutura vem de uma grade de 4px, linhas finas de 1px e alinhamento rigoroso — não de cartões, sombras ou cor. Listas são tabelas: cabeçalho de coluna, valores alinhados à direita e linhas de 40px no desktop (48px no toque).</p>
+            <p>Raios são pequenos e consistentes: 6px em controles, 8px em painéis, 12px em sobreposições. Elevação é feita por linha; sombra neutra só em menus e diálogos, que de fato ficam por cima. Estado é um <strong>marcador</strong> — quadrado de 6px mais texto — e a origem do dado é uma <strong>linha de metadados</strong> logo abaixo do que ela qualifica.</p>
           </div>
         </div>
         <div class="visual-language">
-          <article class="visual-tile"><h3>Forma e ritmo</h3><p>Raios médios e variação de altura criam ordem sem tornar tudo igual.</p><div class="shape-demo" aria-hidden="true"><i></i><i></i><i></i></div></article>
-          <article class="visual-tile"><h3>Iconografia</h3><p>Traço simples, cantos suaves e significado literal. Ícones apoiam rótulos; não os substituem.</p><div class="icon-demo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-7"/></svg></div></article>
-          <article class="visual-tile"><h3>Estado dos dados</h3><p>Atualidade e qualidade aparecem em texto direto, sem depender apenas da cor.</p><div class="status-demo"><span style="color:var(--theme-positive)"><i></i>Atualizado hoje</span><span style="color:var(--theme-warning)"><i></i>Referência de 3 dias atrás</span><span style="color:var(--theme-negative)"><i></i>Sincronização interrompida</span></div></article>
+          <article class="visual-tile"><h3>Grade e linha</h3><p>Grade de 4px, ritmo de 8px e divisórias de 1px organizam sem precisar de caixas.</p><div class="sg2-light sg2-grid-demo" aria-hidden="true"></div></article>
+          <article class="visual-tile"><h3>Marcador</h3><p>Estado em texto direto, com um quadrado de cor como reforço. Sem fundo, sem pílula.</p><div class="sg2-light sg2-stack"><span class="sg2-marker" data-tone="signal">Atualizado hoje</span><span class="sg2-marker" data-tone="warning">Referência de 3 dias atrás</span><span class="sg2-marker" data-tone="negative">Sincronização interrompida</span><span class="sg2-marker" data-tone="neutral">Não se aplica</span></div></article>
+          <article class="visual-tile"><h3>Linha de metadados</h3><p>Fonte e referência viram legenda técnica, legível e sempre perto do dado.</p><div class="sg2-light sg2-stack"><strong class="sg2-num">− R$ 184,90</strong><span class="sg2-meta">OFX · ref. 23/10/2026 · Conta do dia a dia</span><div class="sg2-radius-demo" aria-hidden="true"><i style="border-radius:6px"></i><i style="border-radius:8px"></i><i style="border-radius:12px"></i></div></div></article>
         </div>
         <div class="do-dont">
-          <article class="rule-list do"><h3>Faça</h3><ul><li>Mostre período, fonte e data de referência.</li><li>Revele detalhes conforme a necessidade.</li><li>Use linguagem simples para conceitos financeiros.</li><li>Diferencie ação, informação e alerta.</li></ul></article>
-          <article class="rule-list dont"><h3>Evite</h3><ul><li>Promessas de rentabilidade ou enriquecimento.</li><li>Gradientes chamativos e estética de criptomoeda.</li><li>Dashboards formados apenas por cartões.</li><li>Esconder indisponibilidade ou defasagem do dado.</li></ul></article>
+          <article class="rule-list do"><h3>Faça</h3><ul><li>Mostre período, fonte e data de referência como linha de metadados.</li><li>Use tabelas com colunas alinhadas para comparar valores.</li><li>Reserve o verde para ação, seleção, foco e o sinal “+”.</li><li>Diferencie ação, informação e alerta com texto e marcador.</li></ul></article>
+          <article class="rule-list dont"><h3>Evite</h3><ul><li>Promessas de rentabilidade ou enriquecimento.</li><li>Gradientes, fundos verdes e estética de criptomoeda.</li><li>Grades de cartões de KPI, roscas e pílulas coloridas em toda linha.</li><li>Esconder indisponibilidade ou defasagem do dado.</li></ul></article>
         </div>
       </section>
 
@@ -135,48 +154,178 @@
         </div>
       </section>
 
+      <section class="guide-section" id="movimento">
+        <div class="guide-intro">
+          <div><p class="guide-label">07 · Movimento</p><h2>Calma que explica. Nada se move à toa.</h2></div>
+          <div class="guide-copy">
+            <p>O movimento existe para mostrar de onde algo veio, o que mudou e para onde a atenção deve ir. Ele nunca decora. O que acontece de vez em quando pode se mover; o que se repete dezenas de vezes por dia, não.</p>
+            <p>A saída é sempre mais curta que a entrada: quando a pessoa já decidiu, o sistema responde sem fazê-la esperar. Estes princípios valem para web e mobile; cada plataforma adapta valores e técnicas no próprio <code>DESIGN.md</code>.</p>
+          </div>
+        </div>
+        <div class="principle-grid">
+          <article class="principle"><span class="principle-number">01 · PROPÓSITO</span><h3>Causa, estado ou lugar</h3><p>Anime apenas para explicar uma causa e seu efeito, uma mudança de estado ou a relação espacial entre origem e destino.</p></article>
+          <article class="principle"><span class="principle-number">02 · ESTABILIDADE</span><h3>O que não se move</h3><p>Valores financeiros, ações repetidas e o passar do cursor sobre linhas. Números nunca crescem, contam ou deslizam.</p></article>
+          <article class="principle"><span class="principle-number">03 · REDUÇÃO</span><h3>Reduzido não é zero</h3><p>Com a preferência de redução do sistema, sai todo deslocamento e escala; ficam as mudanças de opacidade e cor que ajudam a entender o que mudou.</p></article>
+        </div>
+        <div class="doc-data-block"><div class="doc-data-label">Tokens de movimento</div><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Token</th><th>Valor de referência</th><th>Uso</th></tr></thead><tbody>
+          <tr><th><code>--motion-feedback</code></th><td>120ms</td><td>Resposta ao pressionar e saídas de painéis pequenos.</td></tr>
+          <tr><th><code>--motion-hover</code></th><td>180ms</td><td>Mudanças de cor, fundo e opacidade sem deslocamento, como ao passar o cursor, alternar ou trocar de página.</td></tr>
+          <tr><th><code>--motion-popover</code></th><td>160ms</td><td>Entrada de menus a partir do gatilho e saída de diálogos.</td></tr>
+          <tr><th><code>--motion-reveal</code></th><td>240ms</td><td>Painéis, diálogos, indicador deslizante e esqueleto que vira conteúdo.</td></tr>
+          <tr><th><code>--motion-settle</code></th><td>320ms</td><td>Assentamento de um momento raro, como um passo concluído.</td></tr>
+          <tr><th><code>--motion-intro</code></th><td>600ms</td><td>Entrada única da página inicial.</td></tr>
+          <tr><th><code>--motion-arrival</code></th><td>1600ms</td><td>Destaque que se dissolve sobre um registro recém-criado.</td></tr>
+        </tbody></table></div></div>
+        <div class="doc-data-block"><div class="doc-data-label">Curvas</div><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Curva</th><th>Valor</th><th>Uso</th></tr></thead><tbody>
+          <tr><th><code>--ease-out</code></th><td><code>cubic-bezier(0.23, 1, 0.32, 1)</code></td><td>Entradas e saídas.</td></tr>
+          <tr><th><code>--ease-in-out</code></th><td><code>cubic-bezier(0.77, 0, 0.175, 1)</code></td><td>Movimento de um ponto a outro na tela.</td></tr>
+          <tr><th><code>--ease-drawer</code></th><td><code>cubic-bezier(0.32, 0.72, 0, 1)</code></td><td>Folhas e gavetas que entram pela borda.</td></tr>
+        </tbody></table></div></div>
+      </section>
+
+      <section class="guide-section" id="proveniencia">
+        <div class="guide-intro">
+          <div><p class="guide-label">08 · Proveniência e estados ao vivo</p><h2>Todo dado diz de onde vem e quando.</h2></div>
+          <div class="guide-copy">
+            <p>Contas, investimentos e patrimônio chegam de fontes diferentes e em momentos diferentes. A interface mostra a origem e a data de referência junto do dado e deixa visível quando ele está desatualizado ou indisponível.</p>
+            <p>Estados de sincronização são estados normais do produto, não erros escondidos. Cada um aparece com texto e ícone, e a falha sempre traz o caminho de recuperação.</p>
+          </div>
+        </div>
+        <div class="doc-data-block"><div class="doc-data-label">Carimbo do dado</div><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Elemento</th><th>Valores</th><th>Regra</th></tr></thead><tbody>
+          <tr><th>Origem</th><td>Manual, OFX ou Pluggy</td><td>Sempre visível ou a um passo do dado que qualifica.</td></tr>
+          <tr><th>Data de referência</th><td>DD/MM/AAAA ou “Hoje”/“Ontem”</td><td>A data a que o dado se refere, não a data em que foi exibido.</td></tr>
+          <tr><th>Frescor</th><td>Atual, desatualizado ou indisponível</td><td>Texto e ícone, nunca só cor. O prazo que torna um dado desatualizado é definido pelo contrato de cada história, como o HU-009, e não por este guia.</td></tr>
+        </tbody></table></div></div>
+        <div class="doc-data-block"><div class="doc-data-label">Estados de sincronização</div><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Estado</th><th>Como aparece</th><th>Movimento permitido</th></tr></thead><tbody>
+          <tr><th>Aguardando</th><td>Última referência conhecida e ação para sincronizar.</td><td>Nenhum.</td></tr>
+          <tr><th>Sincronizando</th><td>Rótulo no gerúndio e indicador junto do conteúdo afetado; o dado anterior continua legível.</td><td>Indicador de progresso e troca de ícone por opacidade.</td></tr>
+          <tr><th>Concluída</th><td>Nova data de referência no carimbo.</td><td>Troca de ícone e texto por opacidade.</td></tr>
+          <tr><th>Falhou</th><td>Aviso fixo com o problema e o caminho de recuperação; o último dado válido continua visível com sua referência.</td><td>Troca de ícone e texto por opacidade.</td></tr>
+        </tbody></table></div></div>
+        <div class="do-dont">
+          <article class="rule-list do"><h3>Faça</h3><ul><li>Mostre valores de patrimônio em Manrope 600 com algarismos tabulares.</li><li>Mostre alocação em barras estáticas acompanhadas de tabela e resumo em texto.</li><li>Mostre posições sem classe como “Não classificado”.</li></ul></article>
+          <article class="rule-list dont"><h3>Evite</h3><ul><li>Barras que crescem ou números que contam ao carregar.</li><li>Esconder o dado anterior durante a sincronização.</li><li>Inferir uma classe que a fonte não informou.</li></ul></article>
+        </div>
+      </section>
+
       <section class="guide-section" id="aplicacoes">
         <div class="guide-intro">
-          <div><p class="guide-label">07 · Aplicações</p><h2>Uma identidade que acompanha o usuário.</h2></div>
-          <div class="guide-copy"><p>Os exemplos abaixo demonstram hierarquia, densidade e comportamento temático. Os valores são fictícios e preservam a exigência do MVP acadêmico.</p></div>
+          <div><p class="guide-label">09 · Aplicações</p><h2>Um instrumento, não um painel de cartões.</h2></div>
+          <div class="guide-copy"><p>Os exemplos mostram a hierarquia da versão 2.0: números em faixa, tabelas como peça principal, alocação em barra 100% com tabela ao lado e proveniência como linha de metadados. Os valores são fictícios e preservam a exigência do MVP acadêmico; nenhum deles representa rentabilidade.</p></div>
         </div>
 
-        <div class="product-frame" aria-label="Exemplo de dashboard Coinciente em tema claro">
-          <div class="product-bar"><div class="product-brand"><img src="../../assets/coinciente-symbol.svg" alt="">Coinciente</div><span class="product-user">Marina · dados fictícios</span></div>
-          <div class="product-shell">
-            <nav class="product-nav"><a href="#aplicacoes">Visão geral</a><a href="#aplicacoes">Transações</a><a href="#aplicacoes">Investimentos</a><a href="#aplicacoes">Patrimônio</a><a href="#aplicacoes">Projeções</a></nav>
-            <div class="product-main">
-              <div class="product-heading"><div><h3>Boa tarde, Marina</h3><p>Visão consolidada · 1–10 de setembro</p></div><button class="mock-button" type="button">Adicionar registro</button></div>
-              <div class="metric-grid"><div class="metric-card"><span>Patrimônio líquido</span><strong>R$ 184.520</strong><small>+4,8% no período</small></div><div class="metric-card"><span>Saldo disponível</span><strong>R$ 12.480</strong><small>4 contas consolidadas</small></div><div class="metric-card"><span>Investimentos</span><strong>R$ 96.340</strong><small>Referência: hoje, 08:40</small></div></div>
-              <div class="dashboard-grid">
-                <article class="chart-card"><header>Fluxo patrimonial <span>Últimos 6 meses</span></header><svg class="mock-chart" viewBox="0 0 520 170" role="img" aria-label="Patrimônio com tendência de crescimento"><path class="grid" d="M12 30H508M12 83H508M12 136H508"/><path class="area" d="M12 132C66 121 90 127 130 105S210 112 258 78 338 85 380 58 462 53 508 28V158H12Z"/><path class="line" d="M12 132C66 121 90 127 130 105S210 112 258 78 338 85 380 58 462 53 508 28"/></svg></article>
-                <article class="chart-card"><header>Alocação <span>Por classe</span></header><div class="allocation"><div class="allocation-ring"><span>6 classes</span></div></div></article>
-                <article class="activity-card"><header>Atividade recente <span>Todos os registros</span></header><div class="activity-row"><span>Mercado do Bairro</span><span>Alimentação</span><span>− R$ 184,90</span></div><div class="activity-row"><span>Aporte Tesouro Selic</span><span>Investimentos</span><span>− R$ 500,00</span></div><div class="activity-row"><span>Salário</span><span>Receita</span><span>+ R$ 6.800,00</span></div></article>
+        <div class="sg2-light sg2-frame" aria-label="Exemplo de visão geral Coinciente em tema claro">
+          <div class="sg2-bar"><span class="sg2-brand"><img src="../../assets/coinciente-symbol.svg" alt="">Coinciente</span><span class="sg2-crumb">Registros / <strong>Visão geral</strong></span><span class="sg2-meta">Marina · dados fictícios</span></div>
+          <div class="sg2-shell">
+            <nav class="sg2-nav" aria-label="Navegação de exemplo">
+              <p class="sg2-micro">Registros</p>
+              <a href="#aplicacoes" aria-current="page">Visão geral</a><a href="#aplicacoes">Movimentações</a><a href="#aplicacoes">Contas</a>
+              <p class="sg2-micro">Patrimônio</p>
+              <a href="#aplicacoes">Investimentos</a><a href="#aplicacoes">Bens e passivos</a>
+              <p class="sg2-micro">Organização</p>
+              <a href="#aplicacoes">Categorias</a><a href="#aplicacoes">Regras</a>
+            </nav>
+            <div class="sg2-main">
+              <div class="sg2-head"><div><h3>Visão geral</h3><p class="sg2-meta">1–10 de setembro de 2026</p></div><button class="sg2-button" type="button">Registrar movimentação</button></div>
+              <div class="sg2-figures">
+                <div class="sg2-figure"><span class="sg2-micro">Patrimônio líquido</span><span class="sg2-figure-value">R$ 184.520,40</span><span class="sg2-meta">ativos − passivos · ref. 10/09 08:40</span></div>
+                <div class="sg2-figure"><span class="sg2-micro">Disponível</span><span class="sg2-figure-value">R$ 12.480,00</span><span class="sg2-meta">4 contas · ref. 10/09 08:40</span></div>
+                <div class="sg2-figure"><span class="sg2-micro">Investido</span><span class="sg2-figure-value">R$ 96.340,00</span><span class="sg2-marker" data-tone="warning">Corretora Prisma: ref. 07/09</span></div>
               </div>
+              <div class="sg2-split">
+                <article class="sg2-panel"><header><span class="sg2-micro">Patrimônio líquido · fim do mês</span><span class="sg2-meta">mai–set</span></header>
+                  <div class="sg2-panel-body">
+                    <svg class="sg2-chart" viewBox="0 0 520 190" role="img" aria-label="Patrimônio líquido no fim de cada mês, de maio a setembro de 2026: de 152 mil a 184,5 mil reais">
+                      <path class="grid" d="M56 30H508M56 80H508M56 130H508"/>
+                      <text x="0" y="34">190 mil</text><text x="0" y="84">170 mil</text><text x="0" y="134">150 mil</text>
+                      <path class="series" d="M90 125L190 117L290 101L390 84L490 44"/>
+                      <circle class="point" cx="90" cy="125" r="3.5"/><circle class="point" cx="190" cy="117" r="3.5"/><circle class="point" cx="290" cy="101" r="3.5"/><circle class="point" cx="390" cy="84" r="3.5"/><circle class="point last" cx="490" cy="44" r="4"/>
+                      <text x="80" y="176">mai</text><text x="181" y="176">jun</text><text x="282" y="176">jul</text><text x="379" y="176">ago</text><text x="481" y="176">set</text>
+                    </svg>
+                  </div>
+                </article>
+                <article class="sg2-panel"><header><span class="sg2-micro">Alocação por classe</span><span class="sg2-meta">R$ 96.340,00</span></header>
+                  <div class="sg2-panel-body">
+                    <div class="sg2-alloc-bar" role="img" aria-label="Renda fixa 46%, ações 22%, fundos 18%, previdência 9%, não classificado 5%"><i style="flex:46;--seg:var(--sg-ramp-1)"></i><i style="flex:22;--seg:var(--sg-ramp-2)"></i><i style="flex:18;--seg:var(--sg-ramp-3)"></i><i style="flex:9;--seg:var(--sg-ramp-4)"></i><i class="unclassified" style="flex:5"></i></div>
+                    <table class="sg2-table">
+                      <tbody>
+                        <tr><td><span class="sg2-legend" style="--seg:var(--sg-ramp-1)"></span>Renda fixa</td><td class="num">46%</td><td class="num">44.316,40</td></tr>
+                        <tr><td><span class="sg2-legend" style="--seg:var(--sg-ramp-2)"></span>Ações</td><td class="num">22%</td><td class="num">21.194,80</td></tr>
+                        <tr><td><span class="sg2-legend" style="--seg:var(--sg-ramp-3)"></span>Fundos</td><td class="num">18%</td><td class="num">17.341,20</td></tr>
+                        <tr><td><span class="sg2-legend" style="--seg:var(--sg-ramp-4)"></span>Previdência</td><td class="num">9%</td><td class="num">8.670,60</td></tr>
+                        <tr><td><span class="sg2-legend" style="--seg:transparent;box-shadow:inset 0 0 0 1px var(--sg-line-strong)"></span>Não classificado</td><td class="num">5%</td><td class="num">4.817,00</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </article>
+              </div>
+              <article class="sg2-panel"><header><span class="sg2-micro">Movimentações recentes</span><span class="sg2-meta">3 de 214</span></header>
+                <table class="sg2-table">
+                  <thead><tr><th>Descrição</th><th class="hide-sm">Categoria</th><th class="hide-sm">Origem</th><th class="num">Valor</th></tr></thead>
+                  <tbody>
+                    <tr class="day"><td colspan="4">Hoje · 10/09</td></tr>
+                    <tr><td class="desc"><strong>Mercado do Bairro</strong><span class="sg2-meta">Conta do dia a dia</span></td><td class="hide-sm">Alimentação <span class="sg2-meta">· por regra</span></td><td class="hide-sm sg2-meta">OFX</td><td class="num amount">− 184,90</td></tr>
+                    <tr><td class="desc"><strong>Padaria</strong><span class="sg2-meta">Conta do dia a dia</span></td><td class="hide-sm"><span class="sg2-marker" data-tone="warning">Incerta</span></td><td class="hide-sm sg2-meta">OFX</td><td class="num amount">− 23,50</td></tr>
+                    <tr class="day"><td colspan="4">Ontem · 09/09</td></tr>
+                    <tr><td class="desc"><strong>Salário</strong><span class="sg2-meta">Conta do dia a dia</span></td><td class="hide-sm">Renda <span class="sg2-meta">· definida por você</span></td><td class="hide-sm sg2-meta">Manual</td><td class="num amount positive">+ 6.800,00</td></tr>
+                  </tbody>
+                </table>
+              </article>
             </div>
           </div>
         </div>
 
-        <div class="product-frame dark-frame" aria-label="Exemplo de dashboard Coinciente em tema escuro">
-          <div class="product-bar"><div class="product-brand"><img src="../../assets/coinciente-symbol.svg" alt="">Coinciente</div><span class="product-user">Marina · dados fictícios</span></div>
-          <div class="product-shell">
-            <nav class="product-nav"><a href="#aplicacoes">Visão geral</a><a href="#aplicacoes">Transações</a><a href="#aplicacoes">Investimentos</a><a href="#aplicacoes">Patrimônio</a><a href="#aplicacoes">Projeções</a></nav>
-            <div class="product-main">
-              <div class="product-heading"><div><h3>Boa tarde, Marina</h3><p>Visão consolidada · 1–10 de setembro</p></div><button class="mock-button" type="button">Sincronizar dados</button></div>
-              <div class="metric-grid"><div class="metric-card"><span>Patrimônio líquido</span><strong>R$ 184.520</strong><small>+4,8% no período</small></div><div class="metric-card"><span>Saldo disponível</span><strong>R$ 12.480</strong><small>4 contas consolidadas</small></div><div class="metric-card"><span>Investimentos</span><strong>R$ 96.340</strong><small>Referência: hoje, 08:40</small></div></div>
-              <div class="dashboard-grid">
-                <article class="chart-card"><header>Fluxo patrimonial <span>Últimos 6 meses</span></header><svg class="mock-chart" viewBox="0 0 520 170" role="img" aria-label="Patrimônio com tendência de crescimento"><path class="grid" d="M12 30H508M12 83H508M12 136H508"/><path class="area" d="M12 132C66 121 90 127 130 105S210 112 258 78 338 85 380 58 462 53 508 28V158H12Z"/><path class="line" d="M12 132C66 121 90 127 130 105S210 112 258 78 338 85 380 58 462 53 508 28"/></svg></article>
-                <article class="chart-card"><header>Alocação <span>Por classe</span></header><div class="allocation"><div class="allocation-ring"><span>6 classes</span></div></div></article>
-                <article class="activity-card"><header>Qualidade dos dados <span>3 fontes conectadas</span></header><div class="activity-row"><span>Banco Aurora</span><span>Atualizado hoje</span><span>08:40</span></div><div class="activity-row"><span>Corretora Prisma</span><span>Referência anterior</span><span>07 set</span></div><div class="activity-row"><span>Registros manuais</span><span>Disponível</span><span>Hoje</span></div></article>
-              </div>
+        <div class="sg2-dark sg2-frame" aria-label="Exemplo de fontes de dados Coinciente em tema escuro">
+          <div class="sg2-bar"><span class="sg2-brand"><img src="../../assets/coinciente-symbol.svg" alt="">Coinciente</span><span class="sg2-crumb">Registros / <strong>Contas</strong></span><span class="sg2-meta">Marina · dados fictícios</span></div>
+          <div class="sg2-shell">
+            <nav class="sg2-nav" aria-label="Navegação de exemplo">
+              <p class="sg2-micro">Registros</p>
+              <a href="#aplicacoes">Visão geral</a><a href="#aplicacoes">Movimentações</a><a href="#aplicacoes" aria-current="page">Contas</a>
+              <p class="sg2-micro">Patrimônio</p>
+              <a href="#aplicacoes">Investimentos</a><a href="#aplicacoes">Bens e passivos</a>
+              <p class="sg2-micro">Organização</p>
+              <a href="#aplicacoes">Categorias</a><a href="#aplicacoes">Regras</a>
+            </nav>
+            <div class="sg2-main">
+              <div class="sg2-head"><div><h3>Fontes de dados</h3><p class="sg2-meta">3 fontes · última sincronização 10/09 08:40</p></div><button class="sg2-button secondary" type="button">Sincronizar</button></div>
+              <article class="sg2-panel">
+                <table class="sg2-table">
+                  <thead><tr><th>Fonte</th><th class="hide-sm">Tipo</th><th>Estado</th><th class="num">Referência</th></tr></thead>
+                  <tbody>
+                    <tr><td class="desc"><strong>Banco Aurora</strong><span class="sg2-meta">2 contas</span></td><td class="hide-sm sg2-meta">Pluggy</td><td><span class="sg2-marker" data-tone="signal">Atualizada</span></td><td class="num">10/09 08:40</td></tr>
+                    <tr><td class="desc"><strong>Corretora Prisma</strong><span class="sg2-meta">1 carteira</span></td><td class="hide-sm sg2-meta">Pluggy</td><td><span class="sg2-marker" data-tone="warning">Desatualizada</span></td><td class="num">07/09 18:02</td></tr>
+                    <tr><td class="desc"><strong>Extrato de agosto</strong><span class="sg2-meta">Conta do dia a dia</span></td><td class="hide-sm sg2-meta">OFX</td><td><span class="sg2-marker" data-tone="neutral">Importado</span></td><td class="num">31/08</td></tr>
+                    <tr><td class="desc"><strong>Registros manuais</strong><span class="sg2-meta">1 conta</span></td><td class="hide-sm sg2-meta">Manual</td><td><span class="sg2-marker" data-tone="neutral">Não se aplica</span></td><td class="num">10/09</td></tr>
+                  </tbody>
+                </table>
+              </article>
             </div>
           </div>
         </div>
 
-        <div class="mobile-demo">
-          <div class="phone" aria-label="Exemplo mobile da Coinciente"><div class="phone-screen"><div class="phone-head"><img src="../../assets/coinciente-symbol.svg" alt="Coinciente"><strong>•••</strong></div><div class="phone-content"><h3>Visão geral</h3><p>Atualizado hoje, 08:40</p><div class="phone-balance"><span>Patrimônio líquido</span><strong>R$ 184.520,40</strong></div><div class="phone-grid"><div class="phone-card"><span>Saldo disponível</span><strong>R$ 12.480</strong></div><div class="phone-card"><span>Investimentos</span><strong>R$ 96.340</strong></div></div><div class="phone-list"><header>Movimentações recentes</header><div><span>Mercado do Bairro</span><strong>− R$ 184,90</strong></div><div><span>Salário</span><strong>+ R$ 6.800</strong></div><div><span>Conta de energia</span><strong>− R$ 146,20</strong></div></div></div></div></div>
-          <div class="guide-copy"><p class="guide-label">Exemplo mobile</p><h3>Resumo primeiro. Profundidade quando solicitada.</h3><p>No celular, a mesma densidade se organiza verticalmente. Patrimônio e disponibilidade vêm primeiro; análise e origem dos dados permanecem a um gesto de distância.</p></div>
+        <div class="sg2-mobile">
+          <div class="sg2-light sg2-phone" aria-label="Exemplo mobile da Coinciente">
+            <div class="sg2-phone-head"><img src="../../assets/coinciente-symbol.svg" alt="Coinciente"><span class="sg2-meta">Marina</span></div>
+            <div class="sg2-phone-body">
+              <p class="sg2-micro">Disponível</p>
+              <span class="sg2-figure-value">R$ 12.480,00</span>
+              <p class="sg2-meta">4 contas · ref. hoje 08:40</p>
+              <div class="sg2-phone-list">
+                <div class="sg2-phone-row"><strong>Mercado do Bairro</strong><span class="num">− 184,90</span><span class="sg2-meta">OFX · Alimentação</span></div>
+                <div class="sg2-phone-row"><strong>Padaria</strong><span class="num">− 23,50</span><span class="sg2-marker" data-tone="warning">Categoria incerta</span></div>
+                <div class="sg2-phone-row"><strong>Salário</strong><span class="num" style="color:var(--sg-signal)">+ 6.800,00</span><span class="sg2-meta">Manual · Renda</span></div>
+              </div>
+            </div>
+            <div class="sg2-tabs"><span aria-current="page">Movimentações</span><span>Contas</span><span>Categorias</span><span>Regras</span></div>
+          </div>
+          <div class="guide-copy"><p class="guide-label">Exemplo mobile</p><h3>Resumo primeiro. Profundidade quando solicitada.</h3><p>No celular, o número principal abre a tela e a lista vem logo abaixo, com a origem em uma linha de metadados. As abas usam o mesmo marcador de seleção da lateral: uma linha verde de 2px, nunca um bloco de cor.</p></div>
         </div>
+
+        <div class="doc-data-block"><div class="doc-data-label">Histórico de versões</div><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Versão</th><th>Data</th><th>Mudança</th></tr></thead><tbody>
+          <tr><th>1.0</th><td>set 2026</td><td>Identidade, marca, paleta, tipografia, voz e aplicações iniciais.</td></tr>
+          <tr><th>1.1</th><td>out 2026</td><td>Seções de Movimento e de Proveniência e estados ao vivo.</td></tr>
+          <tr><th>2.0</th><td>out 2026</td><td>Direção “Instrumento de precisão”: neutros frios, verde como sinal, Newsreader só na marca, marcador no lugar da pílula, linha de metadados, tabelas e faixa de números no lugar de cartões. Nome, símbolo, fontes e voz preservados.</td></tr>
+        </tbody></table></div></div>
       </section>
     </div>
   </main>

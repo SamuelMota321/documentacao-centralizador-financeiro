@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ADR de bibliotecas de gráficos e animação no app web">
+  <title>ADR Gráficos e Animação Web · Coinciente</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span class="brand-mark" aria-hidden="true"><img src="../../assets/coinciente-symbol.svg" alt=""></span><span class="brand-name"><em>Coin</em>ciente</span></a>
+      <nav class="doc-nav" aria-label="Documentos"><a href="../../index.html">Início</a><a href="../produto/visao.html">Visão</a><a href="../produto/prd.html">PRD</a><a href="arquitetura.html" aria-current="page">Arquitetura</a><a href="../planejamento/refatoracao-frontend/Plano_Refatoracao_Frontend.html">Refatoração frontend</a><a href="../design/style-guide.html">Style Guide</a></nav>
+  </header>
+  <main id="conteudo">
+    <section class="hero">
+      <p class="eyebrow">ADR-004 · Frontend web</p>
+      <h1>Gráficos com visx e animação com Motion</h1>
+      <p class="lead">Escalas de uma biblioteca, desenho próprio, e animação em JavaScript só onde o CSS não alcança.</p>
+      <div class="meta-row"><span class="meta-chip">Versão 1.0</span><span class="meta-chip">05 nov 2026</span><span class="meta-chip">Status: proposto</span></div>
+    </section>
+    <div class="reader">
+      <aside class="sidebar" aria-label="Navegação por seções"><p class="sidebar-title">Neste documento</p><nav class="page-nav" aria-label="Seções do documento"></nav><p class="result-note">ADR integral</p></aside>
+      <article class="pages" aria-label="Conteúdo integral">
+        <section class="paper" id="pagina-1" data-page="1">
+          <div class="page-kicker"><span>ADR Gráficos e Animação</span><span>Contexto</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">1. Status, contexto e escopo</h2>
+            <p class="doc-paragraph"><strong>Status: proposto em 05/11/2026.</strong> Passa a aceito quando a equipe aprovar a branch <code>feat/graficos-animacao</code> do web. Aplica-se aos gráficos do dashboard (HU-010, Sprint 5), à alocação da HU-011 e às animações do app web que o CSS não consegue fazer.</p>
+            <p class="doc-paragraph">O web não tinha biblioteca de gráficos nem de animação; os gráficos existiam só no mockup "Visão geral" do Style Guide 2.0. O guia fixa um desenho específico (linha de 1,5px, grade tracejada, rampa neutra, sem rosca nem área preenchida), exige os valores em texto ao lado de cada gráfico e proíbe animar números. O ADR-002 rejeitou uma biblioteca de animação JavaScript para a navegação entre páginas; este ADR não muda essa decisão.</p>
+            <h2 class="doc-heading">2. Evidência técnica</h2>
+            <ul class="doc-list">
+              <li><code>motion</code> 14.9.1 e <code>@visx/scale</code> 4.0.0 declaram React 18 e 19 nos <code>peerDependencies</code> (consulta ao npm em 05/11/2026; o web usa React 19.2.8 e Next 16.3.4).</li>
+              <li>O <code>MotionConfig reducedMotion="user"</code> desliga só animações de transform. Altura e posição de elementos SVG não são transform: o código as torna imediatas com <code>useReducedMotion</code>.</li>
+              <li>Medição no build de produção: com <code>domAnimation</code> carregado de forma síncrona no layout raiz, cerca de 27 KB gzip a mais em todas as páginas; com carregamento assíncrono, cerca de 15 KB no carregamento inicial e 19 KB depois da primeira pintura.</li>
+            </ul>
+            <h2 class="doc-heading">3. Alternativas avaliadas</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Alternativa</th><th>Resultado</th><th>Motivo</th></tr></thead><tbody>
+              <tr><th>SVG próprio sem biblioteca</th><td>Rejeitada</td><td>Escalas, ticks arredondados e bandas reescritos à mão; a transição entre períodos fica sem suporte.</td></tr>
+              <tr><th>Recharts 3</th><td>Rejeitada</td><td>Traz aparência, tooltip e animação próprios; a animação roda a cada montagem, o que contraria o guia.</td></tr>
+              <tr><th>visx completo (shape, axis, grid, group)</th><td>Rejeitada</td><td>Eixo, grade e caminho da linha são poucas linhas de SVG; pacotes a mais sem ganho.</td></tr>
+              <tr><th>GSAP</th><td>Rejeitada</td><td>API imperativa, distante do modelo de componentes do React.</td></tr>
+              <tr><th><code>@visx/scale</code> + Motion</th><td>Aceita</td><td>Escalas confiáveis com desenho e estilo próprios; transições de atributos SVG interrompíveis e com movimento reduzido.</td></tr>
+            </tbody></table></div></div>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-2" data-page="2">
+          <div class="page-kicker"><span>ADR Gráficos e Animação</span><span>Decisão</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">4. Decisão</h2>
+            <ul class="doc-list">
+              <li>Gráficos em <code>src/components/charts/</code>: barras pareadas por mês, linha com pontos, barras horizontais ordenadas e barra 100%. Cada um traz os valores em tabela ou lista; o SVG fica fora da leitura de tela.</li>
+              <li>Valores chegam como string decimal; percentuais são calculados em centavos com BigInt. Número de ponto flutuante só na geometria.</li>
+              <li>Motion via <code>LazyMotion</code> estrito e <code>m.*</code>, com os recursos carregados depois da primeira pintura, dentro de <code>MotionProvider</code> no layout raiz.</li>
+              <li>Motion só onde o CSS não alcança: altura e posição de barras e pontos SVG quando os dados mudam, e a entrada única do gráfico na página inicial. Barras horizontais e barra 100% usam transição CSS e são componentes de servidor.</li>
+              <li>Nada anima na primeira pintura das telas de dados; números em texto nunca animam; a navegação continua com o crossfade do ADR-002.</li>
+            </ul>
+            <h2 class="doc-heading">5. Consequências</h2>
+            <ul class="doc-list">
+              <li>Duas dependências novas no web, com cerca de 15 KB gzip no carregamento inicial de todas as páginas. Se isso pesar, o provider pode descer para as rotas que usam gráficos.</li>
+              <li>O SVG dos gráficos só monta no navegador, depois de medir a largura; o servidor entrega a tabela com os valores e reserva a altura.</li>
+              <li>Os tokens de movimento passam a existir também em <code>src/lib/motion.ts</code>, espelhando <code>globals.css</code>; mudar um exige mudar o outro.</li>
+            </ul>
+            <h2 class="doc-heading">6. Validação</h2>
+            <ul class="doc-list">
+              <li>Testes dos cálculos (centavos, percentual com uma casa, geometria) e da renderização no servidor (tabela no HTML, SVG fora da leitura).</li>
+              <li><code>pnpm lint &amp;&amp; pnpm typecheck &amp;&amp; pnpm test &amp;&amp; pnpm build</code> sem erro.</li>
+              <li>Pendente: verificação no navegador da entrada na página inicial, do destaque gráfico ↔ tabela, do contraste no tema escuro e de <code>prefers-reduced-motion: reduce</code>.</li>
+            </ul>
+            <h2 class="doc-heading">7. Referências</h2>
+            <ul class="doc-list">
+              <li><a href="adr-002-view-transitions-web.html">ADR-002 — Transição entre páginas com View Transitions</a>.</li>
+              <li><a href="../planejamento/sprint-05/s5-dev2-dashboard-dados-e-definicoes.md">S5 — Dashboard: dados por tela e definições</a>.</li>
+              <li><a href="../design/style-guide.html#movimento">Style Guide 2.0 — Movimento</a>.</li>
+              <li><a href="https://motion.dev/docs/react-installation">Motion — instalação no React</a>.</li>
+            </ul>
+          </div>
+        </section>
+      </article>
+    </div>
+  </main>
+  <footer class="site-footer">Documentação acadêmica · UCB · 2026 · Samuel Mota, Thiago Marques e Miguel Candido</footer>
+  <script src="../../assets/app.js"></script>
+</body>
+</html>

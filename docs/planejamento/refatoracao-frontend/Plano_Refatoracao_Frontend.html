@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Plano de refatoração do frontend do Coinciente: sistema de movimento, padrões de proveniência e estados ao vivo, refundação do mobile e Style Guide 1.1">
+  <title>Refatoração do Frontend · Coinciente</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../assets/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <a class="brand" href="../../../index.html"><span class="brand-mark" aria-hidden="true"><img src="../../../assets/coinciente-symbol.svg" alt=""></span><span class="brand-name"><em>Coin</em>ciente</span></a>
+    <nav class="doc-nav" aria-label="Documentos"><a href="../../../index.html">Início</a><a href="../../produto/visao.html">Visão</a><a href="../../produto/prd.html">PRD</a><a href="../../arquitetura/arquitetura.html">Arquitetura</a><a href="../sprint-04/Plano_Divisao_Atividades_Sprint_4.html">Sprint 4</a><a href="Plano_Refatoracao_Frontend.html" aria-current="page">Refatoração frontend</a><a href="../../design/style-guide.html">Style Guide</a></nav>
+  </header>
+
+  <main id="conteudo">
+    <section class="hero">
+      <p class="eyebrow">Plano de trabalho · web, mobile e documentação</p>
+      <h1>Plano de Refatoração do Frontend</h1>
+      <p class="lead">Sistema de movimento semântico, padrões de proveniência e estados ao vivo, refundação da navegação mobile e Style Guide 1.1 — sem trocar a marca.</p>
+      <div class="meta-row"><span class="meta-chip">Início: 22 out 2026</span><span class="meta-chip">8 fases (F0–F7)</span><span class="meta-chip">Style Guide 1.0 → 1.1</span></div>
+    </section>
+
+    <section class="document-grid" aria-label="Seções principais do plano">
+      <a class="doc-card" href="#pagina-2" style="--card-accent:#8b5cf6">
+        <span class="doc-number">DIAGNÓSTICO</span>
+        <h2>Estado verificado</h2>
+        <p>O que o web e o mobile fazem hoje e onde estão as lacunas.</p>
+        <span class="card-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
+      </a>
+      <a class="doc-card" href="#pagina-3" style="--card-accent:#ec4899">
+        <span class="doc-number">TENDÊNCIAS</span>
+        <h2>Mercado aplicado</h2>
+        <p>O que adotamos, como, e o que rejeitamos no contexto do Coinciente.</p>
+        <span class="card-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
+      </a>
+      <a class="doc-card" href="#pagina-5" style="--card-accent:#10b981">
+        <span class="doc-number">EXECUÇÃO</span>
+        <h2>Fases F0–F7</h2>
+        <p>Ferramental, auditoria, documentação, web, mobile e evidências.</p>
+        <span class="card-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
+      </a>
+      <a class="doc-card" href="#pagina-9" style="--card-accent:#087a55">
+        <span class="doc-number">CONCLUSÃO</span>
+        <h2>Definição de pronto</h2>
+        <p>Critérios, rastreabilidade e referências usadas.</p>
+        <span class="card-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
+      </a>
+    </section>
+
+    <div class="reader">
+      <aside class="sidebar" aria-label="Navegação por seções">
+        <p class="sidebar-title">Neste documento</p>
+        <label class="search"><span class="skip-link">Buscar</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="sprint-search" type="search" placeholder="Buscar no texto…" autocomplete="off"></label>
+        <nav class="page-nav" aria-label="Seções do plano"><a href="#pagina-1" aria-label="Ir para a seção 1">1</a><a href="#pagina-2" aria-label="Ir para a seção 2">2</a><a href="#pagina-3" aria-label="Ir para a seção 3">3</a><a href="#pagina-4" aria-label="Ir para a seção 4">4</a><a href="#pagina-5" aria-label="Ir para a seção 5">5</a><a href="#pagina-6" aria-label="Ir para a seção 6">6</a><a href="#pagina-7" aria-label="Ir para a seção 7">7</a><a href="#pagina-8" aria-label="Ir para a seção 8">8</a><a href="#pagina-9" aria-label="Ir para a seção 9">9</a></nav>
+        <p class="result-note">9 seções</p>
+      </aside>
+
+      <article class="pages" aria-label="Plano integral da refatoração do frontend">
+        <section class="paper" id="pagina-1" data-page="1">
+          <div class="page-kicker"><span>Refatoração frontend</span><span>Objetivo e tese</span></div>
+          <div class="sprint-content">
+            <h2 class="doc-heading">Objetivo</h2>
+            <p class="doc-paragraph">Refatorar de forma profunda o frontend do Coinciente (web em Next.js e app em Expo) para que movimento, padrões de tela e documentação formem um único sistema operacional de design, alinhado às tendências atuais do mercado e às restrições do produto. A marca do Style Guide 1.0 — cores, tipografia, símbolo e voz — permanece; evoluem os padrões, a coreografia e a navegação, consolidados em um Style Guide 1.1.</p>
+            <h2 class="doc-heading">Tese: calma que explica</h2>
+            <p class="doc-paragraph">Movimento e padrões existem para mostrar <strong>de onde veio o dado, quando foi referenciado e o que mudou</strong>, nunca para decorar. A ousadia está na infraestrutura — navegação, coreografia, proveniência e estados ao vivo — e não em efeitos. A tese respeita os compromissos do <code>PRODUCT.md</code>: nada que pareça banco, promessa de rentabilidade ou recomendação financeira.</p>
+            <div class="doc-data-block"><div class="doc-data-label">Parâmetros e decisões já tomadas</div><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Parâmetro</th><th>Definição</th></tr></thead><tbody>
+              <tr><th>Mobile</th><td>Refundação: expo-router com abas nativas, Reanimated 4, Gesture Handler e haptics. Dependências novas exigem a aprovação prevista no <code>AGENTS.md</code> do repositório.</td></tr>
+              <tr><th>Linguagem visual</th><td>Evoluir sem trocar a marca: novos padrões (proveniência, estados ao vivo, superfícies de patrimônio) e Style Guide 1.1.</td></tr>
+              <tr><th>Calendário</th><td>Início imediato, em paralelo ao fechamento da Sprint 4 (entrega em 23/10). F0–F2 não tocam código de produto; código entra em branch isolada após combinar com o Developer 2.</td></tr>
+              <tr><th>Skill-guia</th><td><code>coinciente-visual-design</code>: separa contexto documentado, comportamento verificado, inferência de design e hipótese; implementação só após <code>planejamento aprovado, pode implementar</code>.</td></tr>
+              <tr><th>Tamanhos relativos</th><td>P: localizada; M: moderada; G: transversal ou com maior incerteza. Estimativas de ordenação, não compromissos de capacidade.</td></tr>
+            </tbody></table></div></div>
+            <h2 class="doc-heading">Fronteiras de escopo</h2>
+            <p class="doc-paragraph">Fora deste plano: troca de paleta, tipografia ou símbolo; código compartilhado entre web e mobile (proibido pelo <code>PRODUCT.md</code>); personalização por IA ou “dicas” financeiras; animação de valores financeiros; backend e contratos de API.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-2" data-page="2">
+          <div class="page-kicker"><span>Refatoração frontend</span><span>Diagnóstico verificado</span></div>
+          <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
+            <h2 class="doc-heading">Estado atual por plataforma</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Área</th><th>Web</th><th>Mobile</th></tr></thead><tbody>
+              <tr><th>Documentação de movimento</th><td><code>DESIGN.md</code> com tabela de coreografia (critério emil-design-eng), 3 curvas e 3 durações.</td><td><code>DESIGN.md</code> sem seção de movimento; cita apenas “opacidade e escala 0,98” ao tocar.</td></tr>
+              <tr><th>Implementação</th><td>Madura: tokens em <code>globals.css:61-66</code>, <code>@starting-style</code>, <code>data-starting-style</code> do Base UI, sombra dirigida por scroll e regra global de movimento reduzido.</td><td>Nenhuma animação. Sem <code>Animated</code> ou Reanimated; toque troca estilo sem transição (<code>src/ui/controls.tsx:45-52</code>); seções trocadas por <code>useState</code> em <code>App.tsx</code>.</td></tr>
+              <tr><th>Movimento reduzido</th><td>Tratado globalmente (<code>globals.css:224-232</code>).</td><td>Não tratado.</td></tr>
+              <tr><th>Style Guide 1.0</th><td colspan="2">Uma frase sobre movimento: “Movimento respeita a preferência de redução do sistema”.</td></tr>
+            </tbody></table></div></div>
+            <h2 class="doc-heading">Achados no web</h2>
+            <ul class="doc-list">
+              <li><strong>Verificado:</strong> durações fora dos tokens — 600ms na prévia da página inicial (<code>page.module.css:99</code>), 320ms no passo concluído (<code>movimentacoes.module.css:251</code>), 160ms no menu e na saída do diálogo (<code>ui.module.css:843</code> e <code>:978</code>).</li>
+              <li><strong>Hipótese:</strong> a regra global de movimento reduzido restringe <code>transition-property</code> com <code>!important</code> e pode cortar o <code>display allow-discrete</code> do <code>.reveal</code>, fazendo o painel sumir sem a saída por opacidade. Verificar no navegador.</li>
+              <li><strong>Verificado:</strong> <code>UX_PRINCIPLES.md</code> cita as skills <code>ux-critic</code> e <code>visual-audit</code>, que não existem em nenhum repositório.</li>
+            </ul>
+            <h2 class="doc-heading">Ferramental</h2>
+            <p class="doc-paragraph">As skills de animação (animate, improve-animations, review-animations, animate-expo, find-animation-opportunities) estão aninhadas em <code>.agents/skills/UX-UI-FRONTEND/.agents/skills/</code>, caminho em que o Codex provavelmente não as descobre. O <code>.codex/hooks.json</code> local executa o impeccable após toda edição e ao fim de cada tarefa, inclusive em tarefas de backend. Nenhum desses arquivos está versionado.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-3" data-page="3">
+          <div class="page-kicker"><span>Refatoração frontend</span><span>Tendências do mercado</span></div>
+          <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
+            <h2 class="doc-heading">Tendências e aplicação no Coinciente</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Tendência e evidência</th><th>Aplicação</th><th>Rejeitamos</th></tr></thead><tbody>
+              <tr><th>View Transitions nativas</th><td>A documentação do Next 16.3 instalada no web afirma que View Transitions funcionam no App Router sem configuração, via <code>import { ViewTransition } from 'react'</code>. O Interop 2026 inclui transições same-document, cross-document e <code>:active-view-transition-type()</code>. Aplicação: crossfade discreto entre páginas, com cabeçalho e lateral ancorados; esqueleto que se dissolve no conteúdo; morph lista → detalhe da conexão.</td><td>Deslizar páginas na navegação comum; transição em ação repetida.</td></tr>
+              <tr><th>CSS de plataforma</th><td>Interop 2026: scroll-driven animations, anchor positioning, dialog/popover (<code>closedby</code>, <code>popover="hint"</code>). Aplicação: altura <code>auto</code> animada no bloco recolhível com <code>interpolate-size</code>; dica de proveniência ancorada; sombras por scroll (já existentes).</td><td>Parallax e sequestro de rolagem.</td></tr>
+              <tr><th>Física e gesto no mobile</th><td>O SDK 57 traz Reanimated 4.3–4.5, Worklets 0.8–0.10 e Gesture Handler 2.31–2.32; abas nativas em <code>expo-router/unstable-native-tabs</code>. Aplicação: abas nativas, folha inferior arrastável, toque com spring e haptic leve só ao concluir.</td><td>Haptic em toda interação; animações em loop.</td></tr>
+              <tr><th>Materiais translúcidos (Liquid Glass)</th><td>Só onde o sistema entrega nativamente, como as abas; no web, apenas a barra superior que já existe.</td><td>Vidro sobre dados financeiros, que compromete o contraste mínimo de 4,5:1.</td></tr>
+              <tr><th>Expressividade (Material 3 Expressive)</th><td>Momentos raros com personalidade: primeiros passos concluídos, primeira conexão Pluggy.</td><td>Cores e formas que competem com o dado.</td></tr>
+              <tr><th>Fintech calma e confiança</th><td>Fontes de agência (tom de mercado, não evidência forte): paleta neutra, cor forte só em ação de risco, navegação por tarefa.</td><td>Personalização por IA, insights e “dicas”: o produto não aconselha.</td></tr>
+              <tr><th>Transparência de dados e Open Finance</th><td>Reportagem de abril de 2026: mais de 160 milhões de consentimentos ativos no 1º trimestre, com parte relevante das reclamações sobre a jornada de consentimento. Aplicação: padrão de proveniência com fonte, referência, frescor e qualidade; consentimento Pluggy explicado em passos.</td><td>Esconder dado defasado ou indisponível.</td></tr>
+              <tr><th>Acessibilidade como especificação</th><td>WCAG 2.2; European Accessibility Act aplicável desde 28/06/2025 (referência de mercado, não obrigação deste MVP). Aplicação: movimento reduzido não é zero; alvos de 24px (web) e 44px (toque); estado nunca só por cor; movimento no DoD.</td><td>Animação que ignore a preferência de redução.</td></tr>
+            </tbody></table></div></div>
+            <p class="doc-paragraph"><strong>Limite de evidência:</strong> as estatísticas de fintech e de Open Finance vêm de blogs e reportagens e servem como contexto, não como requisito. As versões de bibliotecas devem ser reconferidas com <code>npx expo install --check</code> e com a documentação instalada antes da implementação.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-4" data-page="4">
+          <div class="page-kicker"><span>Refatoração frontend</span><span>Pilares do Style Guide 1.1</span></div>
+          <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
+            <h2 class="doc-heading">1. Coreografia de movimento semântica</h2>
+            <p class="doc-paragraph">Os tokens passam a ter nome de propósito, não de velocidade. Valores decididos a partir da auditoria da F1 e registrados no Style Guide 1.1.</p>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Token proposto</th><th>Valor atual</th><th>Uso</th></tr></thead><tbody>
+              <tr><th><code>--motion-feedback</code></th><td>120ms</td><td>Pressionar; saída de painéis pequenos.</td></tr>
+              <tr><th><code>--motion-hover</code></th><td>180ms</td><td>Mudanças de cor e fundo; crossfade de rota.</td></tr>
+              <tr><th><code>--motion-popover</code></th><td>160ms</td><td>Entrada de menu a partir do gatilho; saída de diálogo.</td></tr>
+              <tr><th><code>--motion-reveal</code></th><td>240ms</td><td>Painel, diálogo, indicador segmentado, bloco recolhível.</td></tr>
+              <tr><th><code>--motion-settle</code></th><td>320ms</td><td>Assentamento de momento raro (passo concluído).</td></tr>
+              <tr><th><code>--motion-intro</code></th><td>600ms</td><td>Entrada única da página inicial.</td></tr>
+              <tr><th><code>--motion-arrival</code></th><td>1600ms</td><td>Tinta de linha recém-criada (causa e efeito).</td></tr>
+            </tbody></table></div></div>
+            <p class="doc-paragraph">As curvas <code>--ease-out</code>, <code>--ease-in-out</code> e <code>--ease-drawer</code> permanecem. Web e mobile compartilham os nomes; os valores podem ser adaptados por plataforma e ficam documentados no <code>DESIGN.md</code> de cada uma.</p>
+            <h2 class="doc-heading">2. Proveniência como componente</h2>
+            <p class="doc-paragraph">Um “carimbo do dado” com origem (manual, OFX ou Pluggy), data de referência e frescor — atual, defasado ou indisponível — sempre com texto e ícone. Materializa o princípio 2 do <code>PRODUCT.md</code> e o critério de qualidade do HU-009.</p>
+            <h2 class="doc-heading">3. Estados ao vivo</h2>
+            <p class="doc-paragraph">Máquina de estados visual para a sincronização do HU-008: aguardando → sincronizando → concluída, ou falhou com caminho de recuperação. A transição anima só opacidade e ícone. <strong>Nenhum número se anima.</strong></p>
+            <h2 class="doc-heading">4. Superfícies de patrimônio</h2>
+            <p class="doc-paragraph">Newsreader nos valores de patrimônio, como o <code>DESIGN.md</code> do web já prevê. Alocação do HU-011 em barras estáticas acompanhadas de tabela e resumo textual, com “não classificado” explícito.</p>
+            <h2 class="doc-heading">5. Navegação viva</h2>
+            <p class="doc-paragraph">No web, crossfade entre rotas com estrutura ancorada; a regra “navegação não se move” passa a “navegação usa só crossfade”. No mobile, abas nativas e pilha com gesto de voltar.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-5" data-page="5">
+          <div class="page-kicker"><span>Refatoração frontend</span><span>F0 a F2 — sem código de produto</span></div>
+          <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
+            <h2 class="doc-heading">F0 — Ferramental</h2>
+            <p class="doc-paragraph"><strong>Resultado:</strong> as skills de animação e design são descobertas pelo Codex e o hook do impeccable tem destino decidido. <strong>Estimativa:</strong> P. <strong>Janela:</strong> imediata.</p>
+            <ul class="doc-list">
+              <li>Mover cada skill de <code>.agents/skills/UX-UI-FRONTEND/.agents/skills/&lt;nome&gt;</code> para <code>.agents/skills/&lt;nome&gt;/</code> nos repositórios que a usarão, e confirmar a listagem.</li>
+              <li>Decidir manter, restringir ou remover o hook de <code>.codex/hooks.json</code>.</li>
+              <li>Corrigir em <code>web/UX_PRINCIPLES.md</code> a citação de skills inexistentes.</li>
+            </ul>
+            <h2 class="doc-heading">F1 — Auditoria e inventário (somente leitura)</h2>
+            <p class="doc-paragraph"><strong>Resultado:</strong> inventário completo de movimento e registro de decisões. <strong>Estimativa:</strong> M. <strong>Skills:</strong> coinciente-visual-design com improve-animations (web); animate-expo com find-animation-opportunities (mobile).</p>
+            <ul class="doc-list">
+              <li>Para cada movimento: arquivo, duração, curva, propósito e comportamento com movimento reduzido.</li>
+              <li>Oportunidades classificadas como aceitas ou rejeitadas, com motivo.</li>
+              <li>Confirmar ou descartar a hipótese do <code>.reveal</code> sob movimento reduzido.</li>
+            </ul>
+            <h2 class="doc-heading">F2 — Documentação 1.1</h2>
+            <p class="doc-paragraph"><strong>Resultado:</strong> o sistema documentado antes do código. <strong>Estimativa:</strong> M. <strong>Repositório:</strong> documentação, mais os arquivos de design dos repositórios web e mobile.</p>
+            <ul class="doc-list">
+              <li><code>docs/design/style-guide.html</code>: seções “Movimento” (invariantes entre plataformas) e “Proveniência e estados ao vivo”.</li>
+              <li>ADRs: View Transitions no web; migração do mobile para expo-router e Reanimated.</li>
+              <li><code>DESIGN.md</code> de web e mobile: tabelas de coreografia e padrões novos.</li>
+              <li><code>UX_PRINCIPLES.md</code> e <code>DESIGN_DEFINITION_OF_DONE.md</code> nos dois repositórios: itens de movimento, proveniência e estados ao vivo.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-6" data-page="6">
+          <div class="page-kicker"><span>Refatoração frontend</span><span>F3 a F5 — código</span></div>
+          <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
+            <h2 class="doc-heading">F3 — Web: consolidação dos tokens</h2>
+            <p class="doc-paragraph"><strong>Estimativa:</strong> P a M. <strong>Dependências:</strong> F1 e F2; branch isolada ou após a S4-06. <strong>Arquivos:</strong> <code>globals.css</code>, <code>ui.module.css</code>, <code>page.module.css</code>, <code>movimentacoes.module.css</code>.</p>
+            <ul class="doc-list">
+              <li>Tokens semânticos em <code>src/app/globals.css</code>, substituindo os valores soltos.</li>
+              <li>Correção do movimento reduzido no <code>.reveal</code>, se confirmada na F1.</li>
+            </ul>
+            <h2 class="doc-heading">F4 — Web: padrões novos</h2>
+            <p class="doc-paragraph"><strong>Estimativa:</strong> M a G. <strong>Dependências:</strong> F3.</p>
+            <ul class="doc-list">
+              <li>Componentes de proveniência e de estado de sincronização em <code>src/components/ui.tsx</code> e <code>interactive.tsx</code>, reaproveitando <code>StatusChip</code>, <code>Notice</code> e <code>SkeletonLine</code>.</li>
+              <li><code>&lt;ViewTransition&gt;</code> em <code>src/app/(app)/layout.tsx</code> ou <code>app-frame.tsx</code>, com estrutura ancorada e a regra de movimento reduzido descrita na documentação do Next.</li>
+              <li>Altura <code>auto</code> no bloco recolhível com <code>interpolate-size</code>, como melhoria progressiva.</li>
+            </ul>
+            <h2 class="doc-heading">F5 — Mobile: refundação</h2>
+            <p class="doc-paragraph"><strong>Estimativa:</strong> G. <strong>Dependências:</strong> F2 (ADR aprovada) e aprovação das dependências novas.</p>
+            <ol class="doc-list">
+              <li>Spike em branch: instalar expo-router, Reanimated, Gesture Handler e expo-haptics com <code>npx expo install</code> e validar o fluxo Auth0 (<code>expo-auth-session</code>) com o redirecionamento do router.</li>
+              <li>Migrar as telas de <code>src/screens/</code> para rotas: abas nativas (Movimentações, Contas, Categorias) e pilha para Regras, OFX e Conectar.</li>
+              <li>Primitivas em <code>src/ui/</code>: toque com spring no botão (<code>controls.tsx</code>), folha inferior para formulários (se aprovada), esqueleto → conteúdo, <code>useReducedMotion</code> e haptic só ao concluir.</li>
+              <li>Padrões de proveniência e sincronização equivalentes aos do web, sem código compartilhado.</li>
+            </ol>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-7" data-page="7">
+          <div class="page-kicker"><span>Refatoração frontend</span><span>F6, F7 e sequência</span></div>
+          <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
+            <h2 class="doc-heading">F6 — Sprint 4 dentro do sistema</h2>
+            <p class="doc-paragraph">As telas de HU-008, HU-009, HU-011 e HU-012 adotam os padrões de F2 e F4. O Developer 2 é o responsável principal por essas interfaces na Sprint 4; a adoção é combinada com ele antes de qualquer alteração.</p>
+            <h2 class="doc-heading">F7 — Evidência</h2>
+            <ul class="doc-list">
+              <li>Checklist da definição de pronto por tela, nas três larguras do web e em aparelho no mobile.</li>
+              <li>Gravações curtas com movimento normal e reduzido.</li>
+              <li>Relatório de acessibilidade separando o que foi medido do que depende de teste em aparelho.</li>
+            </ul>
+            <h2 class="doc-heading">Sequência proposta</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Janela</th><th>Fases</th><th>Toca código de produto?</th></tr></thead><tbody>
+              <tr><th>22–23/10</th><td>F0 e F1, em paralelo ao fechamento da S4-06.</td><td>Não.</td></tr>
+              <tr><th>23–27/10</th><td>F2 e spike da F5.</td><td>Só arquivos de design e branch de spike.</td></tr>
+              <tr><th>Após a S4-06</th><td>F3, F4 e F5 em trilhas paralelas (web e mobile).</td><td>Sim, com gate de aprovação por fase.</td></tr>
+              <tr><th>Sprint 5</th><td>F6 e F7.</td><td>Sim, combinado com o Developer 2.</td></tr>
+            </tbody></table></div></div>
+            <p class="doc-paragraph">Janelas são estimativas de ordenação; o calendário da Sprint 5 ainda não foi confirmado.</p>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-8" data-page="8">
+          <div class="page-kicker"><span>Refatoração frontend</span><span>Riscos e decisões</span></div>
+          <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
+            <h2 class="doc-heading">Riscos e tratamento</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Risco</th><th>Impacto</th><th>Tratamento</th></tr></thead><tbody>
+              <tr><th>Colisão com a S4-06</th><td>Mesmos arquivos de CSS e telas em alteração.</td><td>F0–F2 sem código de produto; código só em branch após combinar com o Developer 2.</td></tr>
+              <tr><th>expo-router e Auth0</th><td>O redirecionamento do login pode quebrar com a nova navegação.</td><td>Spike isolado antes da migração; ADR registra o resultado.</td></tr>
+              <tr><th>View Transitions no Safari</th><td>A documentação do Next avisa que algumas animações se comportam diferente.</td><td>Melhoria progressiva: sem suporte, a interface funciona sem animar.</td></tr>
+              <tr><th>Movimento decorativo</th><td>Contraria o <code>DESIGN.md</code> e o <code>PRODUCT.md</code>.</td><td>Inventário da F1 e itens da definição de pronto como filtro.</td></tr>
+              <tr><th>Versões de bibliotecas</th><td>Versões citadas vêm do changelog do SDK 57 e podem variar por patch.</td><td>Conferir com <code>npx expo install --check</code> antes de instalar.</td></tr>
+            </tbody></table></div></div>
+            <h2 class="doc-heading">Decisões a fechar na F1</h2>
+            <ul class="doc-list">
+              <li>Valores finais dos tokens semânticos.</li>
+              <li>Escopo do <code>&lt;ViewTransition&gt;</code>: só crossfade, ou também morph lista → detalhe.</li>
+              <li>Folha inferior ou tela cheia para formulários no mobile (o <code>DESIGN.md</code> atual define tela cheia).</li>
+              <li>Destino do hook do impeccable.</li>
+              <li>Forma de coordenação com o Developer 2 e com a S4-06.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-9" data-page="9">
+          <div class="page-kicker"><span>Refatoração frontend</span><span>Definição de pronto e referências</span></div>
+          <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
+            <h2 class="doc-heading">Definição de pronto</h2>
+            <ul class="doc-list">
+              <li>Style Guide 1.1 publicado com seções de movimento, proveniência e estados ao vivo; <code>DESIGN.md</code> de web e mobile coerentes com ele.</li>
+              <li>Nenhuma duração ou curva fora dos tokens documentados.</li>
+              <li>Movimento reduzido verificado em cada movimento: sai o deslocamento, ficam opacidade e cor.</li>
+              <li>Nenhum valor financeiro animado; nenhum estado transmitido só por cor.</li>
+              <li>Web: <code>pnpm lint &amp;&amp; pnpm typecheck &amp;&amp; pnpm test &amp;&amp; pnpm build</code> sem erro. Mobile: <code>pnpm typecheck &amp;&amp; pnpm test</code> e teste em aparelho registrado.</li>
+              <li>Itens bloqueados permanecem explicitamente pendentes, sem aceite presumido.</li>
+            </ul>
+            <h2 class="doc-heading">Prompts por fase</h2>
+            <p class="doc-paragraph">Cada fase tem um prompt pronto em <code>prompts/refatoracao-frontend/</code>, no formato dos prompts da Sprint 4, com o gate de aprovação do repositório.</p>
+            <h2 class="doc-heading">Referências usadas</h2>
+            <ul class="doc-list">
+              <li>Artefatos das fases: <a href="fase-1-auditoria-movimento.md">auditoria de movimento (F1)</a>, <a href="../../arquitetura/adr-002-view-transitions-web.html">ADR-002 — View Transitions no web</a>, <a href="../../arquitetura/adr-003-navegacao-movimento-mobile.html">ADR-003 — navegação e movimento no mobile</a> e <a href="../../design/style-guide.html#movimento">Style Guide 1.1</a>.</li>
+              <li>Repositórios: <code>web/PRODUCT.md</code>, <code>web/DESIGN.md</code>, <code>web/UX_PRINCIPLES.md</code>, <code>web/DESIGN_DEFINITION_OF_DONE.md</code>, <code>mobile/DESIGN.md</code>, <code>docs/design/style-guide.html</code>, <code>docs/design/paterns-style-guide.md</code>, skill <code>coinciente-visual-design</code>.</li>
+              <li>Next.js, guia de View Transitions instalado em <code>web/node_modules/next/dist/docs/01-app/02-guides/view-transitions.md</code> (Next 16.3.4).</li>
+              <li><a href="https://web.dev/blog/interop-2026">web.dev — Interop 2026</a>.</li>
+              <li><a href="https://expo.dev/changelog/sdk-57">Expo — changelog do SDK 57</a> e <a href="https://docs.expo.dev/versions/v57.0.0/sdk/router/native-tabs/">documentação de native tabs</a>.</li>
+              <li><a href="https://www.apple.com/newsroom/2025/06/apple-introduces-a-delightful-and-elegant-new-software-design/">Apple — novo design de software (Liquid Glass)</a>.</li>
+              <li><a href="https://www.letsmoney.com.br/noticias/open-finance-cresce-no-brasil-mas-adesao-de-empresas-ainda-e-entrave/">Let's Money — Open Finance no Brasil, 2026</a>.</li>
+              <li><a href="https://www.thealien.design/insights/fintech-ux-design-trends">Fintech UX Design Trends 2026</a> (fonte de agência, contexto de mercado).</li>
+              <li><a href="https://hidde.blog/meeting-2-22-pause-stop-hide-with-prefers-reduced-motion/">Hidde de Vries — prefers-reduced-motion e WCAG 2.2.2</a>.</li>
+            </ul>
+          </div>
+        </section>
+      </article>
+    </div>
+  </main>
+  <footer class="site-footer">Documentação acadêmica · UCB · 2026 · Samuel Mota, Thiago Marques e Miguel Candido</footer>
+  <script src="../../../assets/app.js"></script>
+</body>
+</html>

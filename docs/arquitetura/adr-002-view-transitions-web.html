@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ADR de transição entre páginas no app web com View Transitions">
+  <title>ADR View Transitions Web · Coinciente</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span class="brand-mark" aria-hidden="true"><img src="../../assets/coinciente-symbol.svg" alt=""></span><span class="brand-name"><em>Coin</em>ciente</span></a>
+      <nav class="doc-nav" aria-label="Documentos"><a href="../../index.html">Início</a><a href="../produto/visao.html">Visão</a><a href="../produto/prd.html">PRD</a><a href="arquitetura.html" aria-current="page">Arquitetura</a><a href="../planejamento/refatoracao-frontend/Plano_Refatoracao_Frontend.html">Refatoração frontend</a><a href="../design/style-guide.html">Style Guide</a></nav>
+  </header>
+  <main id="conteudo">
+    <section class="hero">
+      <p class="eyebrow">ADR-002 · Frontend web</p>
+      <h1>Transição entre páginas com View Transitions</h1>
+      <p class="lead">Crossfade discreto na navegação do app web, com a estrutura parada e degradação silenciosa.</p>
+      <div class="meta-row"><span class="meta-chip">Versão 1.0</span><span class="meta-chip">23 out 2026</span><span class="meta-chip">Status: proposto</span></div>
+    </section>
+    <div class="reader">
+      <aside class="sidebar" aria-label="Navegação por seções"><p class="sidebar-title">Neste documento</p><nav class="page-nav" aria-label="Seções do documento"></nav><p class="result-note">ADR integral</p></aside>
+      <article class="pages" aria-label="Conteúdo integral">
+        <section class="paper" id="pagina-1" data-page="1">
+          <div class="page-kicker"><span>ADR View Transitions</span><span>Contexto</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">1. Status, contexto e escopo</h2>
+            <p class="doc-paragraph"><strong>Status: proposto em 23/10/2026.</strong> Passa a aceito quando a equipe aprovar e a fase F4 do Plano de Refatoração do Frontend validar a implementação. Aplica-se à navegação entre páginas do grupo autenticado do app web (<code>src/app/(app)/</code>).</p>
+            <p class="doc-paragraph">Hoje a troca de página é instantânea: o conteúdo é substituído sem nenhuma indicação de mudança. O <code>DESIGN.md</code> do web proibia mover a navegação, para evitar movimento em ação frequente. O Style Guide 1.1 mantém esse cuidado e admite apenas um crossfade curto, que sinaliza a troca sem deslocar nada.</p>
+            <h2 class="doc-heading">2. Evidência técnica</h2>
+            <ul class="doc-list">
+              <li>O guia de View Transitions do Next.js instalado no projeto (Next 16.3.4, <code>node_modules/next/dist/docs/01-app/02-guides/view-transitions.md</code>) afirma que View Transitions funcionam no App Router sem configuração, importando <code>ViewTransition</code> de <code>react</code>.</li>
+              <li>O mesmo guia avisa que algumas animações se comportam de forma diferente no Safari e que, sem suporte do navegador, a aplicação funciona normalmente sem animar.</li>
+              <li>O Interop 2026 inclui melhorias de View Transitions same-document e cross-document e a pseudo-classe <code>:active-view-transition-type()</code>.</li>
+              <li>Documentação pública mais antiga do Next.js descreve o recurso como experimental. A implementação segue a documentação instalada e precisa ser revalidada se a versão do Next mudar.</li>
+            </ul>
+            <h2 class="doc-heading">3. Alternativas avaliadas</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Alternativa</th><th>Resultado</th><th>Motivo</th></tr></thead><tbody>
+              <tr><th>Manter a troca instantânea</th><td>Rejeitada</td><td>Troca de conteúdo sem sinal; desalinhada da seção de Movimento do Style Guide 1.1.</td></tr>
+              <tr><th>Biblioteca de animação JavaScript</th><td>Rejeitada</td><td>Dependência nova para algo que a plataforma e o React já oferecem.</td></tr>
+              <tr><th>Deslizamento direcional entre páginas</th><td>Rejeitada</td><td>Deslocamento em ação frequente; contraria o princípio de estabilidade.</td></tr>
+              <tr><th>Morph lista → detalhe</th><td>Adiada</td><td>Hoje só se aplicaria ao detalhe da conexão Pluggy; reavaliar quando houver mais telas de detalhe.</td></tr>
+              <tr><th><code>&lt;ViewTransition&gt;</code> só com crossfade</th><td>Aceita</td><td>Sinaliza a troca sem mover nada, usa a plataforma e degrada sem quebrar.</td></tr>
+            </tbody></table></div></div>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-2" data-page="2">
+          <div class="page-kicker"><span>ADR View Transitions</span><span>Decisão</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">4. Decisão</h2>
+            <ul class="doc-list">
+              <li>Envolver o conteúdo de página do grupo autenticado em <code>&lt;ViewTransition&gt;</code>, em <code>src/app/(app)/layout.tsx</code> ou <code>app-frame.tsx</code>, conforme a leitura do código na F4.</li>
+              <li>Animação: crossfade em <code>--motion-hover</code> (180ms) com <code>--ease-out</code>. A navegação é frequente, por isso a duração fica no limite inferior da escala.</li>
+              <li>A lateral, o trilho, a barra superior e a barra de abas ficam ancorados, sem participar da transição.</li>
+              <li>Com <code>prefers-reduced-motion: reduce</code>, mantém-se a opacidade e não há deslocamento.</li>
+              <li>Valores financeiros e listas não recebem transição própria.</li>
+            </ul>
+            <h2 class="doc-heading">5. Consequências</h2>
+            <ul class="doc-list">
+              <li>A regra do <code>DESIGN.md</code> do web passa de “navegação não se move” para “navegação usa só crossfade”.</li>
+              <li>Navegadores sem suporte trocam a página sem animação, como hoje.</li>
+              <li>Diferenças no Safari exigem verificação manual nesse navegador.</li>
+              <li>Não há dependência nova nem mudança de contrato com o backend.</li>
+            </ul>
+            <h2 class="doc-heading">6. Validação</h2>
+            <ul class="doc-list">
+              <li>Crossfade visível em Chromium nos três arranjos do <code>shell.module.css</code>, com a estrutura parada.</li>
+              <li>DevTools com <code>prefers-reduced-motion: reduce</code>: nenhum deslocamento.</li>
+              <li>Navegação por teclado e foco preservados após a troca.</li>
+              <li><code>pnpm lint &amp;&amp; pnpm typecheck &amp;&amp; pnpm test &amp;&amp; pnpm build</code> sem erro.</li>
+            </ul>
+            <h2 class="doc-heading">7. Referências</h2>
+            <ul class="doc-list">
+              <li><a href="../planejamento/refatoracao-frontend/Plano_Refatoracao_Frontend.html">Plano de Refatoração do Frontend</a> e <a href="../planejamento/refatoracao-frontend/fase-1-auditoria-movimento.md">auditoria de movimento da F1</a>.</li>
+              <li><a href="../design/style-guide.html#movimento">Style Guide 1.1 — Movimento</a>.</li>
+              <li><a href="https://nextjs.org/docs/app/guides/view-transitions">Next.js — View Transitions</a>.</li>
+              <li><a href="https://web.dev/blog/interop-2026">web.dev — Interop 2026</a>.</li>
+            </ul>
+          </div>
+        </section>
+      </article>
+    </div>
+  </main>
+  <footer class="site-footer">Documentação acadêmica · UCB · 2026 · Samuel Mota, Thiago Marques e Miguel Candido</footer>
+  <script src="../../assets/app.js"></script>
+</body>
+</html>

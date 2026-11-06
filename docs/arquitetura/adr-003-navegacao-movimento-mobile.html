@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ADR de navegação e movimento do app mobile com expo-router e Reanimated">
+  <title>ADR Navegação Mobile · Coinciente</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span class="brand-mark" aria-hidden="true"><img src="../../assets/coinciente-symbol.svg" alt=""></span><span class="brand-name"><em>Coin</em>ciente</span></a>
+      <nav class="doc-nav" aria-label="Documentos"><a href="../../index.html">Início</a><a href="../produto/visao.html">Visão</a><a href="../produto/prd.html">PRD</a><a href="arquitetura.html" aria-current="page">Arquitetura</a><a href="../planejamento/refatoracao-frontend/Plano_Refatoracao_Frontend.html">Refatoração frontend</a><a href="../design/style-guide.html">Style Guide</a></nav>
+  </header>
+  <main id="conteudo">
+    <section class="hero">
+      <p class="eyebrow">ADR-003 · Frontend mobile</p>
+      <h1>Navegação e movimento do app mobile</h1>
+      <p class="lead">expo-router com abas nativas, Reanimated, Gesture Handler e haptics, com spike de autenticação antes da migração.</p>
+      <div class="meta-row"><span class="meta-chip">Versão 1.0</span><span class="meta-chip">23 out 2026</span><span class="meta-chip">Status: proposto</span></div>
+    </section>
+    <div class="reader">
+      <aside class="sidebar" aria-label="Navegação por seções"><p class="sidebar-title">Neste documento</p><nav class="page-nav" aria-label="Seções do documento"></nav><p class="result-note">ADR integral</p></aside>
+      <article class="pages" aria-label="Conteúdo integral">
+        <section class="paper" id="pagina-1" data-page="1">
+          <div class="page-kicker"><span>ADR Navegação Mobile</span><span>Contexto</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">1. Status, contexto e escopo</h2>
+            <p class="doc-paragraph"><strong>Status: proposto em 23/10/2026.</strong> Passa a aceito quando a equipe aprovar e o spike da fase F5 do Plano de Refatoração do Frontend confirmar a autenticação com a nova navegação. Aplica-se ao repositório <code>mobile-centralizador-financeiro</code>.</p>
+            <p class="doc-paragraph">Estado verificado em 22/10/2026: <code>App.tsx</code> troca as seções por <code>useState</code>; cada tela troca lista, formulário, importação OFX e conexão Pluggy por um estado <code>mode</code> local. Não há biblioteca de navegação nem de animação, não existe gesto de voltar entre telas e o retorno ao toque troca o estilo sem transição. Não há tratamento da preferência de redução de movimento.</p>
+            <h2 class="doc-heading">2. Evidência técnica</h2>
+            <ul class="doc-list">
+              <li>O changelog do Expo SDK 57 lista Reanimated 4.3–4.5, Worklets 0.8–0.10 e Gesture Handler 2.31–2.32 entre as versões compatíveis.</li>
+              <li>No SDK 57, as abas nativas estão em <code>expo-router/unstable-native-tabs</code>; a documentação do SDK 58 remove o prefixo <code>unstable</code>.</li>
+              <li>O app usa <code>expo-auth-session</code> (<code>src/auth/AuthContext.tsx</code>); a mudança para rotas pode afetar o retorno do login, o que justifica o spike.</li>
+              <li>As versões finais devem ser confirmadas com <code>npx expo install --check</code> no projeto.</li>
+            </ul>
+            <h2 class="doc-heading">3. Alternativas avaliadas</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Alternativa</th><th>Resultado</th><th>Motivo</th></tr></thead><tbody>
+              <tr><th>Manter <code>useState</code> e usar <code>Animated</code> nativo</th><td>Rejeitada</td><td>Sem dependência nova, mas sem gesto de voltar, pilha nativa nem abas da plataforma; só disfarça a troca de tela.</td></tr>
+              <tr><th>React Navigation sem expo-router</th><td>Rejeitada</td><td>Atende à navegação, mas fica fora da convenção de rotas do Expo usada pela documentação do SDK.</td></tr>
+              <tr><th>expo-router com Reanimated, Gesture Handler e expo-haptics</th><td>Aceita</td><td>Abas e pilha nativas, gesto de voltar, animação fora da thread de JavaScript e redução de movimento por <code>useReducedMotion</code>.</td></tr>
+            </tbody></table></div></div>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-2" data-page="2">
+          <div class="page-kicker"><span>ADR Navegação Mobile</span><span>Decisão</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">4. Decisão</h2>
+            <ul class="doc-list">
+              <li>Abas nativas para Movimentações, Contas e Categorias; troca de aba sem animação própria além da nativa.</li>
+              <li>Pilha para Regras, importação OFX, conexão Pluggy e formulários longos (conta), com a transição nativa da plataforma e gesto de voltar.</li>
+              <li>Folha inferior com gesto apenas para tarefas curtas, como categorizar uma movimentação, usando <code>--ease-drawer</code> ou spring equivalente.</li>
+              <li>Retorno ao toque: entrada no estado pressionado imediata e volta com spring; valores únicos de opacidade e escala definidos no <code>DESIGN.md</code> mobile.</li>
+              <li>Redução de movimento por <code>useReducedMotion</code> do Reanimated: sem deslocamento nem escala, mantendo opacidade.</li>
+              <li>Haptic leve apenas ao concluir uma ação, nunca em toques de rotina.</li>
+            </ul>
+            <h2 class="doc-heading">5. Consequências e riscos</h2>
+            <ul class="doc-list">
+              <li>Dependências novas: expo-router e seus pares, react-native-reanimated, react-native-gesture-handler e expo-haptics, instaladas por <code>npx expo install</code>.</li>
+              <li>Risco principal: o redirecionamento do Auth0 com as rotas. Tratamento: spike em branch antes de migrar qualquer tela.</li>
+              <li>O caminho das abas nativas muda no SDK 58; a atualização do SDK precisa ajustar o import.</li>
+              <li>O <code>UX_PRINCIPLES.md</code> mobile deixa de exigir tela cheia para todo formulário.</li>
+              <li>Nenhum código passa a ser compartilhado com o web.</li>
+            </ul>
+            <h2 class="doc-heading">6. Validação</h2>
+            <ul class="doc-list">
+              <li>Spike: login, saída e retorno do Auth0 funcionando com expo-router em aparelho ou emulador.</li>
+              <li>Todos os fluxos atuais preservados após a migração.</li>
+              <li>“Reduzir movimento” ativado no aparelho: nenhum deslocamento.</li>
+              <li><code>pnpm typecheck &amp;&amp; pnpm test</code> e <code>npx expo export --platform android</code> sem erro.</li>
+            </ul>
+            <h2 class="doc-heading">7. Referências</h2>
+            <ul class="doc-list">
+              <li><a href="../planejamento/refatoracao-frontend/Plano_Refatoracao_Frontend.html">Plano de Refatoração do Frontend</a> e <a href="../planejamento/refatoracao-frontend/fase-1-auditoria-movimento.md">auditoria de movimento da F1</a>.</li>
+              <li><a href="../design/style-guide.html#movimento">Style Guide 1.1 — Movimento</a>.</li>
+              <li><a href="https://expo.dev/changelog/sdk-57">Expo — changelog do SDK 57</a>.</li>
+              <li><a href="https://docs.expo.dev/versions/v57.0.0/sdk/router/native-tabs/">Expo — native tabs (SDK 57)</a>.</li>
+            </ul>
+          </div>
+        </section>
+      </article>
+    </div>
+  </main>
+  <footer class="site-footer">Documentação acadêmica · UCB · 2026 · Samuel Mota, Thiago Marques e Miguel Candido</footer>
+  <script src="../../assets/app.js"></script>
+</body>
+</html>

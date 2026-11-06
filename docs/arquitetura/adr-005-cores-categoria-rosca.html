@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ADR de cores fixas por categoria e gastos em rosca na Visão geral">
+  <title>ADR Cores de Categoria · Coinciente</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+  <header class="topbar">
+    <a class="brand" href="../../index.html"><span class="brand-mark" aria-hidden="true"><img src="../../assets/coinciente-symbol.svg" alt=""></span><span class="brand-name"><em>Coin</em>ciente</span></a>
+      <nav class="doc-nav" aria-label="Documentos"><a href="../../index.html">Início</a><a href="../produto/visao.html">Visão</a><a href="../produto/prd.html">PRD</a><a href="arquitetura.html" aria-current="page">Arquitetura</a><a href="../planejamento/refatoracao-frontend/Plano_Refatoracao_Frontend.html">Refatoração frontend</a><a href="../design/style-guide.html">Style Guide</a></nav>
+  </header>
+  <main id="conteudo">
+    <section class="hero">
+      <p class="eyebrow">ADR-005 · Frontend web</p>
+      <h1>Cores fixas por categoria e gastos em rosca</h1>
+      <p class="lead">Seis tons validados só para identificar categorias; a cor acompanha a categoria em todo mês e em toda tela.</p>
+      <div class="meta-row"><span class="meta-chip">Versão 1.0</span><span class="meta-chip">06 nov 2026</span><span class="meta-chip">Status: proposto</span></div>
+    </section>
+    <div class="reader">
+      <aside class="sidebar" aria-label="Navegação por seções"><p class="sidebar-title">Neste documento</p><nav class="page-nav" aria-label="Seções do documento"></nav><p class="result-note">ADR integral</p></aside>
+      <article class="pages" aria-label="Conteúdo integral">
+        <section class="paper" id="pagina-1" data-page="1">
+          <div class="page-kicker"><span>ADR Cores de Categoria</span><span>Contexto e decisão</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">1. Status, contexto e escopo</h2>
+            <p class="doc-paragraph"><strong>Status: proposto em 06/11/2026.</strong> Decidido a partir do protótipo da Visão geral; passa a aceito com a aprovação do time. Aplica-se aos gráficos de gastos da Visão geral (HU-010) e à marca de categoria nas listas do web.</p>
+            <p class="doc-paragraph">O Style Guide 2.0 desenhava todo gráfico em neutros e evitava roscas. No protótipo, a leitura dos gastos ficou mais rápida com cada categoria em uma cor e a composição em rosca, mantendo os valores escritos. Este ADR registra o que muda (versão 2.1 do guia) e o que continua igual.</p>
+            <h2 class="doc-heading">2. Decisão</h2>
+            <ul class="doc-list">
+              <li>Seis cores de categoria (azul, terracota, verde-azulado, âmbar, rosa, violeta), com passos próprios no tema escuro, mais um neutro para “Outras”. Variáveis <code>--cat-1</code> a <code>--cat-6</code> e <code>--cat-other</code> no <code>globals.css</code> do web.</li>
+              <li>A cor só identifica a categoria. Fluxo de entradas e saídas, números e estados continuam neutros ou nos tons de estado; variação contra o mês anterior não usa verde nem vermelho.</li>
+              <li>Cor fixa, atribuída no cliente: a ordem de criação das categorias do usuário, arquivadas incluídas, escolhe o tom. Da sétima em diante, neutra. Sem campo novo no backend.</li>
+              <li>Gastos em rosca com a lista ao lado (cor, nome, valor, percentual e barrinha); no máximo seis fatias com cor, o excedente vira “Outras”; “A revisar” hachurado e sempre por último.</li>
+            </ul>
+            <h2 class="doc-heading">3. Alternativas avaliadas</h2>
+            <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Alternativa</th><th>Resultado</th><th>Motivo</th></tr></thead><tbody>
+              <tr><th>Manter só neutros</th><td>Rejeitada</td><td>Categorias indistintas fora da ordem da lista; leitura lenta da composição.</td></tr>
+              <tr><th>Cor pela posição no ranking do mês</th><td>Rejeitada</td><td>A mesma categoria mudaria de cor de um mês para outro.</td></tr>
+              <tr><th>Cor salva no backend</th><td>Adiada</td><td>Permitiria escolha pelo usuário, mas muda o contrato e depende do Developer 1.</td></tr>
+              <tr><th>Barra 100% em vez de rosca</th><td>Rejeitada pelo Produto</td><td>Mais precisa, mas a rosca com total no centro foi preferida; a lista escrita compensa a imprecisão.</td></tr>
+              <tr><th>Paleta padrão de biblioteca</th><td>Rejeitada</td><td>Tons saturados demais para a direção “Instrumento de precisão”.</td></tr>
+            </tbody></table></div></div>
+          </div>
+        </section>
+
+        <section class="paper" id="pagina-2" data-page="2">
+          <div class="page-kicker"><span>ADR Cores de Categoria</span><span>Consequências</span></div>
+          <div class="normative-content">
+            <h2 class="doc-heading">4. Validação da paleta</h2>
+            <ul class="doc-list">
+              <li>Claro (sobre #FFFFFF) e escuro (sobre #101313) passam nas verificações de faixa de luminosidade, croma, separação para daltonismo entre vizinhos (ΔE ≥ 11,6 claro; ≥ 11,5 escuro, com um par tritan em 6,8, na faixa permitida com codificação secundária) e diferença para visão normal (≥ 15).</li>
+              <li>O âmbar do tema claro fica em 2,5:1 sobre o branco. Mitigação obrigatória: nome e valor escritos ao lado de toda cor.</li>
+            </ul>
+            <h2 class="doc-heading">5. Consequências</h2>
+            <ul class="doc-list">
+              <li>Style Guide 2.1: cores de categoria na seção de Cores, rosca no mockup da Visão geral e na lista “Evite” só a rosca sem valores ou com mais de seis fatias.</li>
+              <li>O web precisa da lista de categorias (GET /categories, já existente) para atribuir as cores; sem ela, as cores ficam neutras e os nomes continuam.</li>
+              <li>Usuário com mais de seis categorias vê as excedentes em neutro e agrupadas em “Outras” na rosca; a lista mostra todas.</li>
+              <li>Levar a marca de categoria às telas de Movimentações e Categorias é o próximo passo, fora deste ADR.</li>
+            </ul>
+            <h2 class="doc-heading">6. Referências</h2>
+            <ul class="doc-list">
+              <li><a href="../design/style-guide.html#cores">Style Guide 2.1 — Cores</a>.</li>
+              <li><a href="adr-004-graficos-animacao-web.html">ADR-004 — Gráficos com visx e animação com Motion</a>.</li>
+              <li><a href="../planejamento/sprint-05/s5-dev2-dashboard-dados-e-definicoes.md">S5 — Dashboard: dados por tela e definições</a>.</li>
+            </ul>
+          </div>
+        </section>
+      </article>
+    </div>
+  </main>
+  <footer class="site-footer">Documentação acadêmica · UCB · 2026 · Samuel Mota, Thiago Marques e Miguel Candido</footer>
+  <script src="../../assets/app.js"></script>
+</body>
+</html>

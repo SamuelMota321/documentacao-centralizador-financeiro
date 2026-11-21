@@ -11,6 +11,13 @@
 - Onde a semântica não está definida em nenhuma fonte, o item aparece em **Perguntas abertas**, com quem decide.
 - Nenhuma tela descrita aqui está implementada. O estado atual dos clientes está na última seção.
 
+## Decisões de HU-008 aprovadas em 16/11/2026
+
+- A consulta autenticada da última execução por `connectionId` foi aprovada para recuperar o estado sem `runId` guardado. Ela também deve informar a última reconciliação `succeeded`/`partial` se a execução mais recente falhou ou está ativa. Dev 1 define rota e esquema; ela não recupera um `connectionId` perdido em outro dispositivo.
+- O cliente consulta a cada 10 segundos, apenas em primeiro plano, e para em `action_required`, `succeeded`, `partial` ou `failed`. `action_required` pausa a execução e permite iniciar outra depois da ação do usuário; Dev 1 ainda mapeia as situações e instruções da Pluggy para o aviso.
+- `partial` deve informar os tipos de dados indisponíveis ou com falha, sem valores financeiros ou payload bruto. Quando uma transação sem ID tiver correspondência incerta pelo fallback D13, a execução também fica `partial` com aviso consultável. Dev 1 define o esquema e os códigos de motivo; Dev 3 valida o aceite.
+- A rotina diária reconcilia às 12h no fuso `America/Sao_Paulo` os dados já disponíveis na Pluggy, com data de referência da fonte. A atualização do Item pertence ao disparo manual; o mapa de capacidades por conector continua pendente em C-04.
+
 ## Convenções de apresentação (Style Guide 2.0)
 
 - **Linha de metadados** (`Origem · ref. DD/MM HH:MM · Conta`) logo abaixo de todo dado externo. Atende RN-010 e o critério "fonte e data de referência permanecem acessíveis" (HU-011).
@@ -28,9 +35,9 @@
 | Estado da execução | `status` ∈ `queued`, `running`, `action_required`, `succeeded`, `partial`, `failed` | C-03 | Marcador + rótulo conforme Style Guide 2.0, seção 08. Três primeiros não são finais. |
 | Momento da solicitação | `acceptedAt` | C-03 | Linha de metadados: "Solicitada às HH:MM". |
 | Início e fim | `startedAt`, `completedAt` | C-03 | Quando aplicáveis. "Concluída às HH:MM" alimenta a referência dos dados exibidos. |
-| Ação necessária | estado `action_required` | C-03 | Aviso fixo com o que fazer e botão. **O que exatamente a pessoa deve fazer depende do mapeamento de `action_required`, ainda pendente** (ver P-03). |
-| Resultado parcial | estado `partial` | C-03 | Aviso dizendo o que ficou de fora. **Quais dados ficaram de fora não está no contrato público** (ver P-04). |
-| Última sincronização | último `completedAt` com `succeeded`/`partial` | C-03 | Mostrado mesmo sem execução ativa. **Recuperar a última execução sem `runId` guardado não tem rota definida** (ver P-02). |
+| Ação necessária | estado `action_required` | C-03 | Aviso fixo com o que fazer e botão. A pausa e a nova execução estão decididas; a instrução específica depende do mapeamento da Pluggy (P-03). |
+| Resultado parcial | estado `partial` | C-03 | Aviso por tipo de dado afetado ou fallback incerto, sem valores financeiros. Esquema e motivos ainda serão propostos por Dev 1 (P-04). |
+| Última sincronização | último `completedAt` com `succeeded`/`partial` | C-03 | Mostrado mesmo sem execução ativa. Consulta autenticada da última execução aprovada; Dev 1 ainda define a rota (P-02). |
 
 ### Retomada (C-01 — decisão fechada, implementação pendente)
 
@@ -39,9 +46,9 @@
 | Web | `connectionId`; após aceite: `runId`, `statusUrl`, `status`, `acceptedAt` | Preferir estado no servidor (sessão); `localStorage` só se precisar sobreviver ao fechamento do navegador | Logout, troca de usuário, ou quando a API negar acesso |
 | Mobile | os mesmos ponteiros | Expo Secure Store, registro separado da sessão, associado ao usuário | Logout, troca de usuário, ou quando a API negar acesso |
 
-- Consultar o andamento só com o app em primeiro plano; parar em `succeeded`, `partial` ou `failed`.
+- Consultar o andamento a cada 10 segundos só com o app em primeiro plano; parar em `action_required`, `succeeded`, `partial` ou `failed`.
 - Validar a origem de `statusUrl` antes de usar.
-- **Intervalo de consulta: pendente entre Developer 1 e Developer 3** (C-03). Os clientes não fixam valor até a definição.
+- O intervalo de 10 segundos está aprovado em C-03; Dev 2 implementa o consumo quando a API existir e Dev 3 verifica o comportamento.
 
 ### Telas afetadas pela sincronização (sem tela nova)
 
@@ -88,14 +95,14 @@ Todos os campos abaixo vêm dos critérios do PRD. Todos "dependem de capacidade
 | Proveniência | fonte e data de referência acessíveis | Linha de metadados acima da tabela; detalhe por linha no toque/clique. |
 | Cobertura | percentuais só do que está disponível | Texto: "Calculado sobre N de M posições com valor disponível". **Denominador, moedas e arredondamento pendentes** (ver P-05, P-06, P-08). |
 
-## Perguntas abertas
+## Perguntas e encaminhamentos
 
 | ID | Pergunta | Por que importa | Quem decide | Bloqueia |
 |---|---|---|---|---|
 | P-01 | `Transaction` terá campo de origem (manual, OFX, Pluggy)? | Sem ele, Movimentações não mostram proveniência (RN-010 pede para investimentos; para transações é recomendação do Style Guide). | Developer 1 propõe; Produto aprova | Linha de metadados em Movimentações |
-| P-02 | Como recuperar a última execução de uma conexão sem `runId` guardado (outro dispositivo, cache limpo)? | C-01 proíbe listagem de conexões, mas não trata a última execução. | Developer 1 propõe; Developer 3 valida aceite | "Última sincronização" no detalhe |
+| P-02 | **Decidido:** consulta autenticada da última execução por `connectionId`; rota/esquema ainda pendentes. | Recupera `runId` perdido, mas não descobre um `connectionId` ausente em outro dispositivo; C-01 segue sem listagem. | Developer 1 propõe contrato; Developer 3 valida aceite | "Última sincronização" no detalhe |
 | P-03 | Quais situações geram `action_required` e qual ação o cliente oferece em cada uma? | O aviso precisa dizer o que fazer. | Developer 1 (mapeamento pendente em C-03) | Aviso de ação necessária |
-| P-04 | `partial` informa quais dados ficaram de fora? Em que forma? | Sem isso, o aviso só pode dizer "parte dos dados não atualizou". | Developer 1 propõe; Produto decide o nível de detalhe | Aviso de resultado parcial |
+| P-04 | **Decidido:** `partial` informa os tipos afetados e aviso de fallback incerto; esquema/motivos ainda pendentes. | O aviso identifica a parte não reconciliada sem expor valores ou payload do provedor. | Developer 1 propõe contrato; Developer 3 valida aceite | Aviso de resultado parcial |
 | P-05 | Qual é o denominador dos percentuais e do total da carteira quando há posições sem valor? | PRD diz "sobre os dados disponíveis", sem fixar o denominador. | Produto | Total e alocação |
 | P-06 | Como tratar posições em moedas diferentes? | C-06: "total multimoeda exige regra aprovada". | Produto | Total e alocação |
 | P-07 | A partir de quando um dado é "desatualizado"? | Marcador de frescor (RN-010). | Produto | Marcador em todas as telas |

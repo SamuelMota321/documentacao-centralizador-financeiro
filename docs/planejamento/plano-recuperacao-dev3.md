@@ -501,7 +501,7 @@ Use esta tabela como índice. Atualize o status somente com evidência registrad
 | 00 | Não iniciado | Estado dos quatro repositórios congelado |
 | 01 | Não iniciado | Matriz P13–P60 atual |
 | 02 | Concluído com ressalvas | Contratos reconciliados no recorte compatível e divergências registradas com responsáveis. [Handoff do Plano 02](../../auditorias/auditoria-dev3-atual-2026-11-23.md#execution-handoff--plano-02). |
-| 03 | Não iniciado | Suítes determinísticas reproduzíveis |
+| 03 | Concluído | Base determinística dos três produtos verificada. Web aprovado com instalação limpa offline e build padrão com fontes locais. [Handoff final do Plano 03](../../auditorias/auditoria-dev3-atual-2026-11-23.md#handoff-final-do-plano-03). |
 | 04 | Não iniciado | Sprint 1 aceita ou bloqueada com precisão |
 | 05 | Não iniciado | Sprint 2 aceita ou bloqueada com precisão |
 | 06 | Não iniciado | Sprint 3 aceita ou condicionada com precisão |

@@ -1,6 +1,6 @@
 # Auditoria atual do Developer 3 — estado de referência e matriz mestra
 
-> **Leitura atual:** as seções 1–7 e o primeiro `Execution handoff` preservam o registro do Plano 00, de 23/11/2026. Seus metadados, working trees e pendências descrevem aquela coleta. As seções 8–13 registram o **Plano 01**, atualizado em **24/11/2026**, incluindo as diferenças de revisão. As seções 14–17 registram o **Plano 02**, com as revisões após o pull e os bloqueios vigentes. Nenhum resultado histórico é promovido a aceite atual. O nome do arquivo foi mantido para preservar as referências existentes.
+> **Leitura atual:** as seções 1–7 e o primeiro `Execution handoff` preservam a coleta do Plano 00, de 23/11/2026. As seções 8–13 registram o Plano 01, e as seções 14–17 registram o Plano 02. As seções 18–23 registram a execução de 24/11/2026 do **Plano 03**. A seção 23 contém o encerramento, após a instalação limpa offline e o build padrão do web com fontes locais. O nome do arquivo foi mantido para preservar as referências existentes.
 
 **Plano executado:** somente Plano 00 — Congelar o estado de referência.
 
@@ -683,3 +683,122 @@ As observações abaixo foram verificadas pelo diff e por leitura dirigida na re
 - **Riscos residuais.** Compatibilidade estática não verifica integração, comportamento em execução, segurança de tenant ou jornadas completas. O snapshot mobile reproduz o contrato antigo e os dois omitem mapeamento Pluggy e HU-008. O histórico de testes da S4 não cobre a validação do consumo HU-008 nas revisões dos clientes deste handoff.
 - **Próximo plano elegível.** Plano 03 — Restabelecer a base de execução, em conversa própria.
 - **Condição de entrada.** Contratos reconciliados no recorte compatível ou bloqueados com evidência e responsável, conforme este handoff. Reconfirmar os HEADs, preparar a execução e obter aprovação do Plano 03.
+
+## 18. Plano 03 — Base local e revisões
+
+Executado em 24/11/2026, horário de Brasília, em Windows x64 com Node 22.16.0, npm 10.9.2 e pnpm 12.3.4. O [handoff do Plano 02](#execution-handoff--plano-02) atendia à condição de entrada. Os HEADs dos clientes incorporavam o commit documental daquele plano.
+
+| Checkout `main` | HEAD | Estado versionado na entrada |
+|---|---|---|
+| Backend | `b9f6a7a7e1b937dce6d8353b2572058591fb9ecf` | Limpo |
+| Web | `6488cc61b767d4bf1d553b56639ebaf96fdf6280` | Limpo |
+| Mobile | `411763747a79507e85631721722e27a05525af69` | Limpo |
+| Documentação | `658a130985c66e5883386f2436b1490385976746` | Limpo |
+
+O npm trabalhou em modo offline e sem scripts de instalação. O executável do pnpm 12.3.4 foi extraído do cache npm, com SHA-512 conferido contra o lockfile, após falhas de inicialização pelo Corepack. A geração do Prisma usou uma cópia local do motor 7.10.0. Os executores Node receberam configuração fictícia, bloqueio de conexões e telemetria desabilitada. Nos comandos nativos de instalação do pnpm foram passados os sinalizadores de modo offline e congelamento do lockfile. A recuperação produziu apenas dependências, arquivos de compilação e auxiliares locais nos checkouts de produto.
+
+## 19. Plano 03 — Comandos e resultados
+
+Todas as linhas herdam a data e o HEAD da seção 18. As horas são locais. A classificação refere-se à falha observada na tentativa.
+
+| Checkout | Hora | Comando ou verificação | Saída | Resultado |
+|---|---|---|---:|---|
+| Backend | 01:44 | `npm ci --offline --no-audit --no-fund --ignore-scripts` | 0 | 640 pacotes instalados a partir do cache. Aviso de descontinuação do ESLint 9.39.5. |
+| Backend | 01:44 | `npm run prisma:generate` | 1 | Ambiente. O Windows negou a atualização da data do executável no cache global do Prisma. |
+| Backend | 01:44 | `npm run test:unit` | 0 | 39 arquivos, 180 testes aprovados. |
+| Backend | 01:44 | `npm test -- test/contract/openapi.contract.spec.ts` | 0 | 1 arquivo, 8 testes de contrato OpenAPI aprovados. |
+| Backend | 01:45 | `npm run prisma:generate` com `PRISMA_SCHEMA_ENGINE_BINARY` local | 0 | Cliente Prisma 7.10.0 gerado a partir do schema versionado. |
+| Web | 01:44–01:46 | `corepack pnpm --version`, inicialização direta do wrapper e `npm pack … --offline` | 1 | Ferramenta e ambiente. O Corepack não encontrou o binário exigido e a consulta npm por nome falhou com `ENOTCACHED`. |
+| Web | 01:46 | Extração por SHA-512 e `pnpm.exe --version` | 0 | Executável local 12.3.4 confirmado. |
+| Web | 01:46–01:47 | `pnpm install --offline --frozen-lockfile --ignore-scripts` | 1 | Ambiente. A reinstalação removeu os atalhos em `node_modules/.bin` antes de falhar com acesso negado. A parte do lockfile que descreve as dependências era idêntica ao lockfile da instalação existente. As primeiras chamadas a teste, typecheck, lint e build saíram com 1 por falta dos atalhos. |
+| Web | 01:48–01:52 | Instalação isolada com `--frozen-store` e tentativas com cache explícito e `--trust-lockfile` | 1 / 2 / 1 / -1073741571 | Ambiente e ferramenta. Duas faltas de metadados offline, uma opção de cache rejeitada e um estouro de pilha do pnpm 12.3.4. |
+| Web | 01:48–01:49 | Vitest, `next typegen`, `tsc --noEmit` e ESLint por caminho direto | 0 cada | 49 arquivos e 749 testes aprovados, incluindo contrato. Tipos e lint aprovados. |
+| Web | 01:49–01:50 | Regeneração dos atalhos a partir dos manifestos instalados e `pnpm exec vitest --version` / `pnpm exec next --version` | 0 | Atalhos de Vitest, Next.js, ESLint, TypeScript e tsserver restaurados. Vitest 5.0.1 e Next.js 16.3.4 confirmados. |
+| Web | 01:49–01:55 | `next build --webpack` com fontes simuladas e tentativas de isolar a saída | 1 | Ambiente e ferramenta. `EPERM` na gravação de páginas ou tipos. A tentativa de criar um vínculo de diretório foi negada. A primeira configuração temporária de saída também falhou ao carregar o Next e foi ajustada. |
+| Web | 01:58–02:00 | `pnpm run build --webpack` com fontes simuladas, saída separada e um worker | 0 | Compilação, validação TypeScript e geração de 11 páginas concluídas após autorização para gravar fora das restrições que provocaram `EPERM`. Aviso de importação dinâmica em `dpopUtils.js` do SDK Auth0, sem impedir o build. |
+| Web | 02:00–02:01 | `pnpm test`, `pnpm typecheck`, `pnpm lint` com os atalhos restaurados | 0 cada | 49 arquivos, 749 testes aprovados. Typecheck e lint aprovados pelos scripts do projeto. |
+| Mobile | 01:52–01:54 | `pnpm install --offline --frozen-lockfile --frozen-store --ignore-scripts --trust-lockfile` | -1073741571 | Ferramenta. O pnpm 12.3.4 esgotou a pilha durante a instalação. |
+| Mobile | 01:54 | Repetição offline isolada com `node-linker=hoisted` | 1 | Ambiente. `ERR_PNPM_NO_OFFLINE_TARBALL` para `encodeurl@1.0.2` no store pnpm. O npm tinha esse tarball por integridade. |
+| Mobile | 01:56 | Conferência dos caches por integridade e tentativa com pnpm 11.25.0 isolado | 1 / -4048 | Ambiente. Das 526 entradas compatíveis com Windows x64 examinadas, 138 estavam indexadas no pnpm, 63 apareciam apenas no npm e 325 estavam ausentes de ambos. O pnpm alternativo também esbarrou em `EPERM`. A consulta dirigida confirmou a ausência de `expo@57.0.22`, `@expo/cli@57.0.24`, Expo Crypto e Expo Secure Store. |
+| Mobile | 01:59 | Vitest compartilhado, primeiras tentativas com configuração temporária | 1 cada | Ambiente. A primeira tentativa esbarrou na pasta temporária do Vite. Em seguida, os 30 arquivos ficaram sem testes executados pela ausência de `expo/tsconfig.base`. |
+| Mobile | 02:00–02:01 | `vitest run --config node_modules/.cache/dev3-mobile.config.mts` pelo executável do web | 0 | 30 arquivos e 469 testes aprovados, incluindo contrato. Vitest 5.0.1 e Zod do web, configuração temporária para transpilar TypeScript em Node e dublês das próprias suítes. |
+| Mobile | 02:01 | `pnpm typecheck` | 1, interrompido | Ferramenta. O pnpm iniciou instalação automática e tentou buscar pacotes no registro npm. As requisições observadas falharam em DNS. O processo foi interrompido e as verificações seguintes usaram chamadas diretas. |
+| Mobile | 02:01–02:02 | Leitura estática de `app.json` e `package.json`, `tsc --noEmit --pretty false` direto e teste de presença do Expo | 0 / 2 / 1 | SDK declarado `~57.0.22`, 5 arquivos de imagem presentes e 3 plugins declarados. O compilador encontrou módulos e tipos indisponíveis, incluindo React Native e módulos Expo. O CLI local e o arquivo-base do Expo estavam ausentes. |
+| Backend | 01:58–02:00 | `npm run typecheck`, `npm run lint`, `npm run build` | 0 cada | Typecheck, ESLint e build NestJS concluídos. Typecheck e build geraram o cliente Prisma localmente. |
+
+O teste mobile pelo executor compartilhado preservou os arquivos de teste e fixtures originais. A configuração temporária aponta para Vitest e Zod no web, replica a configuração de teste do mobile e passa ao Vite um `tsconfig` local para a transpiração em Node. Essa execução cobre os asserts e o snapshot local do mobile. O typecheck completo exige a instalação do SDK e a resolução dos módulos e tipos do app.
+
+## 20. Validação e handoff do Plano 03
+
+### Execution handoff — Plano 03
+
+- **Plano executado.** Plano 03 — Restabelecer a base de execução. **Bloqueado no mobile.** Backend e web têm resultados determinísticos atuais. A suíte mobile passou pelo executor isolado, com a instalação completa pendente.
+- **Repositórios e revisões.** Quatro HEADs na seção 18. As validações de produto correspondem a essas revisões.
+- **Arquivos alterados.** Esta auditoria e a linha do Plano 03 no [índice de recuperação](../docs/planejamento/plano-recuperacao-dev3.md#18-como-acompanhar-o-progresso). A verificação com `git diff --check HEAD` retornou 0 nos quatro checkouts. O Git confirmou que código, testes, snapshots, manifests, configurações e lockfiles dos três produtos ficaram sem alterações.
+- **Critérios verificados.** 188 testes backend, 749 web e 469 mobile aprovados. Backend e web também passaram em typecheck, lint e build. O build web usou Webpack e fontes simuladas. A instalação mobile, seu typecheck e a execução do Expo permanecem bloqueados.
+- **Comandos e resultados.** Seção 19. Os resultados vêm desta execução de 24/11/2026.
+- **Verificações fora do recorte.** Banco, RLS, E2E real, Auth0, Pluggy, QStash, R2, demonstração e aceite. O Expo Doctor e o empacotamento nativo aguardam a base do SDK. O build web padrão com fontes reais também ficou fora da validação local.
+- **Defeitos e responsáveis.** Developer 3 e responsável pelo ambiente tratam a disponibilidade de cache e a reprodução offline. O aviso de compilação em `dpopUtils.js` vem da dependência web. Os bloqueios de contrato do Plano 02 seguem com os responsáveis já registrados, pois a suíte de cada cliente verifica seu próprio snapshot e seus dublês.
+- **Decisões ainda abertas.** Forma de fornecer localmente as dependências congeladas do mobile e reexecutar o SDK 57. A reinstalação web a partir de um diretório vazio também permanece sem confirmação neste ambiente.
+- **Bloqueios de ambiente.** Pacotes fixados do mobile ausentes nos caches locais. Os erros de acesso do Windows foram contornados para o Prisma e o build web. O comportamento do pnpm 12.3.4 impediu reinstalações e disparou uma tentativa de busca no registro npm, bloqueada por DNS.
+- **Riscos residuais.** O resultado dos testes mobile cobre Node com dublês. A reprodução da compilação web utiliza um diretório temporário, um worker e fontes simuladas. As evidências de aceite e as validações com provedores pertencem às etapas posteriores.
+- **Próximo plano elegível.** Plano 04, em conversa própria, após a condição de entrada.
+- **Condição de entrada.** Base determinística verde ou falhas conhecidas que preservem os cenários a validar. A execução da parte mobile do Plano 04 exige confirmar a base do app com as dependências congeladas e o SDK 57.
+- **Sugestão de commit.** `docs(dev3-03): registra validacoes offline e bloqueio mobile`.
+
+## 21. Plano 03 — Confirmação da instalação mobile
+
+### Handoff da instalação mobile
+
+**Status naquele momento: concluído com ressalvas.** Em 24/11/2026, o Developer 3 conferiu a instalação preparada pelo usuário no mesmo HEAD mobile, `411763747a79507e85631721722e27a05525af69`. O registro abaixo atualiza o resultado mobile da seção 20. O encerramento do plano está na seção 23.
+
+A instalação usa Node 22.16.0, pnpm 12.3.4 e `expo@57.0.22`. O grafo instalado coincide com o documento do aplicativo em `pnpm-lock.yaml`, com 549 registros de pacotes e 549 snapshots. As 20 dependências diretas instaladas correspondem às versões fixadas. O store contém as 524 entradas do aplicativo compatíveis com Windows x64. Ele foi criado na pasta literal `$store/`, dentro do checkout mobile, e aparece como pasta local não rastreada. O registro de instalação aponta para essa pasta.
+
+Todos os comandos abaixo usaram a revisão mobile acima. Os horários são de Brasília. Os executores do projeto usaram o ambiente fictício de teste e as verificações do Expo rodaram com `EXPO_OFFLINE=1` e telemetria desabilitada.
+
+| Hora | Comando ou verificação | Saída | Resultado |
+|---|---|---:|---|
+| 02:16 | `node_modules/.bin/vitest.cmd run` | 0 | Script de teste do projeto executado com o Vitest e a configuração do mobile. 469 testes em 30 arquivos aprovados, incluindo contrato. |
+| 02:16 | `node_modules/.bin/tsc.cmd --noEmit` | 0 | Typecheck do projeto aprovado com TypeScript 6.0.3 e a configuração-base do Expo instalada. |
+| 02:16 | `node_modules/.bin/expo.cmd config --type public --json` | 0 | Configuração pública resolvida com SDK 57.0.0 e os três plugins declarados. |
+| 02:16 | `node_modules/.bin/expo.cmd install --check` | 0 | O Expo informou que as dependências estavam atualizadas e registrou a limitação de confiabilidade da checagem em modo offline. |
+| 02:17 | `node_modules/.bin/expo.cmd export --platform android --max-workers 2 --output-dir <pasta temporária>` | 0 | Metro empacotou 958 módulos e gerou um bundle Hermes para Android com 5 assets. |
+| 02:17–02:18 | Conferência de manifests, lockfile instalado e índice do store. `pnpm --version` pelo binário local | 0 no recorte do app | As 524 entradas do aplicativo constam do store. A primeira contagem retornou 1 ao incluir dois pacotes do próprio gerenciador mantidos fora desse store. O executável local de pnpm 12.3.4 retornou 0. |
+
+- **Ressalvas naquela execução.** O web usou a instalação recuperada e fontes simuladas no build. A reinstalação em diretório vazio ainda aguardava confirmação. No mobile, a checagem de compatibilidade usou o modo offline e a exportação Android verificou o bundle local.
+- **Arquivos e escopo.** A auditoria e o índice de recuperação registram o encerramento. Os manifests, testes, contratos e lockfiles dos produtos permanecem com o conteúdo dos HEADs verificados. Banco e integrações reais pertencem aos planos seguintes.
+- **Próximo plano elegível.** Plano 04, em conversa própria. A base local do mobile foi verificada para os testes, o typecheck e a exportação Android.
+- **Sugestão de commit.** `docs(dev3-03): registra validacoes deterministicas e recuperacao mobile`.
+
+## 22. Plano 03 — Verificação das ressalvas do web
+
+Em 24/11/2026, o checkout web `6488cc61b767d4bf1d553b56639ebaf96fdf6280` foi exportado para uma pasta de trabalho vazia. A leitura do índice retornou 432 registros de pacotes do aplicativo compatíveis com Windows x64. O índice indica os registros cadastrados. A instalação limpa verifica se o pnpm consegue usá-los.
+
+| Hora de Brasília | Comando ou verificação | Saída | Resultado |
+|---|---|---:|---|
+| 02:21–02:22 | `pnpm install --offline --frozen-lockfile --frozen-store`, em cópia limpa | 1 | Ambiente. A primeira tentativa encontrou `ERR_PNPM_NO_OFFLINE_META` no cache isolado do Windows. |
+| 02:22–02:23 | Mesmo comando com acesso ao cache local do Windows | 1 | Ambiente. A verificação de metadados passou e a instalação reaproveitou centenas de pacotes. O pnpm retornou `ERR_PNPM_NO_OFFLINE_TARBALL` para `delaunator@5.1.0`. O tarball com o SHA-512 do lockfile foi localizado separadamente no cache do npm. |
+| 02:23–02:27 | Recuperação de fontes WOFF2 do cache do Next e `next build` com Turbopack, resposta de fontes local e saída isolada | 0 para a recuperação dos arquivos, 1 para o build | Ferramenta. Foram recuperados nove arquivos WOFF2 de Manrope e Newsreader. O build padrão falhou na comunicação com o subprocesso que avalia as respostas locais de fontes. |
+
+Essas tentativas deixaram duas verificações pendentes naquela revisão. A seção 23 registra a instalação limpa e o build padrão bem-sucedidos na revisão web seguinte, que inclui as fontes locais.
+
+## 23. Plano 03 — Encerramento
+
+### Handoff final do Plano 03
+
+**Concluído em 24/11/2026.** O usuário executou o roteiro do web em duas cópias limpas da revisão `69aa6b9046c1255d29e353490114fee6609fbcb0` e forneceu o log. Essa revisão acrescenta Manrope e Newsreader com as respectivas licenças OFL 1.1 e carrega os arquivos com `next/font/local`. O backend permanece na revisão `b9f6a7a7e1b937dce6d8353b2572058591fb9ecf` e o mobile em `411763747a79507e85631721722e27a05525af69`.
+
+| Comando no web | Saída | Evidência de 24/11/2026 |
+|---|---:|---|
+| `pnpm install --frozen-lockfile --store-dir <store>` na cópia de preparo | 0 | pnpm 12.3.4 preparou o store com 425 pacotes fixados. |
+| `pnpm install --offline --frozen-lockfile --store-dir <store>` na cópia de validação | 0 | Reinstalação limpa. 425 pacotes reaproveitados e zero downloads. |
+| `pnpm run test` na cópia de validação | 0 | 749 testes em 49 arquivos aprovados, incluindo contrato. |
+| `pnpm run typecheck` e `pnpm run lint` | 0 cada | Geração dos tipos de rotas, TypeScript e ESLint concluídos. |
+| `pnpm run build` | 0 | Next.js 16.3.4 com Turbopack compilou e concluiu a geração estática de 11 entradas. O build usou as fontes locais da revisão e valores fictícios de ambiente. |
+| `git diff --exit-code HEAD -- package.json pnpm-lock.yaml pnpm-workspace.yaml` | 0 | Sem diferenças nesses arquivos. A conferência independente confirmou o conteúdo do commit após normalizar os finais de linha. |
+
+- **Verificação do artefato.** O `BUILD_ID` está presente. Os dois arquivos de fonte emitidos pelo build têm o mesmo SHA-256 dos arquivos daquela cópia de validação. O log explicita o modo offline da instalação e registra os comandos e resultados do build.
+- **Critérios de saída.** Backend com 180 testes unitários, 8 de OpenAPI, typecheck, lint e build aprovados. Web com instalação limpa offline, 749 testes, typecheck, lint e build padrão aprovados. Mobile com dependências fixadas verificadas, 469 testes, typecheck, configuração do Expo 57 e exportação Android aprovados.
+- **Escopo.** Banco, Auth0, Pluggy, QStash, R2 e demais integrações de produto pertencem às validações posteriores. O cache mobile `$store/` é local e está fora do Git. O histórico de tentativas e avisos permanece nas seções anteriores.
+- **Próximo plano elegível.** Plano 04, em conversa própria. A base determinística do Plano 03 está verificada.
+- **Sugestão de commit.** `docs(dev3-03): encerra validacao deterministica dos tres produtos`.

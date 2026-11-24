@@ -1,6 +1,6 @@
 # Auditoria atual do Developer 3 — estado de referência e matriz mestra
 
-> **Leitura atual:** as seções 1–7 e o primeiro `Execution handoff` preservam o registro do Plano 00, de 23/11/2026. Seus metadados, working trees e pendências descrevem aquela coleta. As seções 8–13 registram o **Plano 01**, autorizado nesta conversa e atualizado em **24/11/2026**, incluindo as diferenças de revisão. Nenhum resultado histórico é promovido a aceite atual. O nome do arquivo foi mantido para preservar as referências existentes.
+> **Leitura atual:** as seções 1–7 e o primeiro `Execution handoff` preservam o registro do Plano 00, de 23/11/2026. Seus metadados, working trees e pendências descrevem aquela coleta. As seções 8–13 registram o **Plano 01**, atualizado em **24/11/2026**, incluindo as diferenças de revisão. As seções 14–17 registram o **Plano 02**, com as revisões após o pull e os bloqueios vigentes. Nenhum resultado histórico é promovido a aceite atual. O nome do arquivo foi mantido para preservar as referências existentes.
 
 **Plano executado:** somente Plano 00 — Congelar o estado de referência.
 
@@ -563,3 +563,123 @@ A conferência é documental: IDs únicos e cobertura dos 12 prompts; nove colun
 - **Condição de entrada do próximo plano:** consultar matriz/catalogo/B01–B14, reconferir HEADs e estados, comparar contrato backend com snapshots/schemas de ambos os clientes e obter aprovação específica após o plano da nova etapa. Limitar correções a documentação vigente e formalizar defeitos de produto com responsáveis. Testes ficam para as etapas autorizadas.
 - **Índice de recuperação:** o status inicial do Plano 01 no documento de recuperação não foi editado porque esse arquivo está fora do conjunto de escrita aprovado; este handoff registra a execução. A conclusão da matriz não fecha os critérios funcionais nela classificados IR/PA/BL/NI.
 - **Sugestão de commit:** `docs(dev3-01): consolida matriz por criterio e bloqueios P13-P60`, incluindo somente esta auditoria. Nenhum commit criado nesta etapa.
+
+## 14. Plano 02 — revisões e procedência
+
+A matriz do Plano 01 é o ponto de partida. Esta seção registra a comparação de 24/11/2026 após o pull, sob aprovação `planejamento aprovado, pode implementar`. O OpenAPI e os controllers descrevem o contrato publicado. As decisões da Sprint 3 e da Sprint 4 definem os critérios de aceite. Diferenças entre essas fontes estão nos achados da seção 16.
+
+| Checkout `main` | HEAD completo | Estado na entrada |
+|---|---|---|
+| Documentação | `d14b776408f8145003d8cf6de33ea9ad20c740c0` | Limpo. Incorpora adendos S4 e o registro local de validação. |
+| Backend | `b9f6a7a7e1b937dce6d8353b2572058591fb9ecf` | Limpo. O pull trouxe `9fc5a1f` (HU-008), `e4c6a48` (HU-009), `a730f56` (HU-012) e a correção HTTP de contas/OFX em `b9f6a7a`. |
+| Web | `00717135e92f62e84d2c53cb3f63f8c91a44b7ca` | Limpo. Snapshot web introduzido em `35c1cfc`. |
+| Mobile | `859abacccb17dc165877d8f1832a6bf0686797d8` | Limpo. Snapshot mobile introduzido em `3440ca6`. |
+
+| Artefato | SHA-256 do arquivo | Comparação semântica |
+|---|---|---|
+| Backend `openapi/openapi.json` | `1262d18a4345d72d9217f1742d07ea532cc3d2a9d2793f09f23c919e14ec8b58` | 40 operações, 16 schemas em `components.schemas`. |
+| Web `src/lib/api/openapi.snapshot.json` | `f301f9b4a0b8a6aa9684cbed0478eefbc656b6ac4a7d628c216d3ca4f252b287` | O JSON completo equivale a `234cb11` removida a rota `PUT` de mapeamento. No HEAD do backend, 28 operações comuns são idênticas, assim como os 16 schemas de componentes. Faltam 12 operações publicadas. |
+| Mobile `src/lib/api/openapi.snapshot.json` | `2882e8b595d5af63320f08dc4e057c7bfc85b5e0a029fa610fd8584f3f467e39` | O blob é idêntico ao de `605cb07`. No HEAD do backend, 26 operações são idênticas e duas mudaram. Faltam as mesmas 12 operações e dois componentes, `PluggyDataAvailability` e `PluggyImportAccount`. |
+
+As operações ausentes dos dois snapshots são mapeamento Pluggy (1), sincronização e sessão de atualização HU-008 (4), consulta de investimentos e movimentos HU-009 (2) e patrimônio HU-012 (5). As últimas sete entram na contagem do diff. A revisão de produto dessas histórias pertence às etapas da Sprint 4. As duas operações diferentes no mobile são a conclusão Pluggy e o detalhe da conexão. O conjunto atual de rotas de contas, movimentações e categorização é idêntico nos snapshots e no backend. Os tipos e schemas dos clientes são mantidos localmente à mão. O mecanismo de geração continua sem decisão registrada (B11).
+
+### 14.1. Como reproduzir o diff
+
+Da raiz da documentação, executar o bloco em Node por entrada padrão. O script usa os checkouts irmãos e os commits de origem para comparar método, caminho, parâmetros, corpo, respostas, segurança e schemas, sem depender de serviços em execução. A ordem das propriedades dos objetos JSON é normalizada antes da comparação.
+
+```js
+const fs = require("node:fs");
+const { execFileSync } = require("node:child_process");
+const roots = ["backend", "web", "mobile"].map(name => "../" + name + "-centralizador-financeiro");
+const files = ["openapi/openapi.json", "src/lib/api/openapi.snapshot.json", "src/lib/api/openapi.snapshot.json"];
+const [backend, web, mobile] = roots.map((root, index) =>
+  JSON.parse(fs.readFileSync(root + "/" + files[index], "utf8")));
+const normalize = value => Array.isArray(value) ? value.map(normalize)
+  : value && typeof value === "object"
+    ? Object.fromEntries(Object.keys(value).sort().map(key => [key, normalize(value[key])]))
+    : value;
+const same = (a, b) => JSON.stringify(normalize(a)) === JSON.stringify(normalize(b));
+const operations = doc => Object.fromEntries(Object.entries(doc.paths).flatMap(([path, item]) =>
+  Object.entries(item).filter(([method]) => /^(get|post|put|delete|patch|head|options|trace)$/.test(method))
+    .map(([method, value]) => [method.toUpperCase() + " " + path, value])));
+const current = operations(backend);
+for (const [name, client] of [["web", web], ["mobile", mobile]]) {
+  const local = operations(client);
+  const schemas = backend.components.schemas;
+  const localSchemas = client.components.schemas;
+  console.log(name, {
+    published: Object.keys(current).length,
+    snapshot: Object.keys(local).length,
+    missing: Object.keys(current).filter(key => !(key in local)),
+    extra: Object.keys(local).filter(key => !(key in current)),
+    changed: Object.keys(local).filter(key => key in current && !same(local[key], current[key])),
+    changedSchemas: [...new Set([...Object.keys(schemas), ...Object.keys(localSchemas)])]
+      .filter(key => !same(schemas[key], localSchemas[key])),
+  });
+}
+const getOrigin = revision => JSON.parse(execFileSync("git",
+  ["-C", roots[0], "show", revision + ":" + files[0]], { encoding: "utf8" }));
+const webOrigin = getOrigin("234cb11");
+delete webOrigin.paths["/api/v1/connections/{connectionId}/accounts/{providerAccountId}/mapping"];
+console.log("origem web sem mapping:", same(webOrigin, web));
+console.log("origem mobile:", same(getOrigin("605cb07"), mobile));
+```
+
+## 15. Contrato publicado e consumo verificado
+
+Os caminhos abaixo têm prefixo `/api/v1`. Os códigos de erro da tabela são as respostas do OpenAPI, conferidas também nos snapshots quando a operação está presente. Os schemas de cliente foram inspecionados em `src/lib/ingestions/schema.ts`, `src/lib/connections/schema.ts` e, no web, `src/lib/sync-runs/schema.ts`. Os testes citados nos achados são evidência de cobertura presente.
+
+| Operação | Sucesso e campos relevantes | Erros publicados | Consumo |
+|---|---|---|---|
+| `POST /ingestions/ofx/previews` | `201` com `ImportRun`. Multipart `file` e `destinationAccountId`. Chave obrigatória. | `400/401/403/404/409/413/415/422/500/503` | Ambos. Limite local de 4 MiB no web e de 10 MiB no mobile e na API. |
+| `POST /ingestions/{importRunId}/confirmations` | `200` com `ImportRun`. Mesmo destino em JSON. Chave obrigatória. | `400/401/403/404/409/500/503` | Ambos. Confirmação síncrona no backend. A aplicabilidade de processamento assíncrono requer medição (B13). |
+| `GET /ingestions/{importRunId}` | `200` com `ImportRun`. Sem chave. | `400/401/403/404/500` | Ambos. |
+| `POST /connections/pluggy/sessions` | `201` com `connection`, `connectToken` e `expiresAt`. | `401/500/503` | Ambos. |
+| `POST /connections/pluggy/completions` | `202` com `{ connection, initialImport }`. `Idempotency-Key` obrigatória e `{ itemId }`. | `400/401/404/409/500/503` | Web compatível. Mobile envia sem chave e espera a conexão isolada. B01. |
+| `GET /connections/{connectionId}` | `200` com conexão e `initialImport` obrigatório como campo, que pode ser nulo. | `400/401/404/409/500` | Web valida e oferece atualização manual. Mobile lê campos da conexão e descarta `initialImport`. B01. |
+| `POST /connections/{connectionId}/disconnect` | `200` com a conexão após a operação. | `400/401/404/409/500/503` | Ambos. |
+| `PUT /connections/{connectionId}/accounts/{providerAccountId}/mapping` | `200` com `connectionId`, `providerAccountId`, `accountId` e `initialImport`. `{ action: "link", accountId }` ou `{ action: "create" }`. | `400/401/404/409/500/503` | Ausente dos dois clientes e snapshots. P02-01. |
+| `POST /connections/{connectionId}/sync-runs` | `202` com execução. Sem chave. Requisições enquanto uma execução está ativa reaproveitam o run. | `400/401/404/409/500/503` | Web tem chamada de biblioteca, mobile sem consumo. P02-04. |
+| `GET /connections/{connectionId}/sync-runs/{runId}` | `200` com execução. | `400/401/404` | Web tem chamada de biblioteca, mobile sem consumo. P02-04. |
+| `GET /connections/{connectionId}/sync-runs/latest` | `200` com `latest` e `lastReconciled`, ambos anuláveis. | `400/401/404` | Ausente dos dois clientes. P02-04. |
+| `POST /connections/{connectionId}/update-session` | `200` com `connectToken` e `expiresAt` para ação do usuário. | `400/401/404/409/503` | Ausente dos dois clientes. P02-04. |
+
+- **Estados OFX.** Os dois schemas aceitam `preview_ready`, `queued`, `processing`, `completed`, `completed_with_errors`, `failed` e `expired`, com estado e contadores de itens separados. A prévia expõe `isDuplicate` e `warnings`. O cliente usa `external_id_missing` para aviso e a API deixa `errorCode` do item aberto. `awaiting_account_mapping` e `expiresAt` da prévia são exigidos pela S3-08 e estão ausentes do contrato OFX. `queued` no enum não demonstra processamento assíncrono.
+- **Estados Pluggy.** A conexão pode estar `pending_authorization`, `connected`, `partially_available`, `expired`, `revoked` ou `disconnected`. O status do consentimento pode ser `granted`, `expired`, `revoked` ou nulo. `initialImport` tem estados próprios `queued`, `processing`, `awaiting_account_mapping`, `completed`, `completed_with_errors` e `failed`. A disponibilidade de contas e transações é independente, com `pending`, `available`, `unavailable` e `failed`. O mapeamento por conta pode estar `pending`, `mapped` ou `unsupported`.
+- **Estados HU-008.** `queued`, `running`, `action_required`, `succeeded`, `partial` e `failed`. O contrato de execução exige `trigger` (`manual` ou `daily`), `acceptedAt`, `startedAt`, `completedAt`, `referenceDate`, `reasons` e `statusUrl` além de estado e IDs. As datas posteriores podem ser nulas. Os motivos publicados são `unavailable`, `failed` e `ambiguous_identity` por tipo de dado.
+- **Problem Details.** OFX distingue `ACCOUNT_NOT_FOUND` e `ACCOUNT_ARCHIVED`, conflitos de idempotência (`IDEMPOTENCY_KEY_REUSED` e `IDEMPOTENCY_KEY_EXPIRED`) e erros de arquivo `413/415/422` com `INVALID_REQUEST`. A revisão `b9f6a7a` corrige também o ramo de `PayloadTooLargeException` para `413`. Conexões/Pluggy mapeiam falta da chave para `400 INVALID_REQUEST`, conexão não localizada para `404 CONNECTION_NOT_FOUND`, conflito de estado ou idempotência para `409 CONNECTION_CONFLICT` e falha de integração para `503 INTEGRATION_UNAVAILABLE`. A diferença entre o filtro compartilhado e as respostas publicadas está em P02-06.
+
+## 16. Achados reproduzíveis e encaminhamentos
+
+As observações abaixo foram verificadas pelo diff e por leitura dirigida na revisão da seção 14. Os cenários de execução propostos usam fixtures, relógio controlado ou ambiente descartável autorizado. Registre o resultado observado quando forem executados.
+
+| Achado e impacto | Como reproduzir e evidência observada | Critério de correção e responsável |
+|---|---|---|
+| **B01 · Alta · Conclusão Pluggy mobile bloqueada** | Comparar o `POST .../completions` e o `GET .../{connectionId}` do OpenAPI e do snapshot mobile. Em `src/lib/connections/api.ts`, `completePluggyConnection` envia só `{ itemId }` e usa `connectionSchema`. `api.test.ts` fixa `200` sem header. O controller `pluggy-initial-import.controller.ts` retorna `400` se a chave faltar e publica `202` com envelope. Cenário dirigido após a correção: repetição do mesmo Item/chave após resposta perdida e consulta dos estados até resultado. | **Dev 2**, encaminhado no contrato mobile. Gerar uma chave por conclusão, manter a mesma em retries do mesmo payload, ler o envelope `202` e preservar `initialImport` no detalhe. Dev 1 mantém contrato/replay. Dev 3 verifica no Plano 06. |
+| **P02-01 / B05 · Alta · Mapeamento Pluggy bloqueado nos clientes** | Comparar o `PUT .../mapping` no OpenAPI com snapshots e `src/lib/connections` nos dois clientes. Usar estado sintético `awaiting_account_mapping` com conta externa pendente. Web exibe espera e atualização, sem ações `link/create`. O mobile também depende de B01 para acessar o estado. `PluggyInitialImport.mapAccount` valida conexão elegível e rejeita conta externa `unsupported`. A coleta inicial filtra produtos autorizados e representa conta externa corrente, poupança ou cartão em BRL como tipos mapeáveis, sujeitos a nome válido. O caminho `create` aplica restrições adicionais de saldo/data. Em um novo `link`, o domínio rejeita conta arquivada e vínculo a outro ID externo. A seleção consulta contas do tenant e a conexão pertence ao usuário. | **Dev 2** implementa seleção e ações em plano próprio. **Dev 1** confirma guardas e regressões de titularidade, conta arquivada e vínculo anterior. C-02 já decide seleção explícita entre locais ativas e elegíveis, criação quando não houver opção e espera enquanto não houver escolha. Dev 3 verifica retomada após o último mapeamento e validação negativa. [Decisões C-02 e C-03](../docs/planejamento/sprint-04/s4-01-dev1-backend-baseline-e-decisoes.md). |
+| **B02 / P02-02 · Alta · OFX exige destino cedo e lista conta inelegível** | Conferir `destinationAccountId` obrigatório no multipart e em `CreateOfxImportPreview`. O seletor web `contas/importar-ofx/page.tsx` e o mobile `OfxImportScreen.tsx` mapeiam todas as contas de `listAccounts` sem filtrar `origin`. Com uma conta manual ativa e uma conectada ativa do mesmo tenant, selecionar cada uma para o mesmo OFX sintético, usando chaves próprias. Pelo código, a manual é elegível. A conectada é exibida, mas recusada pelo backend com `409`. Comparar também a ausência de `awaiting_account_mapping` nos schemas da prévia. | **Dev 1** alinha contrato/API ao fluxo arquivo → escolha de destino → prévia final da S3-08. **Dev 2** alinha seletores e estado. Dev 3 verifica num cenário com conta elegível, conectada, arquivada e inacessível e comprova duplicatas só após destino resolvido. [Critérios S3-08](../docs/planejamento/sprint-03/Plano_Divisao_Atividades_Sprint_3.html). |
+| **B03 / P02-03 · Alta · Validade e limpeza de OFX incompletas** | Conferir `ingestion-openapi.schema.ts`, `ImportRun`, `PrismaIngestionRepository.startConfirmation` e `ConfirmOfxImport`. O caminho de confirmação aceita `PREVIEW_READY` sem conferir idade. `GetImportRun` lê estado persistido. A regra de expiração de chave opera sobre o registro de idempotência. A confirmação em estado terminal tenta apagar o objeto no R2 e a criação compensa falha de gravação. `retentionExpiresAt` é calculado 90 dias após o terminal. A busca em código e migrations não encontrou rotina OFX de expiração de prévia abandonada ou expurgo de metadados. Cenário dirigido: criar prévia com fixture, avançar o relógio até a borda de 24h, consultar e confirmar com chave nova para isolar o prazo da prévia. Em cenário de retenção, observar objeto após terminal/abandono e metadados na borda de 90 dias. | **Dev 1** implementa ou comprova validade, rejeição sem escrita, transição para `expired` e limpeza/expurgo conforme S3-08 e D7/D11. **Dev 2** representa prazo e estado quando publicados. Dev 3 valida ciclos com relógio, banco e storage descartáveis. [Critérios S3-08](../docs/planejamento/sprint-03/Plano_Divisao_Atividades_Sprint_3.html) · [Decisões S3-01](../docs/planejamento/sprint-03/contrato-backend-s3-01.html). |
+| **B06 / P02-04 · Alta · HU-008 publicado no backend, consumo incompleto** | Inspecionar `pluggy-sync.controller.ts`, `pluggy-sync-openapi.schema.ts` e os quatro caminhos da seção 15. Buscar chamadas fora de `src/lib/sync-runs` no web e nos arquivos mobile. O web oferece POST e GET por ID em biblioteca com testes de fixtures. O schema descarta `trigger`, `referenceDate` e `reasons` e aceita omissão de datas que são campos obrigatórios e anuláveis na API. `latest`, `update-session`, tela e acompanhamento não foram localizados nos clientes do recorte. Para reproduzir a perda de campos, validar no schema web um corpo sintético completo com `partial` e `reasons`. | **Dev 2** reconcilia snapshots/schemas com diff e entrega consumo e UX de acompanhamento, resultado e ação requerida. **Dev 1** mantém o contrato. Dev 3 valida gatilhos manual/diário, reaproveitamento de execução ativa, estados, ações, tenant e plataforma antes de P59/P60. [Decisões S4-01](../docs/planejamento/sprint-04/s4-01-dev1-backend-baseline-e-decisoes.md). |
+| **B04 / P02-05 · Média · Deduplicação implementada, aviso de ambiguidade incompleto na importação inicial** | Comparar `ImportPluggyTransaction`, `pluggy-api.client.ts`, a chamada do importador nos dois fluxos e os schemas de suas respostas. O adapter aceita ID ausente/nulo. O backend cria identidade estável escopada por conexão/conta e usa índice único por tenant/conta/identidade. Sem ID, consulta candidatos por conta, tipo, data, valor e descrição. Uma correspondência é duplicata. Múltiplas devolvem `ambiguous` sem inserir. A sincronização publica motivo `ambiguous_identity`. Na importação inicial, `ambiguous` incrementa `failedTransactions` e o contrato expõe contadores, sem motivo consultável equivalente. O replay da chave de conclusão já tem spec no backend `7c34b4d`. | **Dev 1** confirma com Produto o estado/aviso inicial exigido por C-05 e entrega evidência do mesmo ID na mesma conexão, ID ausente e zero/uma/múltiplas correspondências nos dois fluxos. Dev 3 valida aviso, continuidade do lote e garantia do identificador do provedor sob autorização própria. [C-05 e D13](../docs/planejamento/sprint-04/s4-01-dev1-backend-baseline-e-decisoes.md). |
+| **P02-06 · Média · Respostas do filtro de conexões sem cobertura integral no OpenAPI HU-008** | Comparar `responses` dos quatro caminhos com `ConnectionsProblemDetailsFilter`. O filtro traduz contexto indisponível em `403 IDENTITY_CONTEXT_UNAVAILABLE`, ausente das quatro definições. Também prevê `500 INTERNAL_ERROR`, publicado no POST de sync e ausente das consultas e de `update-session`. A aplicabilidade de cada ramo em runtime requer teste dirigido. | **Dev 1** confirmar as respostas possíveis por operação com testes de contexto indisponível e falha interna controlada e publicar as respostas aplicáveis. **Dev 2** revisar o tratamento quando alinhar os clientes. |
+
+**Chave por requisição e identidade por movimentação.** No mobile manual, `MovementFormScreen.tsx` cria a chave de `POST /transactions` via `expo-crypto` e a mantém no mesmo envio repetido quando o backend não pede rotação. A conclusão Pluggy usa uma chave para o comando que inicia o run. A importação inicial e a sincronização recorrente chamam o importador do backend para cada movimentação. A função `createPluggyExternalIdentityKey` incorpora o ID Pluggy à identidade da conexão e da conta externa ou usa moeda, data, valor, tipo e descrição quando o ID falta. O importador grava com `createIfExternalIdentityAbsent`. A garantia sobre presença e estabilidade dos IDs em conectores reais e a evidência após reconexão permanecem condicionais.
+
+**Impacto na matriz do Plano 01.** B01, B02 e B03 seguem reproduzíveis estaticamente. B05 passa de decisão em aberto para consumo e confirmação dos guardas C-02. B06/P59/P60 passam a separar backend publicado de consumo e validação pendentes. A leitura de “backend ausente” em B06–B08 pertence à linha de base anterior. HU-009 e HU-012 ganharam operações no backend. A matriz histórica permanece disponível para rastrear essa evolução. B14 é tratado nas seções vigentes dos contratos e no roteiro atualizado. [Validação local da S4 de 23/11/2026](../docs/planejamento/sprint-04/s4-06-validacao-local-2026-11-23.md).
+
+## 17. Validação e handoff do Plano 02
+
+### Execution handoff — Plano 02
+
+- **Plano executado.** Plano 02 — Reconciliar contratos e documentação vigente. **Concluído com ressalvas.** A compatibilidade está descrita por operação e os bloqueios de produto têm responsável.
+- **Repositórios e revisões.** Os quatro HEADs e os três hashes estão na seção 14. A validação local S4 de 23/11 serve como evidência histórica de execução, com revisões e estado de checkout próprios.
+- **Arquivos alterados.** Esta auditoria, o [índice de recuperação](../docs/planejamento/plano-recuperacao-dev3.md#18-como-acompanhar-o-progresso), o [roteiro da Sprint 3](../prompts/sprint3/dev2/roteiro-demonstracao-sprint-3.md) e `src/lib/api/CONTRACT.md` em cada cliente.
+- **Critérios verificados.** Revisão de origem e diff estrutural de 40 operações publicadas, 28 em cada snapshot, schemas de borda, códigos publicados, conclusão e andamento Pluggy, elegibilidade/mapeamento, ciclo OFX e publicação da HU-008. A procedência e as diferenças foram registradas com preservação dos snapshots.
+- **Comandos e resultados.** Coleta com `git status`, `git rev-parse`, `git log`, `git show`, `rg` e leitura dirigida. A comparação em Node da seção 14.1 retornou 12 operações ausentes por cliente, zero extras, zero alterações comuns no web e duas no mobile. As duas verificações de origem retornaram `true`. A validação documental adicional conferiu 12 linhas de respostas contra o JSON, os três SHA-256, 17 links locais no recorte editado, o histórico dos Planos 00/01 e o conjunto de cinco arquivos aprovados. `git diff --check` retornou 0 nos quatro checkouts.
+- **Verificações não executadas.** Suítes de produto, lint, typecheck, build, geração de artefatos, inspeção de ambiente externo, runtime com PostgreSQL/RLS, Auth0, Pluggy Sandbox, QStash, R2, demonstração e aceite.
+- **Defeitos e responsáveis.** B01 está encaminhado ao Dev 2 no `CONTRACT.md` mobile. Seção 16 detalha as demais reproduções e respectivos responsáveis. O encaminhamento está nos documentos locais.
+- **Decisões ainda abertas.** Mecanismo de geração dos clientes (B11), limiar mensurado para OFX assíncrono (B13), confirmação do aviso da importação inicial e evidência do provedor em C-05. C-02 já tem decisão de Produto.
+- **Bloqueios de ambiente.** Nenhum impediu a comparação local. As condições citadas no roteiro dependem da prontidão dos ambientes autorizados quando executado.
+- **Riscos residuais.** Compatibilidade estática não verifica integração, comportamento em execução, segurança de tenant ou jornadas completas. O snapshot mobile reproduz o contrato antigo e os dois omitem mapeamento Pluggy e HU-008. O histórico de testes da S4 não cobre a validação do consumo HU-008 nas revisões dos clientes deste handoff.
+- **Próximo plano elegível.** Plano 03 — Restabelecer a base de execução, em conversa própria.
+- **Condição de entrada.** Contratos reconciliados no recorte compatível ou bloqueados com evidência e responsável, conforme este handoff. Reconfirmar os HEADs, preparar a execução e obter aprovação do Plano 03.

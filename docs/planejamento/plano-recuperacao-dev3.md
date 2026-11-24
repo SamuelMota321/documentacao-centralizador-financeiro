@@ -198,7 +198,7 @@ Remover contradições que tornariam os testes ou o aceite ambíguos.
 - expiração e retenção OFX;
 - mapeamento e elegibilidade de contas;
 - estados, respostas e erros publicados;
-- ausência atual das rotas HU-008 no backend;
+- presença das rotas HU-008 no backend vigente e compatibilidade dos clientes com o contrato publicado;
 - snapshots gerados a partir da revisão correta.
 
 ### Critério de saída
@@ -500,7 +500,7 @@ Use esta tabela como índice. Atualize o status somente com evidência registrad
 |---|---|---|
 | 00 | Não iniciado | Estado dos quatro repositórios congelado |
 | 01 | Não iniciado | Matriz P13–P60 atual |
-| 02 | Não iniciado | Contratos reconciliados ou bloqueados |
+| 02 | Concluído com ressalvas | Contratos reconciliados no recorte compatível e divergências registradas com responsáveis. [Handoff do Plano 02](../../auditorias/auditoria-dev3-atual-2026-11-23.md#execution-handoff--plano-02). |
 | 03 | Não iniciado | Suítes determinísticas reproduzíveis |
 | 04 | Não iniciado | Sprint 1 aceita ou bloqueada com precisão |
 | 05 | Não iniciado | Sprint 2 aceita ou bloqueada com precisão |

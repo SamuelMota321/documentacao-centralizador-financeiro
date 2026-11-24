@@ -5,9 +5,14 @@
 - Nunca mostrar: `.env` (dos clientes ou do backend), tokens, `connectToken`, aba de rede do navegador, URLs com parâmetros de autenticação, credenciais do Auth0, do R2 ou do Pluggy.
 - Preencha a coluna **Observado** durante a execução. Não marque como feito o que não foi executado; um passo bloqueado por ambiente é anotado como bloqueado.
 
+> **Revisões verificadas em 24/11/2026:** backend `b9f6a7a`, web `0071713` e
+> mobile `859abac`. Este roteiro registra o que é possível demonstrar e as
+> condições de cada etapa. A [auditoria atual do Dev 3](../../../auditorias/auditoria-dev3-atual-2026-11-23.md#14-plano-02--revisões-e-procedência)
+> traz a comparação dos contratos. Preencha a coluna Observado com o resultado real.
+
 ## Preparação
 
-1. Backend: `docker compose up -d --wait` em `backend-centralizador-financeiro` (usa npm, nunca pnpm). API em `http://localhost:3100/api/v1` com `compose.override.yaml`. O serviço `migrate` precisa terminar com sucesso (inclui `202610090000_s305_pluggy_audit_enum_values`).
+1. Backend: `docker compose up -d --wait` em `backend-centralizador-financeiro` (usa npm, nunca pnpm). API em `http://localhost:3100/api/v1` com `compose.override.yaml`. O serviço `migrate` precisa terminar com sucesso (inclui as migrations de conexões e importação inicial Pluggy da revisão usada).
 2. Credenciais no `.env` **do backend**, nunca nos clientes:
    - OFX: `R2_ENDPOINT`, `R2_BUCKET_NAME`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY` (as quatro juntas). Sem elas, a prévia responde 503 e as Partes 1, 2 e 4 ficam bloqueadas.
    - Pluggy: `PLUGGY_CLIENT_ID` e `PLUGGY_CLIENT_SECRET` do Sandbox, junto com `PLUGGY_WEBHOOK_*`, `QSTASH_*` e `PUBLIC_API_BASE_URL` (o backend exige o conjunto completo). Sem elas, as Partes 3 e 4 ficam bloqueadas.
@@ -45,7 +50,7 @@
 | P1 | Contas → **Conectar banco (Sandbox)** | Explicação do que é autorizado: só leitura, Sandbox, nunca pagamento ou Pix, senha do banco não passa pelo Coinciente | |
 | P2 | **Conectar** e fechar a janela do Pluggy sem escolher banco | "Conexão cancelada. Nada foi registrado." | |
 | P3 | **Conectar** → conector "Pluggy Bank" com as credenciais de teste exibidas pelo Pluggy | "Conexão registrada."; detalhe com estado em texto ("Conectada" ou "Aguardando autorização"), produtos autorizados e datas | |
-| P4 | Se o estado for "Aguardando autorização": **Verificar de novo** | Estado atualizado; o botão só aparece enquanto a autorização está pendente | |
+| P4 | Com autorização pendente ou importação inicial em andamento, selecionar **Verificar de novo** | O detalhe consulta a conexão por `connectionId` e atualiza o estado. Acompanhar `initialImport` separadamente do consentimento. Se ficar em `awaiting_account_mapping`, registrar P02-01 como bloqueio de mapeamento nos clientes. | |
 | P5 | Recarregar a página (a URL tem `?conexao=`) | A mesma conexão é exibida, sem nada guardado no navegador | |
 | P6 | Se o Sandbox oferecer um conector com dados parciais, conectar por ele | "Parcialmente disponível" com o texto de que só parte dos dados foi liberada. Se não houver conector assim, anotar "não disponível no Sandbox" | |
 | P7 | **Remover conexão** → **Cancelar** no diálogo | Nada muda | |
@@ -58,9 +63,9 @@
 | M1 | Contas → **Importar extrato OFX** → **Escolher arquivo** → `ofx-1-bank-ascii.ofx` na conta de O1 → **Gerar prévia** | A linha aparece como já registrada (importada em O3) | |
 | M2 | **Escolher outro arquivo** → `unsupported-pdf.pdf` | Recusado antes do envio, com a mensagem de PDF | |
 | M3 | Importar `ofx-2-credit-card-utf8.ofx` na "Reserva" e confirmar | Resultado com 1 importada; Movimentações mostra a linha | |
-| M4 | Contas → **Conectar banco (Sandbox)** → **Conectar** → "Pluggy Bank" | Widget em tela cheia; ao concluir, "Conexão registrada." e o detalhe da conexão | |
+| M4 | Contas → **Conectar banco (Sandbox)** → **Conectar** → "Pluggy Bank" | **Bloqueado por B01.** O checkout mobile omite `Idempotency-Key` e o backend responde `400` nessa condição. Após a correção do Dev 2, esperar `202` com `connection` e `initialImport` e conferir a atualização do detalhe. | |
 | M5 | **Conectar** e usar o botão Voltar do Android dentro do widget | Fecha o widget como cancelamento; nada registrado | |
-| M6 | **Remover conexão** → **Remover** no alerta | Mensagem de remoção e estado "Desconectada" | |
+| M6 | Em uma conexão de teste existente, selecionar **Remover conexão** → **Remover** | Mensagem de remoção e estado "Desconectada". Sem conexão de teste acessível, registrar o bloqueio de pré-condição. | |
 
 ## Parte 5 — Isolamento entre usuários
 
@@ -78,9 +83,15 @@
 - Resultado das checagens: web `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`; mobile `pnpm typecheck`, `pnpm test`, `npx expo export --platform android`.
 - Passos bloqueados por falta de credenciais R2 ou Pluggy, anotados como bloqueados, nunca como aprovados.
 
-## Limitações conhecidas (não são falhas da demonstração)
+## Limitações e bloqueios da demonstração
 
-- A prévia não mostra quando expira (24 horas): `expiresAt` não está no contrato.
+- A S3-08 exige que a prévia expire em 24 horas. A API atual omite `expiresAt`
+  e o caminho de confirmação não verifica a idade da prévia. Registrar B03
+  como bloqueio da demonstração de vencimento. O prazo de retenção de metadados
+  e a expiração da chave são critérios distintos.
 - Não há lista de conexões; cada sessão aberta e cancelada deixa uma conexão "Aguardando autorização" no backend.
-- A conexão ainda não importa transações nem associa contas (importação inicial e mapeamento ficam para a S3-08 no backend).
+- O backend inicia a importação e publica o `PUT` de mapeamento. O web lê o
+  estado da importação inicial. As ações `link`/`create` seguem bloqueadas
+  nos clientes e a conclusão Pluggy mobile depende de B01. O roteiro cobre
+  os passos disponíveis sem presumir importação de transações concluída.
 - No mobile, o OAuth das instituições abre numa WebView dentro do app, e as WebViews do SDK do Pluggy mantêm cookies entre usuários do mesmo aparelho.

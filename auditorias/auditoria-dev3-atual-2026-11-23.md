@@ -805,7 +805,7 @@ Essas tentativas deixaram duas verificações pendentes naquela revisão. A seç
 
 ## 24. Implementação das pendências do Plano 02 — Parte 1 (B01)
 
-**Data:** 24/11/2026. **Status:** implementado e validado localmente. O login em dispositivo foi aprovado. O aceite da conclusão Pluggy no Sandbox segue pendente, conforme o resultado em campo ao fim da seção. A seção 16 preserva a evidência original do bloqueio.
+**Data:** 24/11/2026. **Status:** implementado e validado localmente. O login e o aceite da conclusão Pluggy no Sandbox foram aprovados no tablet. O reteste no web segue pendente. A seção 16 preserva a evidência original do bloqueio.
 
 - **Revisões de referência.** Mobile `4117637`, backend `b9f6a7a` e web `69aa6b9`. A implementação usa o contrato publicado pelo backend e o fluxo web como referência.
 - **Conclusão.** `ConnectScreen.tsx` cria um UUID ao abrir uma sessão do widget e preserva em memória a chave e o `itemId` para **Tentar de novo**. O primeiro desfecho do widget governa a tentativa. `completePluggyConnection` envia `Idempotency-Key` e valida o envelope de `202` com `connection` e `initialImport`.
@@ -817,7 +817,15 @@ Essas tentativas deixaram duas verificações pendentes naquela revisão. A seç
 
 ### Resultado em dispositivo e ressalva do Plano 02
 
+> Registro da primeira tentativa em campo. O reteste após a correção do backend está na subseção seguinte.
+
 - **Android e Auth0 — aprovados em campo.** O usuário instalou a versão de desenvolvimento no tablet Android e confirmou que concluiu o login pelo Auth0. O mobile usa `coinciente://auth` para o retorno no app instalado, com o mesmo endereço configurado na aplicação Native de teste. O logout em dispositivo não foi observado.
 - **Pluggy — aceite pendente no web e no tablet.** Depois de passar pelo widget do Sandbox, os dois clientes exibiram “A conexão não foi registrada” e o aviso de serviço indisponível. O usuário voltou a relatar o erro no web após confirmar que o deploy do backend no Render estava ativo. O comportamento é compatível com `503 / INTEGRATION_UNAVAILABLE` no código inspecionado. O status HTTP da tentativa no backend não foi capturado. O `200` visto para `conectar` no navegador é da ação do servidor web.
 - **Evidência da investigação.** No Render foi observado o registro de inicialização da rota `POST /api/v1/connections/pluggy/completions`, sem registro que identifique a causa da tentativa. O usuário confirmou que a URL do QStash no Render aponta para US East e que o token corresponde à sua conta pessoal nessa região. Os logs consultados estavam vazios. A ausência de mensagem registrada deixa em aberto se houve falha ao confirmar com o Pluggy ou ao publicar a importação inicial no QStash.
 - **Responsável e critério de saída.** Dev 1 investiga a conclusão no backend e identifica a etapa e o status da falha com registro sanitizado. Dev 3 repete no web e no tablet após a correção. O B01 pode ter o aceite de campo fechado quando o mobile mostrar **Conexão registrada** e o estado da importação inicial, inclusive quando aguardar mapeamento. O Plano 02 permanece **concluído com ressalvas**.
+
+### Reteste Pluggy no tablet em 25/11/2026
+
+- **Contexto do reteste.** O Dev 1 corrigiu a validação da resposta de consentimentos Pluggy no backend, conforme relato do usuário. A seção anterior registra a falha observada antes da correção. A revisão exata do deploy usado no reteste não foi confirmada.
+- **B01 mobile — aceite de campo aprovado.** A captura do tablet mostra **Conexão registrada**, estado **Conectada** e o aviso **A importação inicial está em andamento**. Na mesma conexão, após tocar em **Verificar de novo**, o usuário confirmou que o aviso mudou para **A importação inicial aguarda o mapeamento de contas**. Isso confirma a conclusão Pluggy e a atualização do estado da importação no mobile.
+- **Pendências.** O reteste no web após a correção ainda não foi confirmado. A execução aguardava o mapeamento, que pertence à Parte 2 (P02-01). As demais divergências permanecem na seção 16, incluindo HU-008, OFX e o aviso de ambiguidade na deduplicação. O Plano 02 permanece **concluído com ressalvas**.

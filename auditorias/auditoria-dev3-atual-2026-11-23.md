@@ -829,3 +829,72 @@ Essas tentativas deixaram duas verificações pendentes naquela revisão. A seç
 - **Contexto do reteste.** O Dev 1 corrigiu a validação da resposta de consentimentos Pluggy no backend, conforme relato do usuário. A seção anterior registra a falha observada antes da correção. A revisão exata do deploy usado no reteste não foi confirmada.
 - **B01 mobile — aceite de campo aprovado.** A captura do tablet mostra **Conexão registrada**, estado **Conectada** e o aviso **A importação inicial está em andamento**. Na mesma conexão, após tocar em **Verificar de novo**, o usuário confirmou que o aviso mudou para **A importação inicial aguarda o mapeamento de contas**. Isso confirma a conclusão Pluggy e a atualização do estado da importação no mobile.
 - **Pendências.** O reteste no web após a correção ainda não foi confirmado. A execução aguardava o mapeamento, que pertence à Parte 2 (P02-01). As demais divergências permanecem na seção 16, incluindo HU-008, OFX e o aviso de ambiguidade na deduplicação. O Plano 02 permanece **concluído com ressalvas**.
+
+## 25. Plano 04 — Fechamento da Sprint 1
+
+**Data:** 26/11/2026. **Status:** bloqueado após a validação determinística de autenticação, contas e contratos. O aceite integrado da Sprint 1 continua pendente.
+
+### Execution handoff — Plano 04
+
+- **Plano executado.** Plano 04. A validação usou o código atual de Identity, Accounts, sessão e OpenAPI. A aplicação usaria dois tenants fictícios independentes vinculados às identidades A e B. O ambiente bloqueou o provisionamento e a execução desse cenário.
+- **Repositórios e revisões.** Documentação base `063df7f67d5cb4507625ce8e465bd948970bf39a`. Backend `2c9bf9f27b22448cfa810d7db5671a8a3a100c7c`. Web `bd383e937fab92e3b736ed4ac084c693c1642520`. Mobile `8de2a7c7fe7a4e5b16a7d59f0268dd2026c1e37e`. A base do Plano 03 está aprovada nas revisões do respectivo handoff.
+- **Arquivos alterados.** Esta auditoria, o [índice do plano](../docs/planejamento/plano-recuperacao-dev3.md#18-como-acompanhar-o-progresso) e os handoffs [P13](../prompts/sprint1/dev3/dev-3-sprint-1-fase-1-baseline-aceite-contratos.md#execution-handoff), [P14](../prompts/sprint1/dev3/dev-3-sprint-1-fase-2-testes-criticos-contratos-isolamento.md#execution-handoff) e [P15](../prompts/sprint1/dev3/dev-3-sprint-1-fase-3-integracao-documentacao-evidencias.md#execution-handoff).
+- **Fontes de aceite.** [Plano da Sprint 1](../docs/planejamento/sprint-01/Plano_Divisao_Atividades_Sprint_1.html), [Autenticação e Contas](../docs/planejamento/sprint-01/especificacao-autenticacao-contas.html) e [Manutenção e Isolamento de Contas](../docs/planejamento/sprint-01/especificacao-manutencao-isolamento-contas.html). A manutenção usa desativação lógica.
+
+#### Critérios verificados e bloqueios
+
+| Critério | Evidência atual | Pendência e responsável |
+|---|---|---|
+| S1-01 — Baseline e critérios | **Verificado para Dev 3.** Fontes normativas, revisões, critérios e estratégia de evidência consolidados. | Dev 1 e Dev 2 mantêm a decisão B11 sobre geração de clientes OpenAPI. |
+| S1-02 — Ambiente e execução | **Parcial.** Dependências do backend restauradas offline. Schema Prisma validado. Fontes e dependências dos clientes conferidas contra as revisões. | Dev 1 e responsável pelo ambiente disponibilizam PostgreSQL descartável. Dev 3 confirma roles, startup e setup integrado. |
+| S1-03 — Identidade, propriedade e persistência | **Parcial.** Resolução do contexto e criação sob o tenant autenticado verificadas em testes unitários. | Dev 3 / Dev 1 executam integração Prisma, provisionamento A/B e releitura no PostgreSQL. |
+| S1-04 — Autenticação e sessão | **Parcial.** Mapeamento de rejeição do verificador, guarda web e armazenamento, expiração e invalidação de sessão mobile verificados com dublês. | Dev 3 / Dev 1 verificam bearer ausente, inválido e expirado via HTTP. Dev 3 / Dev 2 demonstram login, expiração e logout reais em ambos os clientes. |
+| S1-05 — Criar e listar contas | **Parcial.** Validade do input, criação para o proprietário, confirmação de duplicidade, paginação e contrato aprovados no recorte local. | Dev 3 / Dev 1 executam Supertest e conferem persistência, visibilidade e paginação A/B. Dev 2 apoia demonstração. |
+| S1-06 — Manutenção e auditoria | **Parcial.** PATCH, desativação lógica idempotente, metadados mínimos e rejeição por falha de auditoria verificados com dublês. | Dev 3 / Dev 1 verificam persistência da alteração, registro de auditoria e rollback em banco. Dev 3 / Dev 2 demonstram cancelamento e confirmação da desativação. |
+| S1-07 — Isolamento | **Bloqueado para aceite.** Suítes PostgreSQL e Supertest presentes. Invalidação da sessão anterior verificada em unidade no mobile. | Dev 3 / Dev 1 executam leitura e mutação A/B via API e RLS com role sem bypass, inclusive sem contexto e com contexto inválido. Dev 3 / Dev 2 verificam troca A→B e ausência de estado anterior nos clientes. |
+| S1-08 — Testes e contratos | **Parcial.** Testes focados e paridade das quatro operações de contas aprovados nos dois clientes. | Dev 3 consolida integração, E2E e RLS após liberação do banco. B11 segue com Dev 1 e Dev 2. |
+| S1-09 — Integração, demonstração e revisão | **Bloqueado para aceite.** Evidências locais e roteiro reunidos. Workflow do backend presente. GitHub não retornou contextos de status para os três SHAs. A consulta de workflows filtra eventos de pull request e não comprova o workflow `push` do backend. | Dev 3 / Dev 2 executam e registram as duas demonstrações. Dev 3 confirma CI por revisão com Dev 1 / Dev 2 e registra revisão cruzada e aceite. |
+
+#### Comandos e resultados
+
+Executados em 26/11/2026. O backend foi arquivado do Git para uma cópia temporária. Os testes dos clientes usaram as instalações existentes depois que a reinstalação offline falhou por falta de metadados no cache. A comparação dos arquivos `src` e das configurações relevantes com as cópias dos commits retornou zero diferenças (257 arquivos web e 111 mobile). Em cada cliente, os importers, packages e snapshots do lockfile instalado coincidiram com o lockfile versionado, assim como as versões das 20 dependências diretas.
+
+| Repositório | Comando ou verificação | Saída | Resultado |
+|---|---|---:|---|
+| Backend | `npm ci --offline --no-audit --no-fund --logs-max 0` com cache local | 0 | 640 pacotes instalados. |
+| Backend | `npm run prisma:validate` com engine copiado para a pasta temporária via `PRISMA_SCHEMA_ENGINE_BINARY` | 0 | Schema Prisma válido. A primeira tentativa retornou `EPERM` no cache global do engine. |
+| Backend | `npm run build`, `npm run lint`, `npm run typecheck` | 0 em cada | Build NestJS e geração do Prisma Client 7.10.0 aprovados. ESLint e TypeScript aprovados. |
+| Backend | `node node_modules/vitest/vitest.mjs run <specs de Identity e quatro casos de uso de contas> --no-cache -t '^(?!.*active category rule)'` | 0 | 20 aprovados em 7 arquivos, 1 fora do recorte. Inclui guard/verificador Auth0 e criação, listagem, edição e desativação. |
+| Backend | `node node_modules/vitest/vitest.mjs run test/contract/openapi.contract.spec.ts --no-cache -t account` | 0 | 2 aprovados, 6 fora do recorte. |
+| Web | `vitest run src/lib/accounts 'src/app/(app)/contas/actions.test.ts' -t '^(?!.*regra ativa)'` | 0 | 63 aprovados, 2 fora do recorte. |
+| Web | `vitest run src/proxy.test.ts -t 'proxy.*(/contas\|/auth\|cookie\|página publica)'` | 0 | 6 aprovados, 12 fora do recorte. |
+| Mobile | `vitest run src/auth/session-epoch.test.ts src/auth/session-store.test.ts src/lib/accounts -t '^(?!.*regra ativa)'` | 0 | 53 aprovados, 1 fora do recorte. |
+| Web e mobile | `vitest run src/lib/api/contract.test.ts -t 'contrato OpenAPI de contas'` | 0 em cada | 10 aprovados em cada cliente. Os demais casos foram filtrados. |
+| Web e mobile | `node <repo>/node_modules/typescript/bin/tsc --noEmit --incremental false --project <repo>/tsconfig.json` | 0 em cada | TypeScript aprovado com os arquivos presentes. As verificações de build e lint dos clientes do Plano 03 permanecem vinculadas às revisões de 24/11. |
+| Três produtos | Node, comparação estrutural das operações OpenAPI e da segurança efetiva | 0 | `GET /api/v1/accounts`, `POST /api/v1/accounts`, `PATCH /api/v1/accounts/{accountId}` e `POST /api/v1/accounts/{accountId}/deactivate` coincidem em ambos os snapshots com o OpenAPI versionado do backend, incluindo schemas inline e respostas de erro. |
+
+Nos clientes, os comandos da tabela foram executados pelo binário instalado com `node <repo>/node_modules/vitest/vitest.mjs run --root <repo> --configLoader runner --no-cache` e os filtros indicados.
+
+O comando unitário do backend recebeu estes filtros de arquivo, seguidos de `--no-cache -t '^(?!.*active category rule)'`.
+
+```text
+src/modules/identity/adapters/inbound
+src/modules/identity/application
+src/modules/accounts/application/use-cases/create-manual-account.spec.ts
+src/modules/accounts/application/use-cases/list-accounts.spec.ts
+src/modules/accounts/application/use-cases/update-account.spec.ts
+src/modules/accounts/application/use-cases/deactivate-account.spec.ts
+```
+
+#### Retomada do aceite
+
+1. **Banco e backend.** O responsável pelo ambiente, com Dev 1, deve expor PostgreSQL descartável para o executor. Nesta sessão, `docker version` retornou acesso negado ao daemon, `wsl --list --quiet` retornou `E_ACCESSDENIED` e as portas locais 5432, 5433 e 55432 testadas estavam indisponíveis. A busca de alternativa offline não encontrou binários PostgreSQL instalados. Dev 3 valida o alvo e os papéis `cfi_migrator`, `cfi_runtime` e `cfi_test`, executa `npm run db:migrate:deploy` e `npm run db:verify-migrations`, e registra a execução. `prisma:validate` verifica o schema local.
+2. **Integração e RLS.** Com as URLs descartáveis fornecidas ao processo, Dev 3 executa os specs `identity-accounts.integration.spec.ts`, `prisma-accounts.repository.integration.spec.ts`, `rls.integration.spec.ts`, `accounts.e2e.spec.ts` e `account-maintenance.e2e.spec.ts`, com filtro para contas e identidade. O RLS deve comprovar leitura própria e ausência de leitura e mutação alheias em papel sem `BYPASSRLS`, além de falhar de forma segura com contexto ausente ou inválido. Conferir também o resultado da auditoria e da alteração após falha de auditoria no PostgreSQL. Os E2E existentes substituem o verificador de tokens.
+3. **Web e Android.** Dev 2 e responsável pelo ambiente disponibilizam o Auth0 de teste com duas identidades fictícias e um navegador e Android que alcancem a mesma API de teste. `adb devices` saiu com código 1 porque o daemon ficou inacessível nesta sessão. Em cada cliente, entrar como A, criar uma conta manual, relistar, editar, cancelar e depois confirmar a desativação. Sair, tentar voltar à área protegida e entrar como B. Confirmar que os dados de A não reaparecem, inclusive após resposta tardia da sessão anterior. Conferir expiração e acesso sem sessão separadamente. Registrar plataforma, revisão e resultado com dados sintéticos. Dev 1 e Dev 3 validam separadamente a rejeição real de bearer ausente, inválido e expirado.
+4. **Revisão.** Dev 3 recolhe o resultado de CI por revisão, registra a revisão cruzada e atualiza o aceite à medida que os testes acima produzirem evidência.
+
+- **Defeitos encontrados e responsáveis.** As verificações executadas não revelaram defeito de produto. Dev 1 recebe falhas de persistência, auditoria, autenticação backend e RLS confirmadas na retomada. Dev 2 recebe falhas de sessão e fluxo nos clientes. Dev 3 consolida a evidência.
+- **Decisões ainda abertas.** Confirmação do mecanismo de geração OpenAPI (B11), resultado de CI por revisão e aceite final dos três desenvolvedores.
+- **Riscos residuais.** Isolamento efetivo no banco, rollback de auditoria, autenticação Auth0 real, troca de estado renderizado e demonstração continuam sem evidência de execução nesta etapa.
+- **Próximo plano elegível.** Retomar o próprio Plano 04. O Plano 05 permanece aguardando o fechamento da Sprint 1.
+- **Condição de entrada.** PostgreSQL descartável acessível, duas identidades Auth0 de teste autorizadas, acesso a navegador e Android e evidências de CI e revisão para fechar os itens acima.

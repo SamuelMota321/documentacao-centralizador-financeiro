@@ -64,3 +64,14 @@ After approval, update only the necessary acceptance/test-strategy documentation
 | Scenario adaptation | Audit methodology with bounded tests, verification, documentation, and evidence follow-up after repository approval | template |
 
 Source legend: **user-stated** — directly stated by the user; **approved default** — an option or draft explicitly approved by the user; **template** — standard methodology or scaffolding covered by approval; **open** — deliberately left unresolved.
+
+## Execution handoff
+
+- **Plano e data.** Plano 04 em 26/11/2026. P13 consolidado para o Dev 3. O Plano 04 segue bloqueado para aceite integrado.
+- **Repositórios e revisões.** Documentação `063df7f`, backend `2c9bf9f`, web `bd383e9` e mobile `8de2a7c`.
+- **Arquivos alterados.** Este prompt, P14, P15, auditoria vigente e índice do plano.
+- **Critérios verificados.** S1-01 documentado. S1-02 e S1-03 têm evidência parcial de setup, validação do schema e resolução de contexto. S1-04 a S1-07 têm evidências e bloqueios por critério na [matriz do Plano 04](../../../auditorias/auditoria-dev3-atual-2026-11-23.md#execution-handoff--plano-04).
+- **Comandos executados e resultados.** `git archive` exportou os três produtos. `npm ci --offline` restaurou as dependências do backend. `npm run prisma:validate` passou com engine local. A comparação das quatro operações de contas com cada snapshot OpenAPI passou. A reinstalação offline dos clientes encontrou falta de metadados. A conferência do código e das dependências instaladas validou o recorte testado de ambos os HEADs.
+- **Verificações pendentes.** Setup integrado, migrations, persistência e RLS com PostgreSQL descartável. Nenhum defeito identificado no recorte executado. Dev 1 e responsável pelo ambiente dão suporte a banco e roles. Dev 1 e Dev 2 tratam B11, a decisão de geração do cliente OpenAPI.
+- **Bloqueio e risco residual.** O daemon Docker ficou inacessível. O setup com banco e a separação real dos tenants seguem sem comprovação.
+- **Próximo plano elegível.** Retomar o Plano 04 quando houver PostgreSQL descartável acessível e ambiente de demonstração com dois usuários de teste.

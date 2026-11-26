@@ -2,7 +2,7 @@
 
 - Data: 25/11/2026 · Responsável: Developer 2 (web e mobile) · Destinatário: Developer 3
 - Histórias: HU-008, HU-009, HU-011 e HU-012 (lado cliente)
-- Revisões: web `b51a9f9` (main, sem alterações locais), mobile `4bd4995` (branch `spike/f5-expo-router-auth`), backend local `b5826a3` em Docker.
+- Revisões: web `b51a9f9` (main, sem alterações locais) e `f71d445` (mapeamento de contas Pluggy, 26/11), mobile `4bd4995` (branch `spike/f5-expo-router-auth`), backend local `b5826a3` em Docker.
 - Fontes: `Plano_Divisao_Atividades_Sprint_4.html` (critério/evidência principal por história), `s4-01` (C-01, C-03), `s4-03`, `s4-04`, `s4-dev2-plano-execucao.md`, `CONTRACT.md` do web e `DESIGN_DEFINITION_OF_DONE.md` do web.
 
 Este registro liga critérios a código, testes e comportamento observado. **Não declara aceite**: o aceite é do Developer 3.
@@ -27,6 +27,7 @@ Este registro liga critérios a código, testes e comportamento observado. **Nã
 | Mobile | `npx expo export --platform android` | Bundle Android gerado. |
 | Backend local | `GET /api/v1/health/live` e `GET /api/v1/openapi.json` | `200`; 33 caminhos, iguais ao snapshot do web. |
 | Web em execução | `GET /investimentos`, `/patrimonio`, `/contas/conectar` sem sessão | `307` para `/auth/login`: rotas protegidas. |
+| Web (26/11, `f71d445`) | `vitest run src/lib "src/app/(app)/contas"`, `tsc --noEmit`, `eslint` em `contas/conectar` e `lib/connections` | Passou. 38 arquivos, 608 testes; sem erros de tipo nem de lint. Validação parcial: a suíte completa e o build não foram executados nesta revisão. |
 
 O mobile registrava 481 testes na validação de 23/11 (main). A branch da F5 tem 469; a diferença não foi reconciliada e fica com o Developer 2.
 
@@ -88,6 +89,18 @@ O mobile registrava 481 testes na validação de 23/11 (main). A branch da F5 te
 | Contrato das cinco operações | `lib/patrimony/schema.ts` | `contract.test.ts` › "contrato OpenAPI de bens, financiamentos e passivos" | Verificado contra o snapshot |
 | Criar, editar e ver histórico contra o backend local | — | Roteiro da seção 4 | Pendente de execução manual pelo Developer 2 |
 
+### Conexão Pluggy — mapeamento de contas (P02-01)
+
+Etapa `awaiting_account_mapping` da importação inicial, deixada para a Parte 2 do Plano 02. Sem a escolha, nenhuma conta conectada é criada e a importação não segue.
+
+| Critério (cliente) | Código | Teste | Estado |
+|---|---|---|---|
+| Na etapa `awaiting_account_mapping`, o detalhe da conexão lista as contas do banco; mapeadas e não suportadas aparecem só com o estado em texto | `contas/conectar/account-mapping.tsx`, `connect-flow.tsx`, `presentation.ts` (`needsAccountMapping`, `mappingStatusText`) | `presentation.test.ts` › "mapeamento de contas" › "só pede a escolha enquanto a importação aguarda o mapeamento"; "descreve tipo e estado em texto" | Simulado |
+| Criar conta conectada só quando o banco informa tipo reconhecido em BRL | `presentation.ts` (`canCreateFromProvider`), `actions.ts` (`mapAccountAction`) | `presentation.test.ts` › "permite criar só contas com tipo reconhecido em reais"; `actions.test.ts` › "mapAccountAction" | Simulado |
+| Vincular a uma conta manual ativa (até 100 contas) | `actions.ts` (`listLinkableAccountsAction`, `mapAccountAction`) | `actions.test.ts` › "oferece só contas manuais ativas"; "vincula com o token do servidor e devolve a importação atualizada" | Simulado |
+| Contrato de `PUT /connections/{connectionId}/accounts/{providerAccountId}/mapping` | `lib/connections/schema.ts`, `api.ts` (`mapPluggyAccount`) | `lib/connections/api.test.ts` › "mapPluggyAccount" | Simulado. Corpo e resposta conferidos manualmente contra o snapshot do OpenAPI; não há caso em `contract.test.ts`. |
+| Mapeamento real ponta a ponta | — | — | Bloqueado (L-01, L-10) |
+
 ## 3. Matriz — mobile
 
 | História | Estado | Motivo |
@@ -140,10 +153,13 @@ Pendências do DoD: conferência visual nos três tamanhos (roteiro, passo 5), o
 | L-07 | Mobile sem telas da Sprint 4 e F5 incompleta; login com rotas não testado. | Critérios mobile não iniciados. | Developer 2 |
 | L-08 | Diferença de testes no mobile (481 na main em 23/11; 469 na branch da F5). | Possível perda de cobertura na branch. | Developer 2 |
 | L-09 | Roteiro manual da seção 4 e pendências do DoD. | Itens "Simulado" de HU-012 sem confirmação integrada. | Developer 2 |
+| L-10 | Em 26/11, o web publicado no Render (`coinciente.onrender.com`) não carregou Contas, Movimentações nem Investimentos; o console do navegador mostrou só o erro minificado React #441. A causa não foi identificada: o Developer 2 não tem acesso aos logs dos serviços no Render. O mesmo código abre essas telas contra o backend local. | Sem ambiente com Pluggy configurado para testar o mapeamento de contas e a sincronização. | Developer 1 |
+| L-11 | O mobile não tem a tela de mapeamento de contas (P02-01). | A conexão pelo mobile para em "aguardando mapeamento de contas". | Developer 2 |
 
 ## 7. Handoff ao Developer 3
 
 - **Pronto para revisão:** a matriz web das quatro histórias, os testes citados e o contrato conferido contra o snapshot do OpenAPI `b5826a3`.
 - **Não aceitar ainda:** nenhuma linha "Simulado" equivale a integração. HU-008 e a parte com dados de HU-009/HU-011 dependem de L-01. HU-012 depende do roteiro manual (L-09).
 - **Mobile:** nada da Sprint 4 para aceitar; acompanhar L-07.
+- **Mapeamento de contas (web):** pronto para revisão de código em `f71d445`; sem teste em campo enquanto L-01 e L-10 estiverem abertas.
 - **Próximo registro:** após o roteiro manual e a correção de L-01, atualizar este documento com as linhas que passarem a "Verificado".

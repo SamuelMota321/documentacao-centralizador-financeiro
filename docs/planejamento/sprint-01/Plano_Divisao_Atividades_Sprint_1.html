@@ -22,7 +22,7 @@
       <p class="eyebrow">Planejamento da entrega</p>
       <h1>Plano de Divisão de Atividades — Sprint 1</h1>
       <p class="lead">Responsabilidades, dependências e critérios para a primeira fatia vertical do Centralizador Financeiro Inteligente.</p>
-      <div class="meta-row"><span class="meta-chip">Sprint 1</span><span class="meta-chip">3 desenvolvedores</span><span class="meta-chip">9 atividades</span></div>
+      <div class="meta-row"><span class="meta-chip">Sprint 1</span><span class="meta-chip">3 desenvolvedores</span><a class="meta-chip" href="#pagina-4">Ver implementação das 9 atividades</a></div>
     </section>
 
     <p class="home-note">Contratos de execução relacionados a S1-04, S1-05, S1-06 e S1-07.</p>
@@ -164,153 +164,145 @@ Participa desde o início, preparando testes enquanto as funcionalidades evoluem
 
 Importante: a divisão define responsabilidade principal, e não propriedade exclusiva. Nenhum desenvolvedor deve ficar isolado.</pre></section>
 
-        <section class="paper" id="pagina-4" data-page="4"><div class="page-kicker"><span>Sprint 1</span><span>Página 4 de 8</span></div><pre class="page-text" data-source="Divisão detalhada por atividade
+        <section class="paper" id="pagina-4" data-page="4"><div class="page-kicker"><span>Sprint 1</span><span>Página 4 de 8</span></div>
+          <div class="sprint-content">
+            <h3 class="doc-heading">Divisão detalhada por atividade</h3>
+            <h3 class="doc-heading">S1-01 — Aprovar baseline e fechar decisões mínimas</h3>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">O Plano 04 registra os critérios e as revisões conferidos pelo Dev 3. A decisão sobre a geração de clientes OpenAPI ficou com os responsáveis pelo backend e pelos clientes.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/documentacao-centralizador-financeiro/blob/a918e236a205ebc16b8e71752124ea2634019b2b/auditorias/auditoria-dev3-atual-2026-11-23.md?plain=1#L848-L848">Auditoria · baseline e decisão pendente</a></li>
+            </ul>
+            <p class="doc-paragraph">Responsáveis: todos os 3 desenvolvedores.</p>
+            <ul class="doc-list">
+              <li>Dev 1: registrar os limites Clean/Hexagonal do backend NestJS, módulos Identity e Accounts, Prisma, Neon/PostgreSQL e RLS.</li>
+              <li>Dev 2: confirmar Next.js e React Native/Expo independentes e o consumo de clientes tipados derivados do OpenAPI.</li>
+              <li>Dev 3: consolidar critérios de aceite, estratégia de testes e convenções dos três repositórios.</li>
+            </ul>
+            <p class="doc-paragraph">Critério de conclusão: baseline registra os três repositórios, REST /api/v1, OpenAPI, Auth0, persistência, tenancy, validação e testes, sem tecnologias excluídas ou decisões futuras tratadas como aprovadas.</p>
+            <h3 class="doc-heading">S1-02 — Configurar backend e ambiente</h3>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">A inicialização do NestJS e o schema Prisma estão versionados. O Plano 04 registra a validação local do schema e a pendência de subir o ambiente com PostgreSQL.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/b154f14e136790f5abd0c5e2667898b39f0b1379/src/main.ts#L9-L28">Backend · inicialização da API</a></li>
+              <li><a href="https://github.com/SamuelMota321/documentacao-centralizador-financeiro/blob/a918e236a205ebc16b8e71752124ea2634019b2b/auditorias/auditoria-dev3-atual-2026-11-23.md?plain=1#L849-L849">Auditoria · ambiente validado e pendências</a></li>
+            </ul>
+            <p class="doc-paragraph">Responsável principal: Dev 1. Apoio: Dev 3. Trabalho paralelo possível: Dev 2.</p>
+            <ul class="doc-list">
+              <li>Dev 1: configurar o serviço NestJS, Prisma, conexão Neon/PostgreSQL, migrations, container, variáveis de ambiente e estrutura inicial da API REST /api/v1.</li>
+              <li>Dev 3: validar execução reproduzível, exemplos seguros de configuração e ausência de segredos em código, logs e artefatos.</li>
+              <li>Dev 2: preparar separadamente as bases web Next.js e mobile React Native/Expo para autenticação e consumo do contrato.</li>
+            </ul>
+            <p class="doc-paragraph">Critério de conclusão: qualquer integrante consegue executar os componentes da Sprint em ambiente local seguindo instruções versionadas, sem segredo exposto.</p>
+            <h3 class="doc-heading">S1-03 — Modelar usuário e conta financeira</h3>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">O schema define tenants, usuários, identidades externas e contas. A validação com dois tenants no PostgreSQL ficou pendente no Plano 04.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/b154f14e136790f5abd0c5e2667898b39f0b1379/prisma/schema.prisma#L41-L78">Backend · modelo de identidade e contas</a></li>
+              <li><a href="https://github.com/SamuelMota321/documentacao-centralizador-financeiro/blob/a918e236a205ebc16b8e71752124ea2634019b2b/auditorias/auditoria-dev3-atual-2026-11-23.md?plain=1#L850-L850">Auditoria · propriedade e persistência</a></li>
+            </ul>
+            <p class="doc-paragraph">Responsável principal: Dev 1. Apoio: Dev 3. Integração antecipada: Dev 2.</p>
+            <ul class="doc-list">
+              <li>Dev 1: modelar users, tenants, identity_links e accounts nos módulos Identity e Accounts; criar migrations Prisma e SQL RLS revisado quando necessário.</li>
+              <li>Dev 1: garantir tenant_id direto ou propriedade obrigatória e verificável, com validações de nome, tipo, instituição e saldo inicial.</li>
+              <li>Dev 2: alinhar os campos dos clientes ao OpenAPI, sem compartilhar schemas-fonte entre repositórios.</li>
+              <li>Dev 3: revisar isolamento, migrations, validação Zod nas bordas e testes de persistência.</li>
+            </ul>
+            <p class="doc-paragraph">Critério de conclusão: modelo, migrations, políticas de isolamento, contrato OpenAPI e validações essenciais estão consistentes e documentados.</p>
+            <h3 class="doc-heading">S1-04 — Implementar autenticação e sessão</h3>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">O backend verifica o token Auth0 e os clientes gerenciam a sessão. O aceite registrado ainda dependia da demonstração de login, expiração e logout nas duas plataformas.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/17ca76d937ea454555332ddaccf31e20017f2a0a/src/modules/identity/adapters/inbound/auth0-jwt.guard.ts#L28-L51">Backend · validação do token</a></li>
+              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/7f50351048c4abb619c43dea0572586386e5d8dc/src/lib/auth0.ts#L1-L14">Web · configuração do Auth0</a></li>
+              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/712ad6aacccae50d3ea65819915b3952022567f4/src/auth/AuthContext.tsx#L74-L115">Mobile · autenticação e sessão</a></li>
+            </ul>
+            <p class="doc-paragraph">Responsabilidade compartilhada entre Dev 1 e Dev 2. Validação principal: Dev 3.</p>
+            <ul class="doc-list">
+              <li>Dev 1: associar a identidade Auth0 ao usuário e tenant, validar JWT no NestJS e proteger os endpoints.</li>
+              <li>Dev 2: implementar OAuth 2.0/OIDC, sessão, áreas protegidas, redirecionamentos e logout nos clientes web e mobile conforme cada plataforma.</li>
+              <li>Dev 3: testar token ausente, inválido ou expirado, logout, acesso indevido e integração dos clientes com o backend.</li>
+            </ul>
+            <p class="doc-paragraph">Critério de conclusão: somente a pessoa autenticada acessa o próprio espaço financeiro, e encerramento ou expiração da sessão bloqueia áreas protegidas.</p>
+          </div>
+        </section>
 
-S1-01 — Aprovar baseline e fechar decisões mínimas
-
-Responsáveis: todos os 3 desenvolvedores.
-• Dev 1: registrar os limites Clean/Hexagonal do backend NestJS, módulos Identity e Accounts, Prisma, Neon/PostgreSQL e RLS.
-• Dev 2: confirmar Next.js e React Native/Expo independentes e o consumo de clientes tipados derivados do OpenAPI.
-• Dev 3: consolidar critérios de aceite, estratégia de testes e convenções dos três repositórios.
-Critério de conclusão: baseline registra os três repositórios, REST /api/v1, OpenAPI, Auth0, persistência, tenancy, validação e testes, sem tecnologias excluídas ou decisões futuras tratadas como aprovadas.
-
-S1-02 — Configurar backend e ambiente
-
-Responsável principal: Dev 1. Apoio: Dev 3. Trabalho paralelo possível: Dev 2.
-• Dev 1: configurar o serviço NestJS, Prisma, conexão Neon/PostgreSQL, migrations, container, variáveis de ambiente e estrutura inicial da API REST /api/v1.
-• Dev 3: validar execução reproduzível, exemplos seguros de configuração e ausência de segredos em código, logs e artefatos.
-• Dev 2: preparar separadamente as bases web Next.js e mobile React Native/Expo para autenticação e consumo do contrato.
-Critério de conclusão: qualquer integrante consegue executar os componentes da Sprint em ambiente local seguindo instruções versionadas, sem segredo exposto.
-
-S1-03 — Modelar usuário e conta financeira
-
-Responsável principal: Dev 1. Apoio: Dev 3. Integração antecipada: Dev 2.
-• Dev 1: modelar users, tenants, identity_links e accounts nos módulos Identity e Accounts; criar migrations Prisma e SQL RLS revisado quando necessário.
-• Dev 1: garantir tenant_id direto ou propriedade obrigatória e verificável, com validações de nome, tipo, instituição e saldo inicial.
-• Dev 2: alinhar os campos dos clientes ao OpenAPI, sem compartilhar schemas-fonte entre repositórios.
-• Dev 3: revisar isolamento, migrations, validação Zod nas bordas e testes de persistência.
-Critério de conclusão: modelo, migrations, políticas de isolamento, contrato OpenAPI e validações essenciais estão consistentes e documentados.
-
-S1-04 — Implementar autenticação e sessão
-
-Responsabilidade compartilhada entre Dev 1 e Dev 2. Validação principal: Dev 3.
-• Dev 1: associar a identidade Auth0 ao usuário e tenant, validar JWT no NestJS e proteger os endpoints.
-• Dev 2: implementar OAuth 2.0/OIDC, sessão, áreas protegidas, redirecionamentos e logout nos clientes web e mobile conforme cada plataforma.
-• Dev 3: testar token ausente, inválido ou expirado, logout, acesso indevido e integração dos clientes com o backend.
-Critério de conclusão: somente a pessoa autenticada acessa o próprio espaço financeiro, e encerramento ou expiração da sessão bloqueia áreas protegidas.">Divisão detalhada por atividade
-
-S1-01 — Aprovar baseline e fechar decisões mínimas
-
-Responsáveis: todos os 3 desenvolvedores.
-• Dev 1: registrar os limites Clean/Hexagonal do backend NestJS, módulos Identity e Accounts, Prisma, Neon/PostgreSQL e RLS.
-• Dev 2: confirmar Next.js e React Native/Expo independentes e o consumo de clientes tipados derivados do OpenAPI.
-• Dev 3: consolidar critérios de aceite, estratégia de testes e convenções dos três repositórios.
-Critério de conclusão: baseline registra os três repositórios, REST /api/v1, OpenAPI, Auth0, persistência, tenancy, validação e testes, sem tecnologias excluídas ou decisões futuras tratadas como aprovadas.
-
-S1-02 — Configurar backend e ambiente
-
-Responsável principal: Dev 1. Apoio: Dev 3. Trabalho paralelo possível: Dev 2.
-• Dev 1: configurar o serviço NestJS, Prisma, conexão Neon/PostgreSQL, migrations, container, variáveis de ambiente e estrutura inicial da API REST /api/v1.
-• Dev 3: validar execução reproduzível, exemplos seguros de configuração e ausência de segredos em código, logs e artefatos.
-• Dev 2: preparar separadamente as bases web Next.js e mobile React Native/Expo para autenticação e consumo do contrato.
-Critério de conclusão: qualquer integrante consegue executar os componentes da Sprint em ambiente local seguindo instruções versionadas, sem segredo exposto.
-
-S1-03 — Modelar usuário e conta financeira
-
-Responsável principal: Dev 1. Apoio: Dev 3. Integração antecipada: Dev 2.
-• Dev 1: modelar users, tenants, identity_links e accounts nos módulos Identity e Accounts; criar migrations Prisma e SQL RLS revisado quando necessário.
-• Dev 1: garantir tenant_id direto ou propriedade obrigatória e verificável, com validações de nome, tipo, instituição e saldo inicial.
-• Dev 2: alinhar os campos dos clientes ao OpenAPI, sem compartilhar schemas-fonte entre repositórios.
-• Dev 3: revisar isolamento, migrations, validação Zod nas bordas e testes de persistência.
-Critério de conclusão: modelo, migrations, políticas de isolamento, contrato OpenAPI e validações essenciais estão consistentes e documentados.
-
-S1-04 — Implementar autenticação e sessão
-
-Responsabilidade compartilhada entre Dev 1 e Dev 2. Validação principal: Dev 3.
-• Dev 1: associar a identidade Auth0 ao usuário e tenant, validar JWT no NestJS e proteger os endpoints.
-• Dev 2: implementar OAuth 2.0/OIDC, sessão, áreas protegidas, redirecionamentos e logout nos clientes web e mobile conforme cada plataforma.
-• Dev 3: testar token ausente, inválido ou expirado, logout, acesso indevido e integração dos clientes com o backend.
-Critério de conclusão: somente a pessoa autenticada acessa o próprio espaço financeiro, e encerramento ou expiração da sessão bloqueia áreas protegidas.</pre></section>
-
-        <section class="paper" id="pagina-5" data-page="5"><div class="page-kicker"><span>Sprint 1</span><span>Página 5 de 8</span></div><pre class="page-text" data-source="S1-05 — Criar e listar contas manuais
-
-Responsável principal: Dev 2 no fluxo de usuário; Dev 1 na API e persistência; Dev 3 na validação.
-• Dev 1: implementar endpoints REST /api/v1, regras de criação, persistência e consulta limitada ao tenant autenticado.
-• Dev 1: validar nome, tipo, instituição e saldo inicial e tratar possível duplicidade entre conta manual e conectada.
-• Dev 2: implementar criação e listagem nos clientes web e mobile, com validações, carregamento, vazio, sucesso e erro.
-• Dev 3: verificar propriedade, contrato OpenAPI, clientes tipados e evidências de teste.
-Critério de conclusão: usuário autenticado cria e visualiza somente as próprias contas nos clientes previstos, com respostas e estados consistentes.
-
-S1-06 — Editar e desativar/excluir conta
-
-Responsável principal: Dev 2 nos clientes; Dev 1 no backend; Dev 3 nos testes.
-• Dev 1: implementar atualização e desativação/exclusão com autorização, validação de propriedade e trilha de auditoria aplicável.
-• Dev 2: construir edição e confirmação de ação destrutiva nos clientes web e mobile, atualizando o estado após a resposta da API.
-• Dev 3: testar persistência, auditoria, confirmação e tentativas sobre contas de outro tenant.
-Critério de conclusão: fluxo de manutenção funciona de ponta a ponta, preserva auditoria e rejeita recursos fora do tenant.
-
-S1-07 — Aplicar isolamento por usuário
-
-Implementação principal: Dev 1. Testes críticos: Dev 3. Validação de integração: Dev 2.
-• Dev 1: aplicar autorização NestJS, filtros de propriedade e PostgreSQL RLS em todas as consultas e mutações de Identity e Accounts.
-• Dev 2: impedir mistura de dados e estado entre sessões nos dois clientes e tratar respostas de acesso negado sem expor informação sensível.
-• Dev 3: executar casos explícitos de acesso permitido e cross-tenant para leitura, criação, edição e exclusão; revisar logs e auditoria.
-Critério de conclusão: consultas e mutações cruzadas são negadas pela aplicação e pela defesa em profundidade do banco, com testes reproduzíveis.
-
-S1-08 — Automatizar testes críticos
-
-Responsável principal: Dev 3, com participação obrigatória dos outros dois.
-• Dev 1: cobrir domínio e casos de uso com Vitest, integração Prisma/PostgreSQL, REST crítico com Supertest e políticas de tenant/RLS.
-• Dev 2: cobrir os fluxos críticos de autenticação e contas nos clientes com as abordagens já aprovadas em cada repositório, sem introduzir biblioteca não decidida.
-• Dev 3: consolidar testes de contrato OpenAPI, clientes tipados, isolamento e ponta a ponta; documentar execução e falhas.
-Critério de conclusão: suíte reproduzível cobre autenticação, CRUD principal, contrato e isolamento cross-tenant.
-
-S1-09 — Integrar, demonstrar e revisar
-
-Responsáveis: todos os 3 desenvolvedores.
-• Dev 1: validar serviço NestJS, migrations, PostgreSQL, API, autorização e RLS.
-• Dev 2: validar as experiências web Next.js e mobile Expo e sua integração independente com o contrato OpenAPI.
-• Dev 3: validar pipelines GitHub Actions, testes, documentação, checklist e roteiro da demonstração acadêmica.
-Critério de conclusão: lint, testes e builds relevantes passam; o fluxo completo é demonstrável nos ambientes aprovados; configuração, contrato e evidências estão atualizados.">S1-05 — Criar e listar contas manuais
-
-Responsável principal: Dev 2 no fluxo de usuário; Dev 1 na API e persistência; Dev 3 na validação.
-• Dev 1: implementar endpoints REST /api/v1, regras de criação, persistência e consulta limitada ao tenant autenticado.
-• Dev 1: validar nome, tipo, instituição e saldo inicial e tratar possível duplicidade entre conta manual e conectada.
-• Dev 2: implementar criação e listagem nos clientes web e mobile, com validações, carregamento, vazio, sucesso e erro.
-• Dev 3: verificar propriedade, contrato OpenAPI, clientes tipados e evidências de teste.
-Critério de conclusão: usuário autenticado cria e visualiza somente as próprias contas nos clientes previstos, com respostas e estados consistentes.
-
-S1-06 — Editar e desativar/excluir conta
-
-Responsável principal: Dev 2 nos clientes; Dev 1 no backend; Dev 3 nos testes.
-• Dev 1: implementar atualização e desativação/exclusão com autorização, validação de propriedade e trilha de auditoria aplicável.
-• Dev 2: construir edição e confirmação de ação destrutiva nos clientes web e mobile, atualizando o estado após a resposta da API.
-• Dev 3: testar persistência, auditoria, confirmação e tentativas sobre contas de outro tenant.
-Critério de conclusão: fluxo de manutenção funciona de ponta a ponta, preserva auditoria e rejeita recursos fora do tenant.
-
-S1-07 — Aplicar isolamento por usuário
-
-Implementação principal: Dev 1. Testes críticos: Dev 3. Validação de integração: Dev 2.
-• Dev 1: aplicar autorização NestJS, filtros de propriedade e PostgreSQL RLS em todas as consultas e mutações de Identity e Accounts.
-• Dev 2: impedir mistura de dados e estado entre sessões nos dois clientes e tratar respostas de acesso negado sem expor informação sensível.
-• Dev 3: executar casos explícitos de acesso permitido e cross-tenant para leitura, criação, edição e exclusão; revisar logs e auditoria.
-Critério de conclusão: consultas e mutações cruzadas são negadas pela aplicação e pela defesa em profundidade do banco, com testes reproduzíveis.
-
-S1-08 — Automatizar testes críticos
-
-Responsável principal: Dev 3, com participação obrigatória dos outros dois.
-• Dev 1: cobrir domínio e casos de uso com Vitest, integração Prisma/PostgreSQL, REST crítico com Supertest e políticas de tenant/RLS.
-• Dev 2: cobrir os fluxos críticos de autenticação e contas nos clientes com as abordagens já aprovadas em cada repositório, sem introduzir biblioteca não decidida.
-• Dev 3: consolidar testes de contrato OpenAPI, clientes tipados, isolamento e ponta a ponta; documentar execução e falhas.
-Critério de conclusão: suíte reproduzível cobre autenticação, CRUD principal, contrato e isolamento cross-tenant.
-
-S1-09 — Integrar, demonstrar e revisar
-
-Responsáveis: todos os 3 desenvolvedores.
-• Dev 1: validar serviço NestJS, migrations, PostgreSQL, API, autorização e RLS.
-• Dev 2: validar as experiências web Next.js e mobile Expo e sua integração independente com o contrato OpenAPI.
-• Dev 3: validar pipelines GitHub Actions, testes, documentação, checklist e roteiro da demonstração acadêmica.
-Critério de conclusão: lint, testes e builds relevantes passam; o fluxo completo é demonstrável nos ambientes aprovados; configuração, contrato e evidências estão atualizados.</pre></section>
+        <section class="paper" id="pagina-5" data-page="5"><div class="page-kicker"><span>Sprint 1</span><span>Página 5 de 8</span></div>
+          <div class="sprint-content">
+            <h3 class="doc-heading">S1-05 — Criar e listar contas manuais</h3>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">A API oferece criação e listagem de contas manuais, com entradas próprias na web e no mobile. O Plano 04 deixou a conferência de persistência e visibilidade entre tenants para a integração.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/17ca76d937ea454555332ddaccf31e20017f2a0a/src/modules/accounts/adapters/inbound/accounts.controller.ts#L55-L74">Backend · criação da conta</a></li>
+              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/7f50351048c4abb619c43dea0572586386e5d8dc/src/app/contas/page.tsx#L19-L46">Web · listagem de contas</a></li>
+              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/712ad6aacccae50d3ea65819915b3952022567f4/src/screens/AccountFormScreen.tsx#L64-L77">Mobile · cadastro de conta</a></li>
+            </ul>
+            <p class="doc-paragraph">Responsável principal: Dev 2 no fluxo de usuário; Dev 1 na API e persistência; Dev 3 na validação.</p>
+            <ul class="doc-list">
+              <li>Dev 1: implementar endpoints REST /api/v1, regras de criação, persistência e consulta limitada ao tenant autenticado.</li>
+              <li>Dev 1: validar nome, tipo, instituição e saldo inicial e tratar possível duplicidade entre conta manual e conectada.</li>
+              <li>Dev 2: implementar criação e listagem nos clientes web e mobile, com validações, carregamento, vazio, sucesso e erro.</li>
+              <li>Dev 3: verificar propriedade, contrato OpenAPI, clientes tipados e evidências de teste.</li>
+            </ul>
+            <p class="doc-paragraph">Critério de conclusão: usuário autenticado cria e visualiza somente as próprias contas nos clientes previstos, com respostas e estados consistentes.</p>
+            <h3 class="doc-heading">S1-06 — Editar e desativar/excluir conta</h3>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">A manutenção inclui edição e desativação lógica. O aceite da auditoria em banco e da reversão em caso de falha ficou pendente no Plano 04.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/7623c9241658f02777aaa432c30486ac2e6d6bb7/src/modules/accounts/adapters/inbound/accounts.controller.ts#L154-L184">Backend · manutenção da conta</a></li>
+              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/8674fd4fdad8dad3c85c76136c9998702f711870/src/app/contas/account-item.tsx#L14-L45">Web · ações de manutenção</a></li>
+              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/f8273f090b44cd1c4c0d3878292042b494f0746a/src/screens/AccountsScreen.tsx#L73-L84">Mobile · desativação</a></li>
+            </ul>
+            <p class="doc-paragraph">Responsável principal: Dev 2 nos clientes; Dev 1 no backend; Dev 3 nos testes.</p>
+            <ul class="doc-list">
+              <li>Dev 1: implementar atualização e desativação/exclusão com autorização, validação de propriedade e trilha de auditoria aplicável.</li>
+              <li>Dev 2: construir edição e confirmação de ação destrutiva nos clientes web e mobile, atualizando o estado após a resposta da API.</li>
+              <li>Dev 3: testar persistência, auditoria, confirmação e tentativas sobre contas de outro tenant.</li>
+            </ul>
+            <p class="doc-paragraph">Critério de conclusão: fluxo de manutenção funciona de ponta a ponta, preserva auditoria e rejeita recursos fora do tenant.</p>
+            <h3 class="doc-heading">S1-07 — Aplicar isolamento por usuário</h3>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">A migration aplica políticas de isolamento por tenant. O aceite independente exige exercitar leitura e alteração com dois tenants e uma role sujeita às políticas.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/b154f14e136790f5abd0c5e2667898b39f0b1379/prisma/migrations/202609090002_identity_accounts_rls/migration.sql#L53-L76">Banco · políticas de isolamento</a></li>
+              <li><a href="https://github.com/SamuelMota321/documentacao-centralizador-financeiro/blob/a918e236a205ebc16b8e71752124ea2634019b2b/auditorias/auditoria-dev3-atual-2026-11-23.md?plain=1#L854-L854">Auditoria · cenário de isolamento pendente</a></li>
+            </ul>
+            <p class="doc-paragraph">Implementação principal: Dev 1. Testes críticos: Dev 3. Validação de integração: Dev 2.</p>
+            <ul class="doc-list">
+              <li>Dev 1: aplicar autorização NestJS, filtros de propriedade e PostgreSQL RLS em todas as consultas e mutações de Identity e Accounts.</li>
+              <li>Dev 2: impedir mistura de dados e estado entre sessões nos dois clientes e tratar respostas de acesso negado sem expor informação sensível.</li>
+              <li>Dev 3: executar casos explícitos de acesso permitido e cross-tenant para leitura, criação, edição e exclusão; revisar logs e auditoria.</li>
+            </ul>
+            <p class="doc-paragraph">Critério de conclusão: consultas e mutações cruzadas são negadas pela aplicação e pela defesa em profundidade do banco, com testes reproduzíveis.</p>
+            <h3 class="doc-heading">S1-08 — Automatizar testes críticos</h3>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">A suíte inclui testes de RLS e o Plano 04 registra a conferência dos contratos de contas nos clientes. A execução integrada com PostgreSQL ficou pendente.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/af4cc23bd51d85ed7d7bd4654dcd692810916698/test/integration/rls.integration.spec.ts#L63-L84">Backend · teste de integração de RLS</a></li>
+              <li><a href="https://github.com/SamuelMota321/documentacao-centralizador-financeiro/blob/a918e236a205ebc16b8e71752124ea2634019b2b/auditorias/auditoria-dev3-atual-2026-11-23.md?plain=1#L855-L855">Auditoria · cobertura e limites</a></li>
+            </ul>
+            <p class="doc-paragraph">Responsável principal: Dev 3, com participação obrigatória dos outros dois.</p>
+            <ul class="doc-list">
+              <li>Dev 1: cobrir domínio e casos de uso com Vitest, integração Prisma/PostgreSQL, REST crítico com Supertest e políticas de tenant/RLS.</li>
+              <li>Dev 2: cobrir os fluxos críticos de autenticação e contas nos clientes com as abordagens já aprovadas em cada repositório, sem introduzir biblioteca não decidida.</li>
+              <li>Dev 3: consolidar testes de contrato OpenAPI, clientes tipados, isolamento e ponta a ponta; documentar execução e falhas.</li>
+            </ul>
+            <p class="doc-paragraph">Critério de conclusão: suíte reproduzível cobre autenticação, CRUD principal, contrato e isolamento cross-tenant.</p>
+            <h3 class="doc-heading">S1-09 — Integrar, demonstrar e revisar</h3>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">O Dev 3 consolidou os resultados por atividade. O fechamento registrado depende da demonstração nos clientes, da confirmação da CI e da revisão cruzada.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/documentacao-centralizador-financeiro/blob/a918e236a205ebc16b8e71752124ea2634019b2b/auditorias/auditoria-dev3-atual-2026-11-23.md?plain=1#L856-L856">Auditoria · critérios para fechar a sprint</a></li>
+            </ul>
+            <p class="doc-paragraph">Responsáveis: todos os 3 desenvolvedores.</p>
+            <ul class="doc-list">
+              <li>Dev 1: validar serviço NestJS, migrations, PostgreSQL, API, autorização e RLS.</li>
+              <li>Dev 2: validar as experiências web Next.js e mobile Expo e sua integração independente com o contrato OpenAPI.</li>
+              <li>Dev 3: validar pipelines GitHub Actions, testes, documentação, checklist e roteiro da demonstração acadêmica.</li>
+            </ul>
+            <p class="doc-paragraph">Critério de conclusão: lint, testes e builds relevantes passam; o fluxo completo é demonstrável nos ambientes aprovados; configuração, contrato e evidências estão atualizados.</p>
+          </div>
+        </section>
 
         <section class="paper" id="pagina-6" data-page="6"><div class="page-kicker"><span>Sprint 1</span><span>Página 6 de 8</span></div><pre class="page-text" data-source="Matriz consolidada de responsabilidades
 
@@ -446,6 +438,6 @@ Resultado esperado: uma Sprint organizada em torno de uma entrega vertical real,
   </main>
 
   <footer class="site-footer">Documentação acadêmica · UCB · 2026 · Samuel Mota, Thiago Marques e Miguel Candido</footer>
-  <script src="../../../assets/app.js"></script>
+  <script src="../../../assets/app.js?sprint1=2"></script>
 </body>
 </html>

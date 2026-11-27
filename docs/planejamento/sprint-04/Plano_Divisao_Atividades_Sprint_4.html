@@ -106,6 +106,11 @@
           <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
             <h2 class="doc-heading">S4-01 — Confirmar baseline e decisões de integração</h2>
             <p class="doc-paragraph"><strong>Resultado:</strong> base da HU-007 verificada e decisões de contrato que bloqueiam HU-008/HU-009 registradas com evidência.</p>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">O baseline registra o que a integração Pluggy já oferecia e as decisões necessárias para iniciar a sincronização e a leitura dos investimentos.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/documentacao-centralizador-financeiro/blob/45e788221272b287165eb241351e8f0ebe5f145f/docs/planejamento/sprint-04/s4-01-dev1-backend-baseline-e-decisoes.md?plain=1#L16-L28">Documentação · baseline do backend e decisões</a></li>
+            </ul>
             <p class="doc-paragraph"><strong>Fontes:</strong> PRD HU-007/HU-008 e RN-007 a RN-009; plano e pendências documentadas da Sprint 3. <strong>Prioridade:</strong> Must como pré-requisito. <strong>Estimativa:</strong> M. <strong>Responsável principal:</strong> Developer 3; Developer 1 valida backend/contrato e Developer 2 os clientes. <strong>Repositórios:</strong> backend, web, mobile e documentação. <strong>Dependências:</strong> estado real de S3-05 a S3-08, Sandbox e configuração local aprovada. <strong>Janela proposta:</strong> início da Sprint, 13/10, estimativa.</p>
             <ul class="doc-list">
               <li>As decisões de conexão, repetição segura da conclusão, importação inicial e mapeamento de contas têm status e fonte registrados.</li>
@@ -114,6 +119,13 @@
             </ul>
             <h2 class="doc-heading">S4-02 — HU-008: Sincronizar dados do Pluggy Sandbox</h2>
             <p class="doc-paragraph"><strong>Resultado:</strong> usuário pode solicitar sincronização manual e o sistema executa sincronização diária, com proteção contra duplicidade e concorrência, retries controlados e estado rastreável.</p>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">O backend processa a sincronização e a web permite solicitá-la. O mobile tem um cliente para consultar ou iniciar execuções. A validação da agenda externa e do fluxo completo no Sandbox aparece como pendência nas evidências do backend.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/9fc5a1f22ab1075743e0a1b09523ede214cea623/src/modules/sync/application/pluggy-synchronization.ts#L116-L140">Backend · processamento da sincronização</a></li>
+              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/b51a9f9fbafc046fe368f3fd3526109f61bb5337/src/app/(app)/contas/conectar/sync-panel.tsx#L19-L48">Web · painel de sincronização</a></li>
+              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/e1fd7ffdad690540c8b7d0755904ee0d4a4f7af9/src/lib/sync-runs/api.ts#L15-L23">Mobile · operações de sincronização</a></li>
+            </ul>
             <p class="doc-paragraph"><strong>Fonte:</strong> PRD 1.4, HU-008 e RN-007/RN-014. <strong>Prioridade:</strong> Must. <strong>Estimativa:</strong> G, pela execução agendada, idempotência, concorrência e estados de falha. <strong>Responsável principal:</strong> Developer 1; Developer 2 entrega o disparo e estado nas interfaces; Developer 3 especifica cenários e valida isolamento/evidências. <strong>Repositórios:</strong> backend, web, mobile e documentação. <strong>Dependências:</strong> HU-007 estável; S4-01; contrato de provedores e configuração de jobs aprovada. <strong>Janela proposta:</strong> 13–19/10, estimativa.</p>
             <ul class="doc-list">
               <li>Existe uma execução diária agendada e a pessoa pode solicitar uma execução manual.</li>
@@ -131,6 +143,13 @@
           <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
             <h2 class="doc-heading">S4-03 — HU-009: Consultar posições e informações de investimento</h2>
             <p class="doc-paragraph"><strong>Resultado:</strong> a pessoa consulta os investimentos que o Pluggy Sandbox disponibiliza, com fonte, data de referência e qualidade do dado preservadas.</p>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">O backend consulta as posições e os clientes apresentam a carteira e o detalhe de investimento. O registro de integração distingue os testes com dados sintéticos da conferência dos campos retornados por um conector real.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/e4c6a486f143ef473dfb70e201d113c2a3615edf/src/modules/investments/application/investment-read.service.ts#L20-L44">Backend · consulta de investimentos</a></li>
+              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/d9e829cce7160624911e029dcfd6bae50a81e040/src/app/(app)/investimentos/%5Bid%5D/page.tsx#L30-L56">Web · detalhe da posição</a></li>
+              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/e1fd7ffdad690540c8b7d0755904ee0d4a4f7af9/src/screens/InvestmentDetailScreen.tsx#L33-L63">Mobile · detalhe da posição</a></li>
+            </ul>
             <p class="doc-paragraph"><strong>Fonte:</strong> PRD 1.4, HU-009 e RN-010; HU-008 para a sincronização dos dados. <strong>Prioridade:</strong> Must. <strong>Estimativa:</strong> G, pela integração entre dados externos, contrato e clientes. <strong>Responsável principal:</strong> Developer 2 na experiência web/mobile; Developer 1 no modelo/API e Developer 3 nos critérios, testes e evidências. <strong>Repositórios:</strong> backend, web, mobile e documentação. <strong>Dependências:</strong> HU-007 e S4-02; disponibilidade e mapeamento dos dados no Sandbox. <strong>Janela proposta:</strong> 16–21/10, estimativa.</p>
             <ul class="doc-list">
               <li>Posições e total da carteira são apresentados quando disponíveis.</li>
@@ -142,6 +161,13 @@
             </ul>
             <h2 class="doc-heading">S4-04 — HU-011: Visualizar alocação por classe e instituição</h2>
             <p class="doc-paragraph"><strong>Resultado:</strong> a pessoa analisa a composição dos investimentos agrupada por classe e instituição, com as referências de origem acessíveis.</p>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">O backend calcula a alocação. Web e mobile apresentam a composição por moeda. A conferência ponta a ponta com posições reais do Sandbox ficou pendente no registro da sprint.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/b5826a38fb21376b23056bde1d61dbb86bb42487/src/modules/investments/application/investment-read.service.ts#L144-L169">Backend · cálculo da alocação</a></li>
+              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/d9e829cce7160624911e029dcfd6bae50a81e040/src/app/(app)/investimentos/composition.tsx#L74-L101">Web · composição da carteira</a></li>
+              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/e1fd7ffdad690540c8b7d0755904ee0d4a4f7af9/src/screens/InvestmentsScreen.tsx#L215-L229">Mobile · composição por moeda</a></li>
+            </ul>
             <p class="doc-paragraph"><strong>Fonte:</strong> PRD 1.4, HU-011 e RN-010. <strong>Prioridade:</strong> Must. <strong>Estimativa:</strong> M. <strong>Responsável principal:</strong> Developer 2; Developer 1 publica dados/agrupamentos requeridos pelo contrato e Developer 3 valida cálculos e estados. <strong>Repositórios:</strong> backend, web, mobile e documentação. <strong>Dependências:</strong> S4-03 e categorias/classificação fornecidas pelos dados disponíveis. <strong>Janela proposta:</strong> 20–22/10, estimativa.</p>
             <ul class="doc-list">
               <li>Percentuais são calculados sobre os dados disponíveis.</li>
@@ -158,6 +184,13 @@
           <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
             <h2 class="doc-heading">S4-05 — HU-012: Registrar bens, financiamentos e passivos</h2>
             <p class="doc-paragraph"><strong>Resultado:</strong> a pessoa registra componentes patrimoniais não fornecidos pelas integrações, com histórico das alterações relevantes.</p>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">O backend oferece manutenção do patrimônio manual. Os clientes têm formulários para bens, financiamentos e passivos. O registro de entrega web ainda previa a demonstração integrada desse fluxo.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/a730f56e236ea918b9879949bfa1b6cb11093a5e/src/modules/patrimony/application/patrimony.service.ts#L29-L52">Backend · criação de registros patrimoniais</a></li>
+              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/d0deb877e0c047ac75518cc5de5cb09a2471c3c7/src/app/(app)/patrimonio/patrimony-form.tsx#L31-L58">Web · formulário de patrimônio</a></li>
+              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/ef3653be53ece0c035f341bf19b550403c2dfeaf/src/screens/PatrimonyFormScreen.tsx#L47-L74">Mobile · formulário de patrimônio</a></li>
+            </ul>
             <p class="doc-paragraph"><strong>Fonte:</strong> PRD 1.4, HU-012 e RN-011/RN-015. <strong>Prioridade:</strong> Must. <strong>Estimativa:</strong> M, a confirmar após decomposição do modelo e telas. <strong>Responsável principal:</strong> Developer 1 no domínio/API/persistência; Developer 2 nas interfaces; Developer 3 em critérios, auditoria e isolamento. <strong>Repositórios:</strong> backend, web, mobile e documentação. <strong>Dependências:</strong> baseline de contas/tenant e decisão de representação de bem, financiamento e passivo compatível com o PRD. <strong>Janela proposta:</strong> em paralelo às tarefas Pluggy, 13–20/10, estimativa.</p>
             <ul class="doc-list">
               <li>Bens registram tipo, descrição, valor estimado, data da avaliação e fonte informada.</li>
@@ -181,6 +214,13 @@
               <li>S4-05 pode avançar em paralelo após acordo sobre o modelo de bens, financiamentos e passivos; seus dados são pré-requisito para HU-013 e HU-010 da Sprint 5.</li>
               <li>S4-06 integra os fluxos, atualiza OpenAPI/tipos/documentação e fecha evidências. Itens bloqueados permanecem explicitamente pendentes, sem aceite presumido.</li>
             </ol>
+            <h2 class="doc-heading">S4-06 — Integrar os fluxos e consolidar evidências</h2>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">Os registros do backend e dos clientes reúnem código, testes e limites de validação por história. As pendências de integração e de aceite estão datadas nos respectivos registros.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/documentacao-centralizador-financeiro/blob/b6103832750b1f8e9ce1e4a824eb34a759b1d0ec/docs/planejamento/sprint-04/s4-06-dev1-backend-evidencias.md?plain=1#L13-L30">Backend · matriz de evidências</a></li>
+              <li><a href="https://github.com/SamuelMota321/documentacao-centralizador-financeiro/blob/312fa1376b356e0723f568334c1e4d1058a6373c/docs/planejamento/sprint-04/s4-06-dev2-evidencias-clientes.md?plain=1#L159-L165">Clientes · entrega para revisão e pendências</a></li>
+            </ul>
             <h2 class="doc-heading">Janelas propostas</h2>
             <div class="doc-data-block"><div class="doc-table-viewport"><table class="doc-table"><thead><tr><th>Janela</th><th>Atividade</th><th>Handoff</th></tr></thead><tbody>
               <tr><th>13/10</th><td>S4-01 — baseline Pluggy e decisões impeditivas.</td><td>Contrato e pré-requisitos confirmados ou bloqueios registrados.</td></tr>

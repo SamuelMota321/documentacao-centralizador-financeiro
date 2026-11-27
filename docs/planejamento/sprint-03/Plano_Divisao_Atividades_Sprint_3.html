@@ -115,6 +115,12 @@
           <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
             <h2 class="doc-heading">S3-01 — Alinhar contratos e decisões de borda</h2>
             <p class="doc-paragraph"><strong>Resultado:</strong> critérios e contratos mínimos para as duas funcionalidades mapeados às fontes normativas, com decisões não definidas marcadas como pendentes, sem estabelecer variantes, limites ou políticas por inferência.</p>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">O contrato registra as decisões sobre formatos OFX, conta de destino e início da coleta Pluggy. A regra de correspondência entre conta externa e conta local ficou em aberto nessa revisão.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/documentacao-centralizador-financeiro/blob/f851384dfa1924cdfbd93431ad42ed317e5cdcfc/docs/planejamento/sprint-03/contrato-backend-s3-01.html#L373-L405">Contrato · formatos e conta de destino do OFX</a></li>
+              <li><a href="https://github.com/SamuelMota321/documentacao-centralizador-financeiro/blob/f851384dfa1924cdfbd93431ad42ed317e5cdcfc/docs/planejamento/sprint-03/contrato-backend-s3-01.html#L483-L504">Contrato · associação de contas e coleta inicial Pluggy</a></li>
+            </ul>
             <p class="doc-paragraph"><strong>Fontes:</strong> PRD HU-004/HU-007, RN-006 a RN-009; Arquitetura 1.6, módulos, API e processos. <strong>Prioridade:</strong> Must. <strong>Estimativa:</strong> M. <strong>Responsável principal:</strong> Developer 3; Developer 1 define contratos backend e Developer 2 confirma necessidades dos dois clientes. <strong>Repositórios:</strong> documentação, backend, web e mobile. <strong>Dependências:</strong> baseline S1/S2; libera S3-02 a S3-07. <strong>Janela proposta:</strong> 25 e 28/09, estimativa.</p>
             <ul class="doc-list">
               <li>HU-004 e HU-007 têm cenários observáveis, entradas, resultados, erros e fronteiras de escopo rastreáveis ao PRD.</li>
@@ -126,6 +132,12 @@
 
             <h2 class="doc-heading">S3-02 — Implementar o fluxo OFX no backend</h2>
             <p class="doc-paragraph"><strong>Resultado:</strong> fluxo autenticado para receber arquivo, validar e interpretar dados aprovados, apresentar prévia antes da confirmação, evitar duplicidades conforme regra aprovada e informar importados, ignorados e erros. Importações longas terão estado consultável e processamento assíncrono conforme contrato e arquitetura.</p>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">O backend valida a conta, calcula duplicatas na prévia e grava os itens confirmados. Nessa versão, a prévia já exige a conta de destino. O mapeamento após a leitura do extrato permanece uma diferença em relação ao plano.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/2c416cd4dd452dd193b5e4cf673c0eb426f7c6a8/src/modules/ingestion/application/use-cases/create-ofx-import-preview.ts#L29-L56">Backend · validar a conta e localizar duplicatas</a></li>
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/2c416cd4dd452dd193b5e4cf673c0eb426f7c6a8/src/modules/ingestion/application/use-cases/confirm-ofx-import.ts#L55-L95">Backend · importar e registrar o resultado da confirmação</a></li>
+            </ul>
             <p class="doc-paragraph"><strong>Fontes:</strong> PRD HU-004 e RN-006; Arquitetura, representação da importação OFX e uso condicional de QStash/R2; ADR RLS PostgreSQL. <strong>Prioridade:</strong> Must. <strong>Estimativa:</strong> G. <strong>Responsável principal:</strong> Developer 1; Developer 3 especifica cenários, isolamento e evidências; Developer 2 integra antecipadamente ao contrato. <strong>Repositório:</strong> backend. <strong>Dependências:</strong> S3-01, decisões de formato/duplicidade/limites e disponibilidade de QStash/R2 se o caminho assíncrono exigir infraestrutura. <strong>Janela proposta:</strong> 29/09–02/10, estimativa.</p>
             <ul class="doc-list">
               <li>Arquivo e conteúdo são validados na borda autenticada; PDF e conteúdo inválido não chegam à persistência.</li>
@@ -143,6 +155,12 @@
           <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
             <h2 class="doc-heading">S3-03 — Implementar importação OFX na web</h2>
             <p class="doc-paragraph"><strong>Resultado:</strong> fluxo web para selecionar o arquivo, apresentar prévia, revisar duplicidades, confirmar e consultar resultado, consumindo o contrato tipado aprovado.</p>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">A tela envia o extrato com a conta escolhida e permite confirmar a prévia e atualizar o resultado. Nessa revisão, a escolha da conta ocorre antes do envio do arquivo.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/2e51ab0398a310b55169860f708179808882eef6/src/app/(app)/contas/importar-ofx/ofx-import.tsx#L49-L87">Web · enviar extrato para prévia</a></li>
+              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/2e51ab0398a310b55169860f708179808882eef6/src/app/(app)/contas/importar-ofx/ofx-import.tsx#L213-L251">Web · confirmar e atualizar o resultado</a></li>
+            </ul>
             <p class="doc-paragraph"><strong>Fontes:</strong> PRD HU-004/RNF-009; contrato S3-01 e API S3-02; padrões atuais de telas e clientes web. <strong>Prioridade:</strong> Must. <strong>Estimativa:</strong> M. <strong>Responsável principal:</strong> Developer 2; Developer 3 revisa aceite, acessibilidade e testes. <strong>Repositório:</strong> web. <strong>Dependências:</strong> contrato S3-01; integração real depende do endpoint de S3-02. <strong>Janela proposta:</strong> 30/09–02/10 para fluxo com contrato/mocks e 05–06/10 para integração, estimativa.</p>
             <ul class="doc-list">
               <li>Somente formatos e limites decididos são enviados; validações do cliente não substituem validação backend.</li>
@@ -155,6 +173,12 @@
 
             <h2 class="doc-heading">S3-04 — Implementar importação OFX no mobile</h2>
             <p class="doc-paragraph"><strong>Resultado:</strong> experiência mobile independente para escolher arquivo, rever prévia/duplicidades, confirmar e acompanhar o resultado usando o mesmo contrato OpenAPI, sem compartilhar código de interface com a web.</p>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">O aplicativo abre o seletor de documentos, solicita a prévia para a conta escolhida e consulta o resultado após a confirmação. O mapeamento em uma etapa posterior à leitura do arquivo segue pendente nessa versão.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/dd9f2c89774fb3d73dedc8b0bc8bcb525021d515/src/screens/OfxImportScreen.tsx#L98-L132">Mobile · selecionar arquivo e solicitar prévia</a></li>
+              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/dd9f2c89774fb3d73dedc8b0bc8bcb525021d515/src/screens/OfxImportScreen.tsx#L144-L174">Mobile · confirmar e consultar a importação</a></li>
+            </ul>
             <p class="doc-paragraph"><strong>Fontes:</strong> PRD HU-004/RNF-009; contrato S3-01 e API S3-02; arquitetura de clientes independentes. <strong>Prioridade:</strong> Must. <strong>Estimativa:</strong> G, pela seleção de arquivos e dependência ainda não aprovada. <strong>Responsável principal:</strong> Developer 2; Developer 3 revisa aceite e evidências. <strong>Repositório:</strong> mobile. <strong>Dependências:</strong> S3-01; endpoint S3-02; decisão e aprovação de eventual seletor de documentos. <strong>Janela proposta:</strong> 30/09–02/10 para fluxo com contrato/mocks e 05–06/10 para integração, estimativa.</p>
             <ul class="doc-list">
               <li>Seleção e envio usam mecanismo compatível com a plataforma e com as decisões de tipo/tamanho; nenhuma dependência nova é adicionada sem aprovação.</li>
@@ -171,6 +195,13 @@
           <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
             <h2 class="doc-heading">S3-05 — Implementar conexão Pluggy e importação inicial</h2>
             <p class="doc-paragraph"><strong>Resultado:</strong> backend habilita conexão autenticada com Pluggy Sandbox, vincula a referência do Item ao tenant, registra estado/escopo de consentimento sem credenciais bancárias e importa inicialmente os tipos de dados que forem aprovados para HU-007.</p>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">A API cria a sessão de conexão. Na conclusão, o backend registra a conexão e agenda a coleta inicial de contas e transações. O reteste no tablet acompanhou a execução até a espera pelo mapeamento de contas.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/605cb0777dd6686645be36cabd42b7b219fca635/src/modules/accounts/adapters/inbound/pluggy-connections.controller.ts#L70-L105">Backend · iniciar e concluir a conexão Pluggy</a></li>
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/234cb1168acd37977f3ab83143f92ff4b73699b3/src/modules/ingestion/application/use-cases/pluggy-initial-import.ts#L113-L132">Backend · registrar a conexão e enfileirar a importação</a></li>
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/234cb1168acd37977f3ab83143f92ff4b73699b3/src/modules/ingestion/application/use-cases/pluggy-initial-import.ts#L245-L267">Backend · coletar contas e transações</a></li>
+            </ul>
             <p class="doc-paragraph"><strong>Fontes:</strong> PRD HU-007, RN-007 a RN-009 e RNF-004/RNF-008; Arquitetura, módulos Accounts/Ingestion, adapters, processos e jobs; documentação oficial Pluggy de autenticação e revogação. <strong>Prioridade:</strong> Must. <strong>Estimativa:</strong> G. <strong>Responsável principal:</strong> Developer 1; Developer 3 valida consentimento, isolamento, idempotência e rastreabilidade; Developer 2 alinha o contrato dos clientes. <strong>Repositório:</strong> backend. <strong>Dependências:</strong> S3-01; credenciais de aplicação e acesso ao Sandbox Pluggy; aprovação separada de dependências se necessárias. <strong>Janela proposta:</strong> 05–07/10, estimativa.</p>
             <ul class="doc-list">
               <li>Credenciais de aplicação e API Key permanecem no backend. O cliente recebe somente o token de conexão limitado previsto no fluxo oficial Pluggy; nenhum segredo aparece em resposta, log ou bundle.</li>
@@ -190,6 +221,12 @@
           <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
             <h2 class="doc-heading">S3-06 — Integrar conexão Pluggy na web</h2>
             <p class="doc-paragraph"><strong>Resultado:</strong> pessoa usuária inicia e conclui o fluxo de conexão a partir da web, consome apenas o token de conexão fornecido pelo backend e visualiza estados de sucesso, erro e disponibilidade parcial.</p>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">A web abre o widget e envia o identificador do item ao backend para concluir a conexão. O registro de 25/11/2026 ainda indicava o reteste desse fluxo no navegador como pendente.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/35c1cfc6ebc52fb8763ef0b70935e075e4f07730/src/app/(app)/contas/conectar/connect-flow.tsx#L59-L89">Web · iniciar sessão e concluir a conexão</a></li>
+              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/35c1cfc6ebc52fb8763ef0b70935e075e4f07730/src/app/(app)/contas/conectar/connect-flow.tsx#L103-L126">Web · abrir o widget Pluggy</a></li>
+            </ul>
             <p class="doc-paragraph"><strong>Fontes:</strong> PRD HU-007/RNF-004/RNF-009; contrato S3-01 e backend S3-05; documentação oficial Pluggy lista SDK para React. <strong>Prioridade:</strong> Must. <strong>Estimativa:</strong> M. <strong>Responsável principal:</strong> Developer 2; Developer 3 valida segurança do cliente e estados. <strong>Repositório:</strong> web. <strong>Dependências:</strong> token/contrato S3-05; análise e aprovação de eventual SDK; Sandbox disponível. <strong>Janela proposta:</strong> 06–08/10, estimativa, com integração real após o endpoint de S3-05.</p>
             <ul class="doc-list">
               <li>O fluxo abre o componente/SDK aprovado com token do backend; <code>CLIENT_ID</code>, <code>CLIENT_SECRET</code> e API Key não entram no cliente.</li>
@@ -201,6 +238,13 @@
 
             <h2 class="doc-heading">S3-07 — Integrar conexão Pluggy no mobile</h2>
             <p class="doc-paragraph"><strong>Resultado:</strong> experiência mobile independente para iniciar e completar conexão Pluggy, respeitando o contrato backend e o retorno OAuth/deep link da plataforma.</p>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">No tablet Android, o reteste de 25/11/2026 confirmou a conexão e a atualização do estado da importação de “em andamento” para “aguarda o mapeamento de contas”. A conclusão da coleta ficou fora desse reteste.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/fdee1d6305cc66406ee79123b2fcda94ca4bd802/src/screens/ConnectScreen.tsx#L68-L105">Mobile · abrir sessão e receber o estado da importação</a></li>
+              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/fdee1d6305cc66406ee79123b2fcda94ca4bd802/src/screens/ConnectScreen.tsx#L174-L201">Mobile · tratar o retorno do widget</a></li>
+              <li><a href="https://github.com/SamuelMota321/documentacao-centralizador-financeiro/blob/063df7f67d5cb4507625ce8e465bd948970bf39a/auditorias/auditoria-dev3-atual-2026-11-23.md?plain=1#L827-L831">Evidência · reteste no tablet Android</a></li>
+            </ul>
             <p class="doc-paragraph"><strong>Fontes:</strong> PRD HU-007/RNF-004/RNF-009; contrato S3-01 e backend S3-05; documentação Pluggy lista SDK React Native e orienta esquema deep link para OAuth. <strong>Prioridade:</strong> Must. <strong>Estimativa:</strong> G, dependente de integração nativa e versão compatível com o aplicativo. <strong>Responsável principal:</strong> Developer 2; Developer 3 valida estados, segurança e evidências. <strong>Repositório:</strong> mobile. <strong>Dependências:</strong> S3-05; validação de compatibilidade/aprovação de SDK; Sandbox. O scheme <code>coinciente</code> já existe em <code>app.json</code>, mas o fluxo precisa ser verificado na plataforma. <strong>Janela proposta:</strong> 06–08/10, estimativa.</p>
             <ul class="doc-list">
               <li>O cliente usa token limitado obtido do backend e não recebe credenciais de aplicação.</li>
@@ -217,6 +261,14 @@
           <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
             <h2 class="doc-heading">S3-08 — Consolidar contratos, isolamento e evidências</h2>
             <p class="doc-paragraph"><strong>Resultado:</strong> cobertura de aceite cruzada nos quatro repositórios, clientes coerentes com o OpenAPI, integração demonstrável dos dois fluxos e evidências organizadas para revisão.</p>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">Há testes de isolamento do OFX no backend e de compatibilidade da conclusão Pluggy com a OpenAPI nos dois clientes. O aceite de campo registrado cobre o tablet até o mapeamento. O reteste web e as divergências de OFX continuavam abertos nesse registro.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/2c416cd4dd452dd193b5e4cf673c0eb426f7c6a8/test/integration/ofx-ingestion.integration.spec.ts#L87-L128">Backend · teste de isolamento entre tenants</a></li>
+              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/35c1cfc6ebc52fb8763ef0b70935e075e4f07730/src/lib/api/contract.test.ts#L547-L562">Web · teste do contrato de conclusão e consulta</a></li>
+              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/fdee1d6305cc66406ee79123b2fcda94ca4bd802/src/lib/api/contract.test.ts#L561-L580">Mobile · teste do contrato de conclusão e consulta</a></li>
+              <li><a href="https://github.com/SamuelMota321/documentacao-centralizador-financeiro/blob/063df7f67d5cb4507625ce8e465bd948970bf39a/auditorias/auditoria-dev3-atual-2026-11-23.md?plain=1#L827-L831">Auditoria · resultado e pendências do aceite</a></li>
+            </ul>
             <p class="doc-paragraph"><strong>Fontes:</strong> PRD HU-004/HU-007, RN-006 a RN-009; Arquitetura 1.6, estratégia de testes e API; Plano S2, definição de pronto e divisão de papéis. <strong>Prioridade:</strong> Must. <strong>Estimativa:</strong> G. <strong>Responsável principal:</strong> Developer 3; Developers 1 e 2 corrigem divergências nos seus repositórios e revisam a integração. <strong>Repositórios:</strong> backend, web, mobile e documentação. <strong>Dependências:</strong> S3-02 a S3-07; ambiente Sandbox e integrações assíncronas se aprovadas. <strong>Janela proposta:</strong> 08–09/10, estimativa.</p>
             <ul class="doc-list">
               <li>Contrato OpenAPI publicado pelo backend corresponde aos tipos, snapshots e validações independentes de web e mobile.</li>

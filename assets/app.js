@@ -325,11 +325,14 @@ search?.addEventListener('input', event => {
   let count = 0;
   pages.forEach(page => {
     const content = page.querySelector('.document-content');
-    const source = content.dataset.source;
-    const matched = !query || source.toLocaleLowerCase('pt-BR').includes(query.toLocaleLowerCase('pt-BR'));
+    const source = content?.dataset.source ?? page.textContent;
+    const term = query.toLocaleLowerCase('pt-BR');
+    const matched = !term || source.toLocaleLowerCase('pt-BR').includes(term);
     page.hidden = !matched;
     if (matched) count += 1;
-    content.replaceChildren(formatSource(source, query, page.dataset.page === '1'));
+    if (content) {
+      content.replaceChildren(formatSource(source, query, page.dataset.page === '1'));
+    }
   });
   resultNote.textContent = query ? `${count} página${count === 1 ? '' : 's'} encontrada${count === 1 ? '' : 's'}` : `${navLinks.length} seções`;
 });

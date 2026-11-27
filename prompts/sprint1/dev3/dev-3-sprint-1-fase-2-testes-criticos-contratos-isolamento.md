@@ -66,3 +66,14 @@ Deliver criterion-linked test evidence, contract compatibility results, explicit
 | Scenario adaptation | Audit methodology with bounded tests, verification, documentation, and evidence follow-up after repository approval | template |
 
 Source legend: **user-stated** — directly stated by the user; **approved default** — an option or draft explicitly approved by the user; **template** — standard methodology or scaffolding covered by approval; **open** — deliberately left unresolved.
+
+## Execution handoff
+
+- **Plano e data.** Plano 04 em 26/11/2026. P14 executado parcialmente.
+- **Repositórios e revisões.** Documentação `063df7f`, backend `2c9bf9f`, web `bd383e9` e mobile `8de2a7c`.
+- **Arquivos alterados.** Este prompt, P13, P15, auditoria vigente e índice do plano.
+- **Critérios verificados.** S1-04 a S1-08 com evidência unitária e contratual de guarda, sessão, Accounts e manutenção. Quatro operações OpenAPI equivalentes nos dois clientes. A prova de isolamento real está bloqueada.
+- **Comandos executados e resultados.** `vitest run` focado nos specs de Identity, Accounts e OpenAPI aprovou 22 testes no backend. No web, filtros de contas, proxy e OpenAPI aprovaram 79. No mobile, filtros de contas, sessão e OpenAPI aprovaram 63. Comandos, filtros e matriz estão no [handoff do Plano 04](../../../auditorias/auditoria-dev3-atual-2026-11-23.md#execution-handoff--plano-04).
+- **Verificações pendentes.** Supertest com banco, persistência, rollback de auditoria, leitura e mutação A/B, RLS com role sem bypass e autenticação e sessão Auth0 reais. Dev 1 apoia API e banco. Dev 2 apoia os dois clientes e B11. Nenhum defeito identificado nos testes executados.
+- **Bloqueio e risco residual.** O banco descartável ficou inacessível nesta sessão. O efeito real das políticas e a ausência de mistura de estado após troca de sessão ainda exigem execução.
+- **Próximo plano elegível.** Retomar o Plano 04 quando o banco descartável e as duas identidades de teste estiverem disponíveis para o Dev 3.

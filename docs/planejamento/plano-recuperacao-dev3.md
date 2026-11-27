@@ -502,7 +502,7 @@ Use esta tabela como índice. Atualize o status somente com evidência registrad
 | 01 | Não iniciado | Matriz P13–P60 atual |
 | 02 | Concluído com ressalvas | Contratos reconciliados e divergências com responsáveis. B01 mobile aprovado no Pluggy Sandbox em 25/11/2026. Reteste web e demais achados pendentes. [Handoff do Plano 02](../../auditorias/auditoria-dev3-atual-2026-11-23.md#execution-handoff--plano-02) · [Reteste no tablet](../../auditorias/auditoria-dev3-atual-2026-11-23.md#reteste-pluggy-no-tablet-em-25112026). |
 | 03 | Concluído | Base determinística dos três produtos verificada. Web aprovado com instalação limpa offline e build padrão com fontes locais. [Handoff final do Plano 03](../../auditorias/auditoria-dev3-atual-2026-11-23.md#handoff-final-do-plano-03). |
-| 04 | Não iniciado | Sprint 1 aceita ou bloqueada com precisão |
+| 04 | Bloqueado | Testes focados e contratos de contas aprovados em 26/11/2026. PostgreSQL/RLS e demonstração Auth0 com duas identidades em web e Android pendentes. [Handoff do Plano 04](../../auditorias/auditoria-dev3-atual-2026-11-23.md#execution-handoff--plano-04). |
 | 05 | Não iniciado | Sprint 2 aceita ou bloqueada com precisão |
 | 06 | Não iniciado | Sprint 3 aceita ou condicionada com precisão |
 | 07 | Não iniciado | Baseline Sprint 4 fechado |

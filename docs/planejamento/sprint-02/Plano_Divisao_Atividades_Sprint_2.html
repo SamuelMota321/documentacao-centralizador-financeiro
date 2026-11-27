@@ -87,6 +87,11 @@
           <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
             <h2 class="doc-heading">S2-01 — Fechar baseline e contratos de Transactions</h2>
             <p class="doc-paragraph"><strong>Descrição:</strong> baseline e contratos aprovados para modelo, lifecycle mínimo, representação de transferências, categorias, condições de regras, precedência, idempotência, rotas e erros. O registro está em <a href="especificacao-transactions.html">Especificação de Transactions</a> e <a href="plano-implementacao-transactions.html">Plano de Implementação de Transactions</a>.</p>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">A especificação define a base do módulo de movimentações e os contratos que orientam os clientes.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/documentacao-centralizador-financeiro/blob/0b94a40f7c26e18241c4a2548a1adde0b19c3458/docs/planejamento/sprint-02/especificacao-transactions.html#L196-L205">Documentação · contrato de movimentações</a></li>
+            </ul>
             <p class="doc-paragraph"><strong>Fonte:</strong> PRD HU-003/HU-005/HU-006; Arquitetura, módulo Transactions e visão da API; padrão S1-01. <strong>Prioridade:</strong> Must, posição 1. <strong>Estimativa:</strong> M. <strong>Responsáveis:</strong> todos, com condução técnica do Developer 1 e consolidação do Developer 3. <strong>Dependência:</strong> Sprint 1 concluída. <strong>Janela:</strong> 11/09.</p>
             <ul class="doc-list">
               <li>Modelo e contratos não contradizem PRD ou Arquitetura.</li>
@@ -96,6 +101,12 @@
             </ul>
             <h2 class="doc-heading">S2-02 — Modelar Transactions e persistência tenant-aware</h2>
             <p class="doc-paragraph"><strong>Descrição:</strong> definir domínio, casos de uso, ports, estruturas <code>transactions</code>, <code>categories</code> e <code>category_rules</code>, migrations, constraints, índices e políticas RLS.</p>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">O adaptador Prisma persiste movimentações no contexto do tenant. A suíte de integração cobre o comportamento do repositório no banco.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/b61b2051337ceb1ddb34638d00d6a6448dcb7759/src/modules/transactions/adapters/outbound/prisma-transactions.repository.ts#L278-L299">Backend · persistência de movimentações</a></li>
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/b61b2051337ceb1ddb34638d00d6a6448dcb7759/test/integration/prisma-transactions.repository.integration.spec.ts#L90-L105">Backend · teste de persistência</a></li>
+            </ul>
             <p class="doc-paragraph"><strong>Fonte:</strong> Arquitetura, Visão de Dados; PRD RN-001 a RN-005, RNF-002 e RNF-003. <strong>Prioridade:</strong> Must, posição 2. <strong>Estimativa:</strong> G. <strong>Responsável principal:</strong> Developer 1; Developer 3 revisa e Developer 2 alinha o contrato. <strong>Dependência:</strong> S2-01. <strong>Janela:</strong> 14–15/09.</p>
             <ul class="doc-list">
               <li>As estruturas pertencem ao módulo Transactions e preservam suas fronteiras.</li>
@@ -112,6 +123,12 @@
           <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
             <h2 class="doc-heading">S2-03 — Implementar movimentações no backend</h2>
             <p class="doc-paragraph"><strong>Descrição:</strong> implementar casos de uso e endpoints REST para registrar receitas, despesas e transferências contábeis.</p>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">A API expõe as operações de lançamento manual e transferência entre contas.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/c472b9ea6b7be8426f8c5893d136ce686f1f0475/src/modules/transactions/adapters/inbound/transactions.controller.ts#L59-L80">Backend · registrar movimentação</a></li>
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/c472b9ea6b7be8426f8c5893d136ce686f1f0475/src/modules/transactions/adapters/inbound/transactions.controller.ts#L95-L114">Backend · registrar transferência</a></li>
+            </ul>
             <p class="doc-paragraph"><strong>Fonte:</strong> PRD HU-003 e RN-005; Arquitetura, processos síncronos e API REST. <strong>Prioridade:</strong> Must, posição 3. <strong>Estimativa:</strong> G. <strong>Responsável principal:</strong> Developer 1; Developer 2 integra antecipadamente e Developer 3 valida. <strong>Dependência:</strong> S2-02. <strong>Janela:</strong> 16–18/09.</p>
             <ul class="doc-list">
               <li>Conta, valor, data e tipo são obrigatórios e validados.</li>
@@ -123,6 +140,12 @@
             </ul>
             <h2 class="doc-heading">S2-04 — Implementar movimentações nos clientes</h2>
             <p class="doc-paragraph"><strong>Descrição:</strong> criar os fluxos web e mobile independentes para registrar receitas, despesas e transferências.</p>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">Os dois clientes têm formulários próprios para registrar movimentações e transferências.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/81f032c992c76b69a8c8b75a605e64a66c393017/src/app/movimentacoes/movement-form.tsx#L24-L48">Web · formulário de movimentação</a></li>
+              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/b3c63aa8711d99c03f674a09a6454a2f4b3a7640/src/screens/TransferFormScreen.tsx#L67-L80">Mobile · envio da transferência</a></li>
+            </ul>
             <p class="doc-paragraph"><strong>Fonte:</strong> PRD HU-003 e RNF-009; Arquitetura, independência dos clientes e OpenAPI; Style Guide. <strong>Prioridade:</strong> Must, posição 4. <strong>Estimativa:</strong> G. <strong>Responsável principal:</strong> Developer 2; Developer 1 apoia o contrato e Developer 3 valida. <strong>Dependências:</strong> S2-01 e contrato estável de S2-03. <strong>Janela:</strong> 16–18/09.</p>
             <ul class="doc-list">
               <li>Web e mobile consomem seus próprios clientes tipados.</li>
@@ -140,6 +163,12 @@
           <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
             <h2 class="doc-heading">S2-05 — Implementar categorização e correção manual</h2>
             <p class="doc-paragraph"><strong>Descrição:</strong> permitir atribuição de categoria, indicação de resultado incerto e correção pelo usuário.</p>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">A web e o mobile permitem corrigir a categoria de um lançamento. A auditoria da sprint registra a releitura da alteração entre plataformas como cenário de demonstração.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/81f032c992c76b69a8c8b75a605e64a66c393017/src/app/movimentacoes/categorize-control.tsx#L18-L43">Web · correção de categoria</a></li>
+              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/b3c63aa8711d99c03f674a09a6454a2f4b3a7640/src/screens/CategorizeScreen.tsx#L60-L84">Mobile · categorização de um lançamento</a></li>
+            </ul>
             <p class="doc-paragraph"><strong>Fonte:</strong> PRD HU-005; Arquitetura, estruturas <code>categories</code> e <code>transactions</code>. <strong>Prioridade:</strong> Must, posição 5. <strong>Estimativa:</strong> G. <strong>Responsáveis:</strong> Developer 1 no backend, Developer 2 nos clientes e Developer 3 no aceite. <strong>Dependências:</strong> S2-02, S2-03 e S2-04. <strong>Janela:</strong> 21–22/09.</p>
             <ul class="doc-list">
               <li>Transação pode receber categoria permitida para o mesmo tenant.</li>
@@ -151,6 +180,13 @@
             </ul>
             <h2 class="doc-heading">S2-06 — Implementar regras pessoais de categorização</h2>
             <p class="doc-paragraph"><strong>Descrição:</strong> permitir criar, editar, ativar, desativar e remover regras pessoais, com precedência determinística.</p>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">O backend aplica as alterações de regras pessoais, e os dois clientes oferecem edição das regras.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/98659d83091373643044b43941850dc29b48bfab/src/modules/transactions/application/use-cases/update-category-rule.ts#L32-L55">Backend · atualização da regra</a></li>
+              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/9267b5d2684bc018946978e6dd58b2ce8f16c414/src/app/(app)/regras/rule-item.tsx#L37-L61">Web · ações sobre a regra</a></li>
+              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/d60d0c910e5b683d3a01ee7029e07299eaa78932/src/screens/RuleFormScreen.tsx#L67-L91">Mobile · formulário de regra</a></li>
+            </ul>
             <p class="doc-paragraph"><strong>Fonte:</strong> PRD HU-006; Arquitetura, estrutura <code>category_rules</code>. <strong>Prioridade:</strong> Must, posição 6. <strong>Estimativa:</strong> G. <strong>Responsáveis:</strong> Developer 1 no domínio/API, Developer 2 nos clientes e Developer 3 nos conflitos. <strong>Dependência:</strong> S2-05. <strong>Janela:</strong> 22–23/09.</p>
             <ul class="doc-list">
               <li>Regra, condição e categoria pertencem ao mesmo tenant.</li>
@@ -168,6 +204,12 @@
           <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
             <h2 class="doc-heading">S2-07 — Consolidar idempotência, isolamento e auditoria</h2>
             <p class="doc-paragraph"><strong>Descrição:</strong> validar transversalmente ownership, RLS, repetição segura e auditoria das ações introduzidas.</p>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">O backend registra as chaves de idempotência e a migration reforça a proteção dos registros de movimentação por tenant.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/98659d83091373643044b43941850dc29b48bfab/src/modules/transactions/adapters/outbound/prisma-idempotency.repository.ts#L30-L54">Backend · persistência das chaves de idempotência</a></li>
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/98659d83091373643044b43941850dc29b48bfab/prisma/migrations/202609230001_s207_transactions_security_hardening/migration.sql#L127-L147">Banco · políticas de segurança e auditoria</a></li>
+            </ul>
             <p class="doc-paragraph"><strong>Fonte:</strong> PRD HU-003, HU-015, RN-001 a RN-004 e RN-015; Arquitetura, segurança, RLS e Audit. <strong>Prioridade:</strong> Must, posição 7. <strong>Estimativa:</strong> M. <strong>Implementação:</strong> Developer 1; <strong>validação:</strong> Developer 3; <strong>integração:</strong> Developer 2. <strong>Dependências:</strong> acompanha S2-02 a S2-06. <strong>Janela:</strong> 14–23/09.</p>
             <ul class="doc-list">
               <li>Leitura e mutação cross-tenant são negadas pela aplicação e pelo banco.</li>
@@ -178,6 +220,12 @@
             </ul>
             <h2 class="doc-heading">S2-08 — Automatizar testes e validar contratos</h2>
             <p class="doc-paragraph"><strong>Descrição:</strong> consolidar testes unitários, integração, REST, RLS, contrato e fluxos críticos web/mobile.</p>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">Os clientes comparam o contrato de movimentações com o snapshot da OpenAPI. As referências abrem as asserções de cada plataforma.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/5357db1bada3476091df96df4f347bc74185a6f5/src/lib/api/contract.test.ts#L165-L174">Web · contrato de transferência</a></li>
+              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/aad46c4e8a96b521e9ebfe4932b8bd1dc51dab0c/src/lib/api/contract.test.ts#L165-L174">Mobile · contrato de transferência</a></li>
+            </ul>
             <p class="doc-paragraph"><strong>Fonte:</strong> PRD, estratégia de testes; Arquitetura, Visão de Testes; padrão S1-08. <strong>Prioridade:</strong> Must, posição 8. <strong>Estimativa:</strong> G. <strong>Responsável principal:</strong> Developer 3, com participação obrigatória dos Developers 1 e 2. <strong>Dependências:</strong> inicia após S2-01 e fecha após S2-07. <strong>Janela:</strong> 14–24/09.</p>
             <ul class="doc-list">
               <li>Domínio e casos de uso possuem testes focados.</li>
@@ -195,6 +243,12 @@
           <div class="sprint-content" style="padding-top:3.8rem;border-top:1px solid var(--line)">
             <h2 class="doc-heading">S2-09 — Integrar, demonstrar e revisar</h2>
             <p class="doc-paragraph"><strong>Descrição:</strong> consolidar backend, web, mobile, contrato, testes, documentação e demonstração.</p>
+            <h3>Implementação e evidências</h3>
+            <p class="doc-paragraph">O roteiro descreve a demonstração web e mobile. A auditoria registra que a execução integrada e a releitura de dados entre plataformas ainda precisavam de evidência.</p>
+            <ul class="doc-list">
+              <li><a href="https://github.com/SamuelMota321/documentacao-centralizador-financeiro/blob/a918e236a205ebc16b8e71752124ea2634019b2b/prompts/sprint2/dev2/roteiro-demonstracao-sprint-2.md?plain=1#L19-L30">Demonstração · roteiro web</a></li>
+              <li><a href="https://github.com/SamuelMota321/documentacao-centralizador-financeiro/blob/a918e236a205ebc16b8e71752124ea2634019b2b/auditorias/auditoria-dev3-atual-2026-11-23.md?plain=1#L384-L388">Auditoria · pendências da demonstração</a></li>
+            </ul>
             <p class="doc-paragraph"><strong>Fonte:</strong> padrão S1-09; Arquitetura, pipelines independentes e implantação acadêmica. <strong>Prioridade:</strong> Must, posição 9. <strong>Estimativa:</strong> M. <strong>Responsáveis:</strong> todos. <strong>Dependências:</strong> S2-01 a S2-08. <strong>Janela:</strong> 25/09.</p>
             <ul class="doc-list">
               <li>O fluxo completo é demonstrável em web e mobile.</li>

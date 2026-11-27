@@ -120,11 +120,13 @@
             <h2 class="doc-heading">S4-02 — HU-008: Sincronizar dados do Pluggy Sandbox</h2>
             <p class="doc-paragraph"><strong>Resultado:</strong> usuário pode solicitar sincronização manual e o sistema executa sincronização diária, com proteção contra duplicidade e concorrência, retries controlados e estado rastreável.</p>
             <h3>Implementação e evidências</h3>
-            <p class="doc-paragraph">O backend processa a sincronização e a web permite solicitá-la. O mobile tem um cliente para consultar ou iniciar execuções. A validação da agenda externa e do fluxo completo no Sandbox aparece como pendência nas evidências do backend.</p>
+            <p class="doc-paragraph">O backend processa a sincronização e o script configura a agenda diária no QStash. A web oferece disparo e acompanhamento. O mobile pode pedir atualização pela carteira e informa o resultado do pedido. A execução da agenda externa e o fluxo ponta a ponta no Sandbox ficaram pendentes nas evidências do backend.</p>
             <ul class="doc-list">
               <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/9fc5a1f22ab1075743e0a1b09523ede214cea623/src/modules/sync/application/pluggy-synchronization.ts#L116-L140">Backend · processamento da sincronização</a></li>
               <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/b51a9f9fbafc046fe368f3fd3526109f61bb5337/src/app/(app)/contas/conectar/sync-panel.tsx#L19-L48">Web · painel de sincronização</a></li>
               <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/e1fd7ffdad690540c8b7d0755904ee0d4a4f7af9/src/lib/sync-runs/api.ts#L15-L23">Mobile · operações de sincronização</a></li>
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/9af5b12225096e0132ea701d0d6e25bb3db78437/scripts/qstash/ensure-pluggy-daily-schedule.ts#L18-L32">Backend · configurar o agendamento diário no QStash</a></li>
+              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/003ca40668907a8e169e0cd50ec59141cb0a21d1/src/screens/InvestmentsScreen.tsx#L105-L134">Mobile · pedir atualização das conexões pela carteira</a></li>
             </ul>
             <p class="doc-paragraph"><strong>Fonte:</strong> PRD 1.4, HU-008 e RN-007/RN-014. <strong>Prioridade:</strong> Must. <strong>Estimativa:</strong> G, pela execução agendada, idempotência, concorrência e estados de falha. <strong>Responsável principal:</strong> Developer 1; Developer 2 entrega o disparo e estado nas interfaces; Developer 3 especifica cenários e valida isolamento/evidências. <strong>Repositórios:</strong> backend, web, mobile e documentação. <strong>Dependências:</strong> HU-007 estável; S4-01; contrato de provedores e configuração de jobs aprovada. <strong>Janela proposta:</strong> 13–19/10, estimativa.</p>
             <ul class="doc-list">
@@ -146,9 +148,10 @@
             <h3>Implementação e evidências</h3>
             <p class="doc-paragraph">O backend consulta as posições e os clientes apresentam a carteira e o detalhe de investimento. O registro de integração distingue os testes com dados sintéticos da conferência dos campos retornados por um conector real.</p>
             <ul class="doc-list">
-              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/e4c6a486f143ef473dfb70e201d113c2a3615edf/src/modules/investments/application/investment-read.service.ts#L20-L44">Backend · consulta de investimentos</a></li>
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/9af5b12225096e0132ea701d0d6e25bb3db78437/src/modules/investments/application/investment-read.service.ts#L35-L64">Backend · consulta de investimentos</a></li>
               <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/d9e829cce7160624911e029dcfd6bae50a81e040/src/app/(app)/investimentos/%5Bid%5D/page.tsx#L30-L56">Web · detalhe da posição</a></li>
               <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/e1fd7ffdad690540c8b7d0755904ee0d4a4f7af9/src/screens/InvestmentDetailScreen.tsx#L33-L63">Mobile · detalhe da posição</a></li>
+              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/0ca997aaabfc5363d3b5dca1d9fc977d9d24281f/src/app/(app)/investimentos/page.tsx#L49-L70">Web · carregar posições e dados de prévia</a></li>
             </ul>
             <p class="doc-paragraph"><strong>Fonte:</strong> PRD 1.4, HU-009 e RN-010; HU-008 para a sincronização dos dados. <strong>Prioridade:</strong> Must. <strong>Estimativa:</strong> G, pela integração entre dados externos, contrato e clientes. <strong>Responsável principal:</strong> Developer 2 na experiência web/mobile; Developer 1 no modelo/API e Developer 3 nos critérios, testes e evidências. <strong>Repositórios:</strong> backend, web, mobile e documentação. <strong>Dependências:</strong> HU-007 e S4-02; disponibilidade e mapeamento dos dados no Sandbox. <strong>Janela proposta:</strong> 16–21/10, estimativa.</p>
             <ul class="doc-list">
@@ -165,7 +168,7 @@
             <p class="doc-paragraph">O backend calcula a alocação. Web e mobile apresentam a composição por moeda. A conferência ponta a ponta com posições reais do Sandbox ficou pendente no registro da sprint.</p>
             <ul class="doc-list">
               <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/b5826a38fb21376b23056bde1d61dbb86bb42487/src/modules/investments/application/investment-read.service.ts#L144-L169">Backend · cálculo da alocação</a></li>
-              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/d9e829cce7160624911e029dcfd6bae50a81e040/src/app/(app)/investimentos/composition.tsx#L74-L101">Web · composição da carteira</a></li>
+              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/0ca997aaabfc5363d3b5dca1d9fc977d9d24281f/src/app/(app)/investimentos/composition.tsx#L77-L136">Web · composição por classe e instituição</a></li>
               <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/e1fd7ffdad690540c8b7d0755904ee0d4a4f7af9/src/screens/InvestmentsScreen.tsx#L215-L229">Mobile · composição por moeda</a></li>
             </ul>
             <p class="doc-paragraph"><strong>Fonte:</strong> PRD 1.4, HU-011 e RN-010. <strong>Prioridade:</strong> Must. <strong>Estimativa:</strong> M. <strong>Responsável principal:</strong> Developer 2; Developer 1 publica dados/agrupamentos requeridos pelo contrato e Developer 3 valida cálculos e estados. <strong>Repositórios:</strong> backend, web, mobile e documentação. <strong>Dependências:</strong> S4-03 e categorias/classificação fornecidas pelos dados disponíveis. <strong>Janela proposta:</strong> 20–22/10, estimativa.</p>
@@ -185,11 +188,13 @@
             <h2 class="doc-heading">S4-05 — HU-012: Registrar bens, financiamentos e passivos</h2>
             <p class="doc-paragraph"><strong>Resultado:</strong> a pessoa registra componentes patrimoniais não fornecidos pelas integrações, com histórico das alterações relevantes.</p>
             <h3>Implementação e evidências</h3>
-            <p class="doc-paragraph">O backend oferece manutenção do patrimônio manual. Os clientes têm formulários para bens, financiamentos e passivos. O registro de entrega web ainda previa a demonstração integrada desse fluxo.</p>
+            <p class="doc-paragraph">O backend oferece manutenção de patrimônio manual e os dois clientes têm formulários para bens, financiamentos e passivos. Web e mobile também oferecem prévias com dados fictícios. O registro de entrega web ainda previa a demonstração integrada.</p>
             <ul class="doc-list">
               <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/a730f56e236ea918b9879949bfa1b6cb11093a5e/src/modules/patrimony/application/patrimony.service.ts#L29-L52">Backend · criação de registros patrimoniais</a></li>
               <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/d0deb877e0c047ac75518cc5de5cb09a2471c3c7/src/app/(app)/patrimonio/patrimony-form.tsx#L31-L58">Web · formulário de patrimônio</a></li>
               <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/ef3653be53ece0c035f341bf19b550403c2dfeaf/src/screens/PatrimonyFormScreen.tsx#L47-L74">Mobile · formulário de patrimônio</a></li>
+              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/0ca997aaabfc5363d3b5dca1d9fc977d9d24281f/src/app/(app)/patrimonio/page.tsx#L35-L54">Web · prévia de patrimônio com dados fictícios</a></li>
+              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/003ca40668907a8e169e0cd50ec59141cb0a21d1/src/screens/PatrimonyScreen.tsx#L48-L78">Mobile · prévia de patrimônio com dados fictícios</a></li>
             </ul>
             <p class="doc-paragraph"><strong>Fonte:</strong> PRD 1.4, HU-012 e RN-011/RN-015. <strong>Prioridade:</strong> Must. <strong>Estimativa:</strong> M, a confirmar após decomposição do modelo e telas. <strong>Responsável principal:</strong> Developer 1 no domínio/API/persistência; Developer 2 nas interfaces; Developer 3 em critérios, auditoria e isolamento. <strong>Repositórios:</strong> backend, web, mobile e documentação. <strong>Dependências:</strong> baseline de contas/tenant e decisão de representação de bem, financiamento e passivo compatível com o PRD. <strong>Janela proposta:</strong> em paralelo às tarefas Pluggy, 13–20/10, estimativa.</p>
             <ul class="doc-list">

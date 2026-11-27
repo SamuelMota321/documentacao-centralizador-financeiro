@@ -11,7 +11,16 @@
 3. **Para o Developer 3:** oferecer a base observável dos critérios de aceite (seção 6).
 4. **Para o Developer 2:** o plano de trabalho com condições de entrada (seção 7).
 
-Limites: é levantamento de apresentação, não contrato nem cálculo. As recomendações da seção 4 são propostas do Developer 2; quem decide está indicado em cada linha. Nada aqui foi implementado.
+O levantamento e as propostas das seções numeradas registram o cenário de 02/11/2026. A seção 4 indica o responsável por cada decisão.
+
+## Implementação e evidências
+
+A Visão geral já existe nos clientes web e mobile como prévia da HU-010, com dados de exemplo. As referências mostram a navegação e a origem dos dados usados pela tela. A integração com as agregações do backend e o aceite da HU-010 seguem como etapas do plano.
+
+- [Web · página e acesso condicionado à prévia](https://github.com/SamuelMota321/web-centralizador-financeiro/blob/0ca997aaabfc5363d3b5dca1d9fc977d9d24281f/src/app/(app)/visao-geral/page.tsx#L101-L131)
+- [Web · fonte provisória de dados de exemplo](https://github.com/SamuelMota321/web-centralizador-financeiro/blob/0ca997aaabfc5363d3b5dca1d9fc977d9d24281f/src/lib/overview/source.ts#L22-L40)
+- [Mobile · navegação para a Visão geral com a prévia habilitada](https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/003ca40668907a8e169e0cd50ec59141cb0a21d1/App.tsx#L55-L91)
+- [Mobile · fonte provisória de dados de exemplo](https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/003ca40668907a8e169e0cd50ec59141cb0a21d1/src/lib/overview/source.ts#L20-L39)
 
 ## 1. O que o PRD exige (HU-010)
 

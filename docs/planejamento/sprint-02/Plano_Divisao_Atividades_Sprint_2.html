@@ -104,7 +104,7 @@
             <h3>Implementação e evidências</h3>
             <p class="doc-paragraph">O adaptador Prisma persiste movimentações no contexto do tenant. A suíte de integração cobre o comportamento do repositório no banco.</p>
             <ul class="doc-list">
-              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/b61b2051337ceb1ddb34638d00d6a6448dcb7759/src/modules/transactions/adapters/outbound/prisma-transactions.repository.ts#L278-L299">Backend · persistência de movimentações</a></li>
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/9af5b12225096e0132ea701d0d6e25bb3db78437/src/modules/transactions/adapters/outbound/prisma-transactions.repository.ts#L277-L306">Backend · persistência de movimentações</a></li>
               <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/b61b2051337ceb1ddb34638d00d6a6448dcb7759/test/integration/prisma-transactions.repository.integration.spec.ts#L90-L105">Backend · teste de persistência</a></li>
             </ul>
             <p class="doc-paragraph"><strong>Fonte:</strong> Arquitetura, Visão de Dados; PRD RN-001 a RN-005, RNF-002 e RNF-003. <strong>Prioridade:</strong> Must, posição 2. <strong>Estimativa:</strong> G. <strong>Responsável principal:</strong> Developer 1; Developer 3 revisa e Developer 2 alinha o contrato. <strong>Dependência:</strong> S2-01. <strong>Janela:</strong> 14–15/09.</p>
@@ -126,8 +126,8 @@
             <h3>Implementação e evidências</h3>
             <p class="doc-paragraph">A API expõe as operações de lançamento manual e transferência entre contas.</p>
             <ul class="doc-list">
-              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/c472b9ea6b7be8426f8c5893d136ce686f1f0475/src/modules/transactions/adapters/inbound/transactions.controller.ts#L59-L80">Backend · registrar movimentação</a></li>
-              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/c472b9ea6b7be8426f8c5893d136ce686f1f0475/src/modules/transactions/adapters/inbound/transactions.controller.ts#L95-L114">Backend · registrar transferência</a></li>
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/9af5b12225096e0132ea701d0d6e25bb3db78437/src/modules/transactions/adapters/inbound/transactions.controller.ts#L147-L181">Backend · registrar movimentação</a></li>
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/9af5b12225096e0132ea701d0d6e25bb3db78437/src/modules/transactions/adapters/inbound/transactions.controller.ts#L185-L219">Backend · registrar transferência</a></li>
             </ul>
             <p class="doc-paragraph"><strong>Fonte:</strong> PRD HU-003 e RN-005; Arquitetura, processos síncronos e API REST. <strong>Prioridade:</strong> Must, posição 3. <strong>Estimativa:</strong> G. <strong>Responsável principal:</strong> Developer 1; Developer 2 integra antecipadamente e Developer 3 valida. <strong>Dependência:</strong> S2-02. <strong>Janela:</strong> 16–18/09.</p>
             <ul class="doc-list">
@@ -143,8 +143,9 @@
             <h3>Implementação e evidências</h3>
             <p class="doc-paragraph">Os dois clientes têm formulários próprios para registrar movimentações e transferências.</p>
             <ul class="doc-list">
-              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/81f032c992c76b69a8c8b75a605e64a66c393017/src/app/movimentacoes/movement-form.tsx#L24-L48">Web · formulário de movimentação</a></li>
-              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/b3c63aa8711d99c03f674a09a6454a2f4b3a7640/src/screens/TransferFormScreen.tsx#L67-L80">Mobile · envio da transferência</a></li>
+              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/0ca997aaabfc5363d3b5dca1d9fc977d9d24281f/src/app/(app)/movimentacoes/movement-form.tsx#L27-L65">Web · formulário de movimentação</a></li>
+              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/003ca40668907a8e169e0cd50ec59141cb0a21d1/src/screens/TransferFormScreen.tsx#L52-L75">Mobile · envio da transferência</a></li>
+              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/0ca997aaabfc5363d3b5dca1d9fc977d9d24281f/src/app/(app)/movimentacoes/page.tsx#L100-L144">Web · consultar e filtrar as movimentações</a></li>
             </ul>
             <p class="doc-paragraph"><strong>Fonte:</strong> PRD HU-003 e RNF-009; Arquitetura, independência dos clientes e OpenAPI; Style Guide. <strong>Prioridade:</strong> Must, posição 4. <strong>Estimativa:</strong> G. <strong>Responsável principal:</strong> Developer 2; Developer 1 apoia o contrato e Developer 3 valida. <strong>Dependências:</strong> S2-01 e contrato estável de S2-03. <strong>Janela:</strong> 16–18/09.</p>
             <ul class="doc-list">
@@ -166,8 +167,9 @@
             <h3>Implementação e evidências</h3>
             <p class="doc-paragraph">A web e o mobile permitem corrigir a categoria de um lançamento. A auditoria da sprint registra a releitura da alteração entre plataformas como cenário de demonstração.</p>
             <ul class="doc-list">
-              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/81f032c992c76b69a8c8b75a605e64a66c393017/src/app/movimentacoes/categorize-control.tsx#L18-L43">Web · correção de categoria</a></li>
-              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/b3c63aa8711d99c03f674a09a6454a2f4b3a7640/src/screens/CategorizeScreen.tsx#L60-L84">Mobile · categorização de um lançamento</a></li>
+              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/0ca997aaabfc5363d3b5dca1d9fc977d9d24281f/src/app/(app)/movimentacoes/categorize-panel.tsx#L20-L56">Web · correção de categoria</a></li>
+              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/003ca40668907a8e169e0cd50ec59141cb0a21d1/src/screens/CategorizeScreen.tsx#L56-L82">Mobile · categorização de um lançamento</a></li>
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/9af5b12225096e0132ea701d0d6e25bb3db78437/src/modules/transactions/adapters/inbound/transactions.controller.ts#L223-L251">Backend · atualizar a categoria de uma movimentação</a></li>
             </ul>
             <p class="doc-paragraph"><strong>Fonte:</strong> PRD HU-005; Arquitetura, estruturas <code>categories</code> e <code>transactions</code>. <strong>Prioridade:</strong> Must, posição 5. <strong>Estimativa:</strong> G. <strong>Responsáveis:</strong> Developer 1 no backend, Developer 2 nos clientes e Developer 3 no aceite. <strong>Dependências:</strong> S2-02, S2-03 e S2-04. <strong>Janela:</strong> 21–22/09.</p>
             <ul class="doc-list">
@@ -181,11 +183,14 @@
             <h2 class="doc-heading">S2-06 — Implementar regras pessoais de categorização</h2>
             <p class="doc-paragraph"><strong>Descrição:</strong> permitir criar, editar, ativar, desativar e remover regras pessoais, com precedência determinística.</p>
             <h3>Implementação e evidências</h3>
-            <p class="doc-paragraph">O backend aplica as alterações de regras pessoais, e os dois clientes oferecem edição das regras.</p>
+            <p class="doc-paragraph">Os clientes oferecem edição de regras e permitem aplicá-las por período a movimentações já registradas. O backend seleciona movimentações sem categoria no intervalo informado e aplica a regra às que correspondem aos critérios.</p>
             <ul class="doc-list">
               <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/98659d83091373643044b43941850dc29b48bfab/src/modules/transactions/application/use-cases/update-category-rule.ts#L32-L55">Backend · atualização da regra</a></li>
-              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/9267b5d2684bc018946978e6dd58b2ce8f16c414/src/app/(app)/regras/rule-item.tsx#L37-L61">Web · ações sobre a regra</a></li>
-              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/d60d0c910e5b683d3a01ee7029e07299eaa78932/src/screens/RuleFormScreen.tsx#L67-L91">Mobile · formulário de regra</a></li>
+              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/0ca997aaabfc5363d3b5dca1d9fc977d9d24281f/src/app/(app)/regras/rule-item.tsx#L43-L70">Web · ações sobre a regra</a></li>
+              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/003ca40668907a8e169e0cd50ec59141cb0a21d1/src/screens/RuleFormScreen.tsx#L70-L98">Mobile · formulário de regra</a></li>
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/9af5b12225096e0132ea701d0d6e25bb3db78437/src/modules/transactions/application/use-cases/apply-category-rule.ts#L49-L81">Backend · aplicar regra a movimentações sem categoria no período</a></li>
+              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/0ca997aaabfc5363d3b5dca1d9fc977d9d24281f/src/app/(app)/regras/apply-rule-form.tsx#L14-L48">Web · selecionar o intervalo de meses da aplicação</a></li>
+              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/003ca40668907a8e169e0cd50ec59141cb0a21d1/src/screens/RuleApplyScreen.tsx#L29-L58">Mobile · aplicar a regra no período selecionado</a></li>
             </ul>
             <p class="doc-paragraph"><strong>Fonte:</strong> PRD HU-006; Arquitetura, estrutura <code>category_rules</code>. <strong>Prioridade:</strong> Must, posição 6. <strong>Estimativa:</strong> G. <strong>Responsáveis:</strong> Developer 1 no domínio/API, Developer 2 nos clientes e Developer 3 nos conflitos. <strong>Dependência:</strong> S2-05. <strong>Janela:</strong> 22–23/09.</p>
             <ul class="doc-list">

@@ -184,7 +184,7 @@ Importante: a divisão define responsabilidade principal, e não propriedade exc
             <h3>Implementação e evidências</h3>
             <p class="doc-paragraph">A inicialização do NestJS e o schema Prisma estão versionados. O Plano 04 registra a validação local do schema e a pendência de subir o ambiente com PostgreSQL.</p>
             <ul class="doc-list">
-              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/b154f14e136790f5abd0c5e2667898b39f0b1379/src/main.ts#L9-L28">Backend · inicialização da API</a></li>
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/9af5b12225096e0132ea701d0d6e25bb3db78437/src/main.ts#L12-L45">Backend · inicialização da API</a></li>
               <li><a href="https://github.com/SamuelMota321/documentacao-centralizador-financeiro/blob/a918e236a205ebc16b8e71752124ea2634019b2b/auditorias/auditoria-dev3-atual-2026-11-23.md?plain=1#L849-L849">Auditoria · ambiente validado e pendências</a></li>
             </ul>
             <p class="doc-paragraph">Responsável principal: Dev 1. Apoio: Dev 3. Trabalho paralelo possível: Dev 2.</p>
@@ -198,7 +198,7 @@ Importante: a divisão define responsabilidade principal, e não propriedade exc
             <h3>Implementação e evidências</h3>
             <p class="doc-paragraph">O schema define tenants, usuários, identidades externas e contas. A validação com dois tenants no PostgreSQL ficou pendente no Plano 04.</p>
             <ul class="doc-list">
-              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/b154f14e136790f5abd0c5e2667898b39f0b1379/prisma/schema.prisma#L41-L78">Backend · modelo de identidade e contas</a></li>
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/9af5b12225096e0132ea701d0d6e25bb3db78437/prisma/schema.prisma#L264-L352">Backend · modelo de identidade e contas</a></li>
               <li><a href="https://github.com/SamuelMota321/documentacao-centralizador-financeiro/blob/a918e236a205ebc16b8e71752124ea2634019b2b/auditorias/auditoria-dev3-atual-2026-11-23.md?plain=1#L850-L850">Auditoria · propriedade e persistência</a></li>
             </ul>
             <p class="doc-paragraph">Responsável principal: Dev 1. Apoio: Dev 3. Integração antecipada: Dev 2.</p>
@@ -215,7 +215,7 @@ Importante: a divisão define responsabilidade principal, e não propriedade exc
             <ul class="doc-list">
               <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/17ca76d937ea454555332ddaccf31e20017f2a0a/src/modules/identity/adapters/inbound/auth0-jwt.guard.ts#L28-L51">Backend · validação do token</a></li>
               <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/7f50351048c4abb619c43dea0572586386e5d8dc/src/lib/auth0.ts#L1-L14">Web · configuração do Auth0</a></li>
-              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/712ad6aacccae50d3ea65819915b3952022567f4/src/auth/AuthContext.tsx#L74-L115">Mobile · autenticação e sessão</a></li>
+              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/003ca40668907a8e169e0cd50ec59141cb0a21d1/src/auth/AuthContext.tsx#L83-L151">Mobile · autenticação e sessão</a></li>
             </ul>
             <p class="doc-paragraph">Responsabilidade compartilhada entre Dev 1 e Dev 2. Validação principal: Dev 3.</p>
             <ul class="doc-list">
@@ -231,11 +231,12 @@ Importante: a divisão define responsabilidade principal, e não propriedade exc
           <div class="sprint-content">
             <h3 class="doc-heading">S1-05 — Criar e listar contas manuais</h3>
             <h3>Implementação e evidências</h3>
-            <p class="doc-paragraph">A API oferece criação e listagem de contas manuais, com entradas próprias na web e no mobile. O Plano 04 deixou a conferência de persistência e visibilidade entre tenants para a integração.</p>
+            <p class="doc-paragraph">A API oferece criação e listagem de contas manuais, com entradas próprias na web e no mobile. O mobile formata e valida a data de referência do saldo antes de enviar o cadastro. O Plano 04 deixou a conferência de persistência e visibilidade entre tenants para a integração.</p>
             <ul class="doc-list">
-              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/17ca76d937ea454555332ddaccf31e20017f2a0a/src/modules/accounts/adapters/inbound/accounts.controller.ts#L55-L74">Backend · criação da conta</a></li>
-              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/7f50351048c4abb619c43dea0572586386e5d8dc/src/app/contas/page.tsx#L19-L46">Web · listagem de contas</a></li>
-              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/712ad6aacccae50d3ea65819915b3952022567f4/src/screens/AccountFormScreen.tsx#L64-L77">Mobile · cadastro de conta</a></li>
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/9af5b12225096e0132ea701d0d6e25bb3db78437/src/modules/accounts/adapters/inbound/accounts.controller.ts#L73-L125">Backend · criação da conta</a></li>
+              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/0ca997aaabfc5363d3b5dca1d9fc977d9d24281f/src/app/(app)/contas/page.tsx#L28-L51">Web · listagem de contas</a></li>
+              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/003ca40668907a8e169e0cd50ec59141cb0a21d1/src/screens/AccountFormScreen.tsx#L82-L111">Mobile · cadastro de conta</a></li>
+              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/003ca40668907a8e169e0cd50ec59141cb0a21d1/src/screens/AccountFormScreen.tsx#L43-L79">Mobile · exibir e validar a data de referência</a></li>
             </ul>
             <p class="doc-paragraph">Responsável principal: Dev 2 no fluxo de usuário; Dev 1 na API e persistência; Dev 3 na validação.</p>
             <ul class="doc-list">
@@ -249,9 +250,9 @@ Importante: a divisão define responsabilidade principal, e não propriedade exc
             <h3>Implementação e evidências</h3>
             <p class="doc-paragraph">A manutenção inclui edição e desativação lógica. O aceite da auditoria em banco e da reversão em caso de falha ficou pendente no Plano 04.</p>
             <ul class="doc-list">
-              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/7623c9241658f02777aaa432c30486ac2e6d6bb7/src/modules/accounts/adapters/inbound/accounts.controller.ts#L154-L184">Backend · manutenção da conta</a></li>
-              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/8674fd4fdad8dad3c85c76136c9998702f711870/src/app/contas/account-item.tsx#L14-L45">Web · ações de manutenção</a></li>
-              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/f8273f090b44cd1c4c0d3878292042b494f0746a/src/screens/AccountsScreen.tsx#L73-L84">Mobile · desativação</a></li>
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/9af5b12225096e0132ea701d0d6e25bb3db78437/src/modules/accounts/adapters/inbound/accounts.controller.ts#L127-L183">Backend · manutenção da conta</a></li>
+              <li><a href="https://github.com/SamuelMota321/web-centralizador-financeiro/blob/0ca997aaabfc5363d3b5dca1d9fc977d9d24281f/src/app/(app)/contas/account-item.tsx#L69-L97">Web · ações de manutenção</a></li>
+              <li><a href="https://github.com/SamuelMota321/mobile-centralizador-financeiro/blob/003ca40668907a8e169e0cd50ec59141cb0a21d1/src/screens/AccountsScreen.tsx#L94-L111">Mobile · desativação</a></li>
             </ul>
             <p class="doc-paragraph">Responsável principal: Dev 2 nos clientes; Dev 1 no backend; Dev 3 nos testes.</p>
             <ul class="doc-list">
@@ -278,7 +279,7 @@ Importante: a divisão define responsabilidade principal, e não propriedade exc
             <h3>Implementação e evidências</h3>
             <p class="doc-paragraph">A suíte inclui testes de RLS e o Plano 04 registra a conferência dos contratos de contas nos clientes. A execução integrada com PostgreSQL ficou pendente.</p>
             <ul class="doc-list">
-              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/af4cc23bd51d85ed7d7bd4654dcd692810916698/test/integration/rls.integration.spec.ts#L63-L84">Backend · teste de integração de RLS</a></li>
+              <li><a href="https://github.com/SamuelMota321/backend-centralizador-financeiro/blob/9af5b12225096e0132ea701d0d6e25bb3db78437/test/integration/rls.integration.spec.ts#L76-L100">Backend · teste de integração de RLS</a></li>
               <li><a href="https://github.com/SamuelMota321/documentacao-centralizador-financeiro/blob/a918e236a205ebc16b8e71752124ea2634019b2b/auditorias/auditoria-dev3-atual-2026-11-23.md?plain=1#L855-L855">Auditoria · cobertura e limites</a></li>
             </ul>
             <p class="doc-paragraph">Responsável principal: Dev 3, com participação obrigatória dos outros dois.</p>
